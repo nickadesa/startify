@@ -49,6 +49,11 @@ class OrderflowProvider:
             "SOLUSDT": "SOLUSDT",
         }
         yahoo_map = {
+            "XAUUSD": "GC=F",
+            "PAXGUSDT": "GC=F",
+            "BTCUSDT": "BTC-USD",
+            "ETHUSDT": "ETH-USD",
+            "SOLUSDT": "SOL-USD",
             "NAS100": "NQ=F",
             "NASDAQ": "NQ=F",
             "SPX500": "ES=F",
@@ -59,49 +64,51 @@ class OrderflowProvider:
 
         if sym in binance_map:
             b_sym = binance_map[sym]
-            try:
-                raw = self._get_json(
-                    f"https://fapi.binance.com/fapi/v1/klines?symbol={b_sym}&interval={iv}&limit={fetch_limit}"
-                )
-                out: List[Dict[str, Any]] = []
-                for row in raw:
-                    o = float(row[1])
-                    h = float(row[2])
-                    l = float(row[3])
-                    c = float(row[4])
-                    vol = float(row[5])
-                    taker_buy = float(row[9]) if len(row) > 9 else vol * 0.5
-                    delta = taker_buy - (vol - taker_buy)
-                    out.append({
-                        "time": datetime.fromtimestamp(int(row[0]) / 1000, tz=timezone.utc).isoformat(),
-                        "open": round(o, 2),
-                        "high": round(h, 2),
-                        "low": round(l, 2),
-                        "close": round(c, 2),
-                        "volume": round(vol, 2),
-                        "delta": round(delta, 2),
-                    })
-                if is_m45 and out:
-                    agg: List[Dict[str, Any]] = []
-                    for i in range(0, len(out), 3):
-                        chunk = out[i : i + 3]
-                        if not chunk:
-                            continue
-                        agg.append({
-                            "time": chunk[0]["time"],
-                            "open": chunk[0]["open"],
-                            "high": max(x["high"] for x in chunk),
-                            "low": min(x["low"] for x in chunk),
-                            "close": chunk[-1]["close"],
-                            "volume": round(sum(x["volume"] for x in chunk), 2),
-                            "delta": round(sum(x["delta"] for x in chunk), 2),
+            for base_url in (
+                f"https://data-api.binance.vision/api/v3/klines?symbol={b_sym}&interval={iv}&limit={fetch_limit}",
+                f"https://fapi.binance.com/fapi/v1/klines?symbol={b_sym}&interval={iv}&limit={fetch_limit}",
+            ):
+                try:
+                    raw = self._get_json(base_url)
+                    out: List[Dict[str, Any]] = []
+                    for row in raw:
+                        o = float(row[1])
+                        h = float(row[2])
+                        l = float(row[3])
+                        c = float(row[4])
+                        vol = float(row[5])
+                        taker_buy = float(row[9]) if len(row) > 9 else vol * 0.5
+                        delta = taker_buy - (vol - taker_buy)
+                        out.append({
+                            "time": datetime.fromtimestamp(int(row[0]) / 1000, tz=timezone.utc).isoformat(),
+                            "open": round(o, 2),
+                            "high": round(h, 2),
+                            "low": round(l, 2),
+                            "close": round(c, 2),
+                            "volume": round(vol, 2),
+                            "delta": round(delta, 2),
                         })
-                    return agg[-limit:]
-                if out:
-                    return out
-            except Exception:
-                pass
-        elif sym in yahoo_map:
+                    if is_m45 and out:
+                        agg: List[Dict[str, Any]] = []
+                        for i in range(0, len(out), 3):
+                            chunk = out[i : i + 3]
+                            if not chunk:
+                                continue
+                            agg.append({
+                                "time": chunk[0]["time"],
+                                "open": chunk[0]["open"],
+                                "high": max(x["high"] for x in chunk),
+                                "low": min(x["low"] for x in chunk),
+                                "close": chunk[-1]["close"],
+                                "volume": round(sum(x["volume"] for x in chunk), 2),
+                                "delta": round(sum(x["delta"] for x in chunk), 2),
+                            })
+                        return agg[-limit:]
+                    if out:
+                        return out
+                except Exception:
+                    continue
+        if sym in yahoo_map:
             yf_sym = yahoo_map[sym]
             yf_iv_map = {
                 "1m": ("1m", "1d"),
