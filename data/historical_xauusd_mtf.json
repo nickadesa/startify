@@ -3,10 +3,10 @@
   "source": "Dukascopy Historical XAUUSD CSV + M15/M5",
   "symbol": "XAUUSD",
   "counts": {
-    "H4": 180,
-    "H1": 478,
+    "H4": 360,
+    "H1": 1200,
     "M15": 720,
     "M5": 1440,
-    "total_bars": 2818
+    "total_bars": 3720
   }
 }

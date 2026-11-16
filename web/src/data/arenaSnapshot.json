@@ -43063,7 +43063,7 @@
   ],
   "playbooks": [
     {
-      "id": 141,
+      "id": 161,
       "agent_id": "ai-1",
       "version": "v1",
       "content_md": "# Gemini 3.8 Trading Playbook (v2.5)\n- **Model**: `gemini-3.8-flash`\n- **Primary Archetype**: London OTE Sniper & COT Confluence\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43075,7 +43075,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 142,
+      "id": 162,
       "agent_id": "ai-1",
       "version": "v3",
       "content_md": "# Gemini 3.8 Trading Playbook (v2.5)\n- **Model**: `gemini-3.8-flash`\n- **Primary Archetype**: London OTE Sniper & COT Confluence\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43087,7 +43087,7 @@
       "pf_after": 4.56
     },
     {
-      "id": 143,
+      "id": 163,
       "agent_id": "ai-2",
       "version": "v1",
       "content_md": "# GPT-OSS 120B Trading Playbook (v2.5)\n- **Model**: `openai/gpt-oss-120b`\n- **Primary Archetype**: NY Overlap Liquidity Sweep & OTE\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43099,7 +43099,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 144,
+      "id": 164,
       "agent_id": "ai-2",
       "version": "v3",
       "content_md": "# GPT-OSS 120B Trading Playbook (v2.5)\n- **Model**: `openai/gpt-oss-120b`\n- **Primary Archetype**: NY Overlap Liquidity Sweep & OTE\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43111,7 +43111,7 @@
       "pf_after": 4.17
     },
     {
-      "id": 145,
+      "id": 165,
       "agent_id": "ai-3",
       "version": "v1",
       "content_md": "# Mistral 4 Trading Playbook (v2.5)\n- **Model**: `mistral-small-4`\n- **Primary Archetype**: Institutional OI Wall Rejections\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43123,7 +43123,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 146,
+      "id": 166,
       "agent_id": "ai-3",
       "version": "v2",
       "content_md": "# Mistral 4 Trading Playbook (v2.5)\n- **Model**: `mistral-small-4`\n- **Primary Archetype**: Institutional OI Wall Rejections\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43135,7 +43135,7 @@
       "pf_after": 3.22
     },
     {
-      "id": 147,
+      "id": 167,
       "agent_id": "ai-4",
       "version": "v1",
       "content_md": "# Nemotron Ultra Trading Playbook (v2.5)\n- **Model**: `nvidia/nemotron-3-ultra-550b-a55b:free`\n- **Primary Archetype**: Multi-Timeframe 4H/1H/M15/M5 Structure\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43147,7 +43147,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 148,
+      "id": 168,
       "agent_id": "ai-4",
       "version": "v2",
       "content_md": "# Nemotron Ultra Trading Playbook (v2.5)\n- **Model**: `nvidia/nemotron-3-ultra-550b-a55b:free`\n- **Primary Archetype**: Multi-Timeframe 4H/1H/M15/M5 Structure\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43159,7 +43159,7 @@
       "pf_after": 3.04
     },
     {
-      "id": 149,
+      "id": 169,
       "agent_id": "ai-5",
       "version": "v1",
       "content_md": "# Llama 3.3 70B Trading Playbook (v2.5)\n- **Model**: `@cf/meta/llama-3.3-70b-instruct-fp8-fast`\n- **Primary Archetype**: PAXG OI Delta & Discount OTE Pullback\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43171,7 +43171,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 150,
+      "id": 170,
       "agent_id": "ai-5",
       "version": "v2",
       "content_md": "# Llama 3.3 70B Trading Playbook (v2.5)\n- **Model**: `@cf/meta/llama-3.3-70b-instruct-fp8-fast`\n- **Primary Archetype**: PAXG OI Delta & Discount OTE Pullback\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43183,7 +43183,7 @@
       "pf_after": 2.78
     },
     {
-      "id": 151,
+      "id": 171,
       "agent_id": "ai-6",
       "version": "v1",
       "content_md": "# Qwen 3.8 Trading Playbook (v2.5)\n- **Model**: `qwen/qwen3.8-27b`\n- **Primary Archetype**: Asian-London Range Breakout to OTE\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43195,7 +43195,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 152,
+      "id": 172,
       "agent_id": "ai-6",
       "version": "v3",
       "content_md": "# Qwen 3.8 Trading Playbook (v2.5)\n- **Model**: `qwen/qwen3.8-27b`\n- **Primary Archetype**: Asian-London Range Breakout to OTE\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43207,7 +43207,7 @@
       "pf_after": 2.64
     },
     {
-      "id": 153,
+      "id": 173,
       "agent_id": "ai-7",
       "version": "v1",
       "content_md": "# Nemotron 3.5 Trading Playbook (v2.5)\n- **Model**: `nvidia/nemotron-3.5-super-vl:free`\n- **Primary Archetype**: High-R Macro USD Yield & OTE Asymmetric\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43219,7 +43219,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 154,
+      "id": 174,
       "agent_id": "ai-7",
       "version": "v2",
       "content_md": "# Nemotron 3.5 Trading Playbook (v2.5)\n- **Model**: `nvidia/nemotron-3.5-super-vl:free`\n- **Primary Archetype**: High-R Macro USD Yield & OTE Asymmetric\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43231,7 +43231,7 @@
       "pf_after": 4.71
     },
     {
-      "id": 155,
+      "id": 175,
       "agent_id": "ai-8",
       "version": "v1",
       "content_md": "# Command A+ Trading Playbook (v2.5)\n- **Model**: `command-a-plus-05-2026`\n- **Primary Archetype**: Conservative High-Winrate 0.705 Sweet Spot\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43243,7 +43243,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 156,
+      "id": 176,
       "agent_id": "ai-8",
       "version": "v2",
       "content_md": "# Command A+ Trading Playbook (v2.5)\n- **Model**: `command-a-plus-05-2026`\n- **Primary Archetype**: Conservative High-Winrate 0.705 Sweet Spot\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43255,7 +43255,7 @@
       "pf_after": 4.14
     },
     {
-      "id": 157,
+      "id": 177,
       "agent_id": "consensus",
       "version": "v1",
       "content_md": "# Consensus Trading Playbook (v2.5)\n- **Model**: `ensemble-3of8-vote`\n- **Primary Archetype**: Multi-AI Uncorrelated Consensus Signal\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43267,7 +43267,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 158,
+      "id": 178,
       "agent_id": "consensus",
       "version": "v2",
       "content_md": "# Consensus Trading Playbook (v2.5)\n- **Model**: `ensemble-3of8-vote`\n- **Primary Archetype**: Multi-AI Uncorrelated Consensus Signal\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43279,7 +43279,7 @@
       "pf_after": 5.88
     },
     {
-      "id": 159,
+      "id": 179,
       "agent_id": "ctrl-ote",
       "version": "v1",
       "content_md": "# Rule OTE Trading Playbook (v2.5)\n- **Model**: `deterministic-ote-0705`\n- **Primary Archetype**: Pure Rule-Based H4 Trend + 0.705 Limit\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43291,7 +43291,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 160,
+      "id": 180,
       "agent_id": "ctrl-bnh",
       "version": "v1",
       "content_md": "# Buy & Hold Trading Playbook (v2.5)\n- **Model**: `passive-gold-allocation`\n- **Primary Archetype**: Passive XAUUSD Benchmark\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43652,7 +43652,7 @@
   ],
   "health_logs": [
     {
-      "log_id": 32,
+      "log_id": 36,
       "time": "2026-11-13T18:15:00Z",
       "component": "news_blackout",
       "severity": "warning",
@@ -43660,7 +43660,7 @@
       "details_json": "{}"
     },
     {
-      "log_id": 31,
+      "log_id": 35,
       "time": "2026-11-14T16:00:00Z",
       "component": "friday_flatten",
       "severity": "info",
@@ -43668,7 +43668,7 @@
       "details_json": "{}"
     },
     {
-      "log_id": 30,
+      "log_id": 34,
       "time": "2026-11-15T13:00:00Z",
       "component": "trigger_engine",
       "severity": "info",
@@ -43676,7 +43676,7 @@
       "details_json": "{}"
     },
     {
-      "log_id": 29,
+      "log_id": 33,
       "time": "2026-11-15T12:00:00Z",
       "component": "data_quality",
       "severity": "info",
@@ -43691,12 +43691,12 @@
     "dataset": {
       "symbol": "XAUUSD",
       "timeframes": {
-        "4H": 180,
-        "1H": 478,
+        "4H": 360,
+        "1H": 1200,
         "M15": 720,
         "M5": 1440
       },
-      "total_candles": 2818,
+      "total_candles": 3720,
       "walk_forward_split": "65% In-Sample Training / 35% Out-of-Sample Validation"
     },
     "skills_trained": [
@@ -44247,162 +44247,6 @@
         ]
       },
       {
-        "agent_id": "ai-3",
-        "display_name": "Mistral 4",
-        "model_name": "mistral-small-4",
-        "provider": "mistral",
-        "color": "#F59E0B",
-        "dataset_label": "4H + 1H Institutional OI Wall Window",
-        "backtest_file": "data/backtests/ai-3.json",
-        "backtest_bars_total": 180,
-        "trades_simulated": 21,
-        "win_rate_pct": 85.7,
-        "profit_factor": 16.53,
-        "sharpe_ratio": 10.83,
-        "max_drawdown_pct": 0.67,
-        "net_pnl_usd": 219.8,
-        "final_equity_usd": 1219.8,
-        "in_sample_pnl_usd": 109.21,
-        "out_of_sample_pnl_usd": 110.59,
-        "breakeven_saves": 0,
-        "tp1_neg_027_hit_rate_pct": 85.7,
-        "tp2_neg_0618_hit_rate_pct": 0.0,
-        "execution_mix": {
-          "limit": 64,
-          "zone_confirm": 24,
-          "market": 12
-        },
-        "primary_skills": [
-          "okx",
-          "trading-analysis",
-          "prediction-market-risk-review",
-          "charting"
-        ],
-        "calibrated_note": "Aligns GLD options strike walls with 0.618\u20130.705 limit resting orders",
-        "recent_trades": [
-          {
-            "time": "2026-11-04T07:00:00Z",
-            "side": "long",
-            "execution_mode": "zone_confirm",
-            "entry": 3939.32,
-            "stop_loss": 3969.99,
-            "tp1_neg_027": 3837.95,
-            "tp2_neg_0618": 3801.77,
-            "r_multiple": 0.99,
-            "pnl_usd": 12.49,
-            "equity_after": 1109.21
-          },
-          {
-            "time": "2026-11-05T19:00:00Z",
-            "side": "long",
-            "execution_mode": "limit",
-            "entry": 4073.44,
-            "stop_loss": 4147.6,
-            "tp1_neg_027": 3828.33,
-            "tp2_neg_0618": 3740.85,
-            "r_multiple": 1.0,
-            "pnl_usd": 12.76,
-            "equity_after": 1121.97
-          },
-          {
-            "time": "2026-11-06T07:00:00Z",
-            "side": "long",
-            "execution_mode": "limit",
-            "entry": 4073.44,
-            "stop_loss": 4147.6,
-            "tp1_neg_027": 3828.33,
-            "tp2_neg_0618": 3740.85,
-            "r_multiple": 1.0,
-            "pnl_usd": 12.9,
-            "equity_after": 1134.87
-          },
-          {
-            "time": "2026-11-06T19:00:00Z",
-            "side": "long",
-            "execution_mode": "limit",
-            "entry": 4079.7,
-            "stop_loss": 4147.6,
-            "tp1_neg_027": 3855.27,
-            "tp2_neg_0618": 3775.17,
-            "r_multiple": 1.0,
-            "pnl_usd": 13.05,
-            "equity_after": 1147.92
-          },
-          {
-            "time": "2026-11-08T07:00:00Z",
-            "side": "short",
-            "execution_mode": "limit",
-            "entry": 4110.35,
-            "stop_loss": 4144.56,
-            "tp1_neg_027": 3997.28,
-            "tp2_neg_0618": 3956.92,
-            "r_multiple": -0.29,
-            "pnl_usd": -3.83,
-            "equity_after": 1144.09
-          },
-          {
-            "time": "2026-11-08T19:00:00Z",
-            "side": "short",
-            "execution_mode": "zone_confirm",
-            "entry": 4098.53,
-            "stop_loss": 4127.8,
-            "tp1_neg_027": 4001.8,
-            "tp2_neg_0618": 3967.28,
-            "r_multiple": 1.65,
-            "pnl_usd": 21.71,
-            "equity_after": 1165.8
-          },
-          {
-            "time": "2026-11-09T07:00:00Z",
-            "side": "long",
-            "execution_mode": "zone_confirm",
-            "entry": 4065.52,
-            "stop_loss": 4080.97,
-            "tp1_neg_027": 4014.45,
-            "tp2_neg_0618": 3996.22,
-            "r_multiple": 0.99,
-            "pnl_usd": 13.27,
-            "equity_after": 1179.07
-          },
-          {
-            "time": "2026-11-09T19:00:00Z",
-            "side": "long",
-            "execution_mode": "market",
-            "entry": 4110.09,
-            "stop_loss": 4133.7,
-            "tp1_neg_027": 4032.06,
-            "tp2_neg_0618": 4004.21,
-            "r_multiple": 0.99,
-            "pnl_usd": 13.42,
-            "equity_after": 1192.49
-          },
-          {
-            "time": "2026-11-10T07:00:00Z",
-            "side": "long",
-            "execution_mode": "limit",
-            "entry": 4113.75,
-            "stop_loss": 4138.39,
-            "tp1_neg_027": 4032.31,
-            "tp2_neg_0618": 4003.24,
-            "r_multiple": 0.99,
-            "pnl_usd": 13.58,
-            "equity_after": 1206.07
-          },
-          {
-            "time": "2026-11-10T19:00:00Z",
-            "side": "long",
-            "execution_mode": "limit",
-            "entry": 4121.24,
-            "stop_loss": 4149.01,
-            "tp1_neg_027": 4029.44,
-            "tp2_neg_0618": 3996.68,
-            "r_multiple": 0.99,
-            "pnl_usd": 13.73,
-            "equity_after": 1219.8
-          }
-        ]
-      },
-      {
         "agent_id": "ai-7",
         "display_name": "Nemotron 3.5",
         "model_name": "nvidia/nemotron-3.5-super-vl:free",
@@ -44410,18 +44254,18 @@
         "color": "#84CC16",
         "dataset_label": "Macro Yield & H1 Asymmetric Runner Window",
         "backtest_file": "data/backtests/ai-7.json",
-        "backtest_bars_total": 478,
-        "trades_simulated": 21,
-        "win_rate_pct": 81.0,
-        "profit_factor": 6.7,
-        "sharpe_ratio": 6.53,
-        "max_drawdown_pct": 1.08,
-        "net_pnl_usd": 205.99,
-        "final_equity_usd": 1205.99,
-        "in_sample_pnl_usd": 121.06,
-        "out_of_sample_pnl_usd": 84.93,
+        "backtest_bars_total": 1200,
+        "trades_simulated": 26,
+        "win_rate_pct": 84.6,
+        "profit_factor": 9.27,
+        "sharpe_ratio": 8.31,
+        "max_drawdown_pct": 1.0,
+        "net_pnl_usd": 270.06,
+        "final_equity_usd": 1270.06,
+        "in_sample_pnl_usd": 186.43,
+        "out_of_sample_pnl_usd": 83.63,
         "breakeven_saves": 1,
-        "tp1_neg_027_hit_rate_pct": 76.2,
+        "tp1_neg_027_hit_rate_pct": 80.8,
         "tp2_neg_0618_hit_rate_pct": 0.0,
         "execution_mix": {
           "zone_confirm": 48,
@@ -44436,232 +44280,100 @@
         "calibrated_note": "Macro USD yield divergence + asymmetric -0.618 runner focus with strict BE lock",
         "recent_trades": [
           {
-            "time": "2026-11-05T21:00:00Z",
-            "side": "long",
-            "execution_mode": "zone_confirm",
-            "entry": 4120.42,
-            "stop_loss": 4147.6,
-            "tp1_neg_027": 4030.61,
-            "tp2_neg_0618": 3998.55,
-            "r_multiple": 0.99,
-            "pnl_usd": 13.99,
-            "equity_after": 1101.3
-          },
-          {
-            "time": "2026-11-06T04:00:00Z",
-            "side": "short",
-            "execution_mode": "zone_confirm",
-            "entry": 4126.73,
-            "stop_loss": 4147.6,
-            "tp1_neg_027": 4057.73,
-            "tp2_neg_0618": 4033.11,
-            "r_multiple": -0.48,
-            "pnl_usd": -6.87,
-            "equity_after": 1094.43
-          },
-          {
-            "time": "2026-11-07T08:00:00Z",
+            "time": "2026-10-27T05:00:00Z",
             "side": "long",
             "execution_mode": "limit",
-            "entry": 4065.52,
-            "stop_loss": 4080.97,
-            "tp1_neg_027": 4014.45,
-            "tp2_neg_0618": 3996.22,
+            "entry": 4016.68,
+            "stop_loss": 4029.98,
+            "tp1_neg_027": 3972.72,
+            "tp2_neg_0618": 3957.02,
             "r_multiple": 0.99,
-            "pnl_usd": 14.09,
-            "equity_after": 1108.52
+            "pnl_usd": 15.22,
+            "equity_after": 1197.65
           },
           {
-            "time": "2026-11-09T02:00:00Z",
-            "side": "long",
-            "execution_mode": "zone_confirm",
-            "entry": 4068.12,
-            "stop_loss": 4069.34,
-            "tp1_neg_027": 4064.11,
-            "tp2_neg_0618": 4062.67,
-            "r_multiple": 0.87,
-            "pnl_usd": 12.54,
-            "equity_after": 1121.06
-          },
-          {
-            "time": "2026-11-09T09:00:00Z",
+            "time": "2026-10-27T23:00:00Z",
             "side": "short",
-            "execution_mode": "zone_confirm",
-            "entry": 4069.01,
-            "stop_loss": 4070.6,
-            "tp1_neg_027": 4063.77,
-            "tp2_neg_0618": 4061.9,
+            "execution_mode": "limit",
+            "entry": 4014.23,
+            "stop_loss": 4024.79,
+            "tp1_neg_027": 3979.32,
+            "tp2_neg_0618": 3966.87,
             "r_multiple": 0.05,
-            "pnl_usd": 0.73,
-            "equity_after": 1121.79
+            "pnl_usd": 0.78,
+            "equity_after": 1198.43
           },
           {
-            "time": "2026-11-09T16:00:00Z",
-            "side": "long",
-            "execution_mode": "zone_confirm",
-            "entry": 4110.44,
-            "stop_loss": 4133.7,
-            "tp1_neg_027": 4033.57,
-            "tp2_neg_0618": 4006.14,
-            "r_multiple": 0.99,
-            "pnl_usd": 14.44,
-            "equity_after": 1136.23
-          },
-          {
-            "time": "2026-11-09T23:00:00Z",
-            "side": "long",
-            "execution_mode": "zone_confirm",
-            "entry": 4110.44,
-            "stop_loss": 4133.7,
-            "tp1_neg_027": 4033.57,
-            "tp2_neg_0618": 4006.14,
-            "r_multiple": 0.99,
-            "pnl_usd": 14.62,
-            "equity_after": 1150.85
-          },
-          {
-            "time": "2026-11-10T06:00:00Z",
+            "time": "2026-10-28T17:00:00Z",
             "side": "short",
-            "execution_mode": "market",
-            "entry": 4117.39,
-            "stop_loss": 4131.72,
-            "tp1_neg_027": 4070.05,
-            "tp2_neg_0618": 4053.15,
-            "r_multiple": 1.65,
-            "pnl_usd": 24.69,
-            "equity_after": 1175.54
+            "execution_mode": "zone_confirm",
+            "entry": 4057.02,
+            "stop_loss": 4070.17,
+            "tp1_neg_027": 4013.57,
+            "tp2_neg_0618": 3998.06,
+            "r_multiple": -0.77,
+            "pnl_usd": -12.0,
+            "equity_after": 1186.43
           },
           {
-            "time": "2026-11-11T17:00:00Z",
+            "time": "2026-10-29T11:00:00Z",
             "side": "long",
             "execution_mode": "zone_confirm",
-            "entry": 4050.05,
-            "stop_loss": 4065.21,
-            "tp1_neg_027": 3999.93,
-            "tp2_neg_0618": 3982.04,
+            "entry": 4066.53,
+            "stop_loss": 4081.97,
+            "tp1_neg_027": 4015.5,
+            "tp2_neg_0618": 3997.28,
             "r_multiple": 0.99,
-            "pnl_usd": 15.13,
-            "equity_after": 1190.67
+            "pnl_usd": 15.27,
+            "equity_after": 1201.7
           },
           {
-            "time": "2026-11-13T18:00:00Z",
+            "time": "2026-11-02T23:00:00Z",
             "side": "long",
             "execution_mode": "limit",
-            "entry": 3903.08,
-            "stop_loss": 3923.92,
-            "tp1_neg_027": 3834.19,
-            "tp2_neg_0618": 3809.61,
+            "entry": 3903.15,
+            "stop_loss": 3918.69,
+            "tp1_neg_027": 3851.8,
+            "tp2_neg_0618": 3833.47,
             "r_multiple": 0.99,
-            "pnl_usd": 15.32,
-            "equity_after": 1205.99
-          }
-        ]
-      },
-      {
-        "agent_id": "ai-1",
-        "display_name": "Gemini 3.8",
-        "model_name": "gemini-3.8-flash",
-        "provider": "gemini",
-        "color": "#00adff",
-        "dataset_label": "London Session H1 + M15 Pullback Window",
-        "backtest_file": "data/backtests/ai-1.json",
-        "backtest_bars_total": 478,
-        "trades_simulated": 21,
-        "win_rate_pct": 85.7,
-        "profit_factor": 5.77,
-        "sharpe_ratio": 6.05,
-        "max_drawdown_pct": 2.28,
-        "net_pnl_usd": 170.18,
-        "final_equity_usd": 1170.18,
-        "in_sample_pnl_usd": 101.61,
-        "out_of_sample_pnl_usd": 68.57,
-        "breakeven_saves": 2,
-        "tp1_neg_027_hit_rate_pct": 76.2,
-        "tp2_neg_0618_hit_rate_pct": 0.0,
-        "execution_mix": {
-          "limit": 58,
-          "zone_confirm": 28,
-          "market": 14
-        },
-        "primary_skills": [
-          "charting",
-          "trading-analysis",
-          "backtesting-frameworks",
-          "scenario-analyzer"
-        ],
-        "calibrated_note": "Calibrated 0.705 Limit entry with +1.0R Break-Even lock and 50/50 split at -0.27 & -0.618",
-        "recent_trades": [
+            "pnl_usd": 15.47,
+            "equity_after": 1217.17
+          },
           {
-            "time": "2026-11-03T21:00:00Z",
+            "time": "2026-11-03T17:00:00Z",
             "side": "short",
-            "execution_mode": "zone_confirm",
-            "entry": 3944.97,
-            "stop_loss": 3965.37,
-            "tp1_neg_027": 3877.54,
-            "tp2_neg_0618": 3853.47,
-            "r_multiple": 0.05,
-            "pnl_usd": 0.66,
-            "equity_after": 1050.15
+            "execution_mode": "limit",
+            "entry": 3954.75,
+            "stop_loss": 3969.99,
+            "tp1_neg_027": 3904.39,
+            "tp2_neg_0618": 3886.42,
+            "r_multiple": -0.66,
+            "pnl_usd": -10.44,
+            "equity_after": 1206.73
           },
           {
             "time": "2026-11-04T11:00:00Z",
             "side": "long",
-            "execution_mode": "market",
+            "execution_mode": "limit",
             "entry": 3947.67,
             "stop_loss": 3969.2,
             "tp1_neg_027": 3876.5,
             "tp2_neg_0618": 3851.1,
             "r_multiple": 0.99,
-            "pnl_usd": 13.0,
-            "equity_after": 1063.15
+            "pnl_usd": 15.53,
+            "equity_after": 1222.26
           },
           {
-            "time": "2026-11-05T15:00:00Z",
-            "side": "long",
-            "execution_mode": "limit",
-            "entry": 4112.88,
-            "stop_loss": 4147.6,
-            "tp1_neg_027": 3998.13,
-            "tp2_neg_0618": 3957.18,
-            "r_multiple": 1.0,
-            "pnl_usd": 13.29,
-            "equity_after": 1076.44
-          },
-          {
-            "time": "2026-11-05T22:00:00Z",
-            "side": "long",
-            "execution_mode": "limit",
-            "entry": 4120.42,
-            "stop_loss": 4147.6,
-            "tp1_neg_027": 4030.61,
-            "tp2_neg_0618": 3998.55,
-            "r_multiple": 0.99,
-            "pnl_usd": 13.32,
-            "equity_after": 1089.76
-          },
-          {
-            "time": "2026-11-09T03:00:00Z",
-            "side": "long",
-            "execution_mode": "limit",
-            "entry": 4068.12,
-            "stop_loss": 4069.34,
-            "tp1_neg_027": 4064.11,
-            "tp2_neg_0618": 4062.67,
-            "r_multiple": 0.87,
-            "pnl_usd": 11.85,
-            "equity_after": 1101.61
-          },
-          {
-            "time": "2026-11-09T10:00:00Z",
+            "time": "2026-11-05T23:00:00Z",
             "side": "long",
             "execution_mode": "zone_confirm",
-            "entry": 4069.01,
-            "stop_loss": 4070.6,
-            "tp1_neg_027": 4063.77,
-            "tp2_neg_0618": 4061.9,
-            "r_multiple": 0.9,
-            "pnl_usd": 12.39,
-            "equity_after": 1114.0
+            "entry": 4120.86,
+            "stop_loss": 4147.6,
+            "tp1_neg_027": 4032.46,
+            "tp2_neg_0618": 4000.91,
+            "r_multiple": 0.99,
+            "pnl_usd": 15.73,
+            "equity_after": 1237.99
           },
           {
             "time": "2026-11-09T17:00:00Z",
@@ -44672,44 +44384,20 @@
             "tp1_neg_027": 4033.57,
             "tp2_neg_0618": 4006.14,
             "r_multiple": 0.99,
-            "pnl_usd": 13.79,
-            "equity_after": 1127.79
+            "pnl_usd": 15.93,
+            "equity_after": 1253.92
           },
           {
-            "time": "2026-11-10T00:00:00Z",
+            "time": "2026-11-10T11:00:00Z",
             "side": "long",
             "execution_mode": "market",
-            "entry": 4110.44,
-            "stop_loss": 4133.7,
-            "tp1_neg_027": 4033.57,
-            "tp2_neg_0618": 4006.14,
+            "entry": 4129.58,
+            "stop_loss": 4149.01,
+            "tp1_neg_027": 4065.38,
+            "tp2_neg_0618": 4042.46,
             "r_multiple": 0.99,
-            "pnl_usd": 13.96,
-            "equity_after": 1141.75
-          },
-          {
-            "time": "2026-11-10T07:00:00Z",
-            "side": "long",
-            "execution_mode": "limit",
-            "entry": 4122.1,
-            "stop_loss": 4138.39,
-            "tp1_neg_027": 4068.25,
-            "tp2_neg_0618": 4049.03,
-            "r_multiple": 0.99,
-            "pnl_usd": 14.13,
-            "equity_after": 1155.88
-          },
-          {
-            "time": "2026-11-11T18:00:00Z",
-            "side": "long",
-            "execution_mode": "zone_confirm",
-            "entry": 4050.05,
-            "stop_loss": 4065.21,
-            "tp1_neg_027": 3999.93,
-            "tp2_neg_0618": 3982.04,
-            "r_multiple": 0.99,
-            "pnl_usd": 14.3,
-            "equity_after": 1170.18
+            "pnl_usd": 16.14,
+            "equity_after": 1270.06
           }
         ]
       },
@@ -44721,18 +44409,18 @@
         "color": "#38BDF8",
         "dataset_label": "Multi-Timeframe 4H/1H/M15 Trend Window",
         "backtest_file": "data/backtests/ai-4.json",
-        "backtest_bars_total": 478,
-        "trades_simulated": 24,
-        "win_rate_pct": 70.8,
-        "profit_factor": 3.82,
-        "sharpe_ratio": 4.45,
-        "max_drawdown_pct": 1.29,
-        "net_pnl_usd": 155.16,
-        "final_equity_usd": 1155.16,
-        "in_sample_pnl_usd": 100.51,
-        "out_of_sample_pnl_usd": 54.65,
+        "backtest_bars_total": 1200,
+        "trades_simulated": 25,
+        "win_rate_pct": 88.0,
+        "profit_factor": 10.4,
+        "sharpe_ratio": 8.81,
+        "max_drawdown_pct": 1.47,
+        "net_pnl_usd": 259.54,
+        "final_equity_usd": 1259.54,
+        "in_sample_pnl_usd": 133.35,
+        "out_of_sample_pnl_usd": 126.19,
         "breakeven_saves": 1,
-        "tp1_neg_027_hit_rate_pct": 66.7,
+        "tp1_neg_027_hit_rate_pct": 84.0,
         "tp2_neg_0618_hit_rate_pct": 0.0,
         "execution_mix": {
           "limit": 52,
@@ -44748,55 +44436,79 @@
         "calibrated_note": "Requires 4H/1H trend alignment before staging limit orders at Fib 0.705",
         "recent_trades": [
           {
-            "time": "2026-11-06T01:00:00Z",
+            "time": "2026-10-29T08:00:00Z",
             "side": "long",
             "execution_mode": "limit",
-            "entry": 4121.3,
-            "stop_loss": 4147.6,
-            "tp1_neg_027": 4034.37,
-            "tp2_neg_0618": 4003.34,
+            "entry": 4066.05,
+            "stop_loss": 4081.97,
+            "tp1_neg_027": 4013.44,
+            "tp2_neg_0618": 3994.66,
             "r_multiple": 0.99,
-            "pnl_usd": 12.89,
-            "equity_after": 1097.57
+            "pnl_usd": 13.31,
+            "equity_after": 1133.35
           },
           {
-            "time": "2026-11-07T05:00:00Z",
-            "side": "short",
+            "time": "2026-11-02T20:00:00Z",
+            "side": "long",
             "execution_mode": "zone_confirm",
+            "entry": 3903.15,
+            "stop_loss": 3918.69,
+            "tp1_neg_027": 3851.8,
+            "tp2_neg_0618": 3833.47,
+            "r_multiple": 0.99,
+            "pnl_usd": 13.46,
+            "equity_after": 1146.81
+          },
+          {
+            "time": "2026-11-03T14:00:00Z",
+            "side": "long",
+            "execution_mode": "zone_confirm",
+            "entry": 3948.12,
+            "stop_loss": 3969.99,
+            "tp1_neg_027": 3875.83,
+            "tp2_neg_0618": 3850.03,
+            "r_multiple": 0.99,
+            "pnl_usd": 13.62,
+            "equity_after": 1160.43
+          },
+          {
+            "time": "2026-11-04T08:00:00Z",
+            "side": "long",
+            "execution_mode": "zone_confirm",
+            "entry": 3947.67,
+            "stop_loss": 3969.2,
+            "tp1_neg_027": 3876.5,
+            "tp2_neg_0618": 3851.1,
+            "r_multiple": 0.99,
+            "pnl_usd": 13.79,
+            "equity_after": 1174.22
+          },
+          {
+            "time": "2026-11-05T20:00:00Z",
+            "side": "long",
+            "execution_mode": "limit",
+            "entry": 4120.42,
+            "stop_loss": 4147.6,
+            "tp1_neg_027": 4030.61,
+            "tp2_neg_0618": 3998.55,
+            "r_multiple": 0.99,
+            "pnl_usd": 13.95,
+            "equity_after": 1188.17
+          },
+          {
+            "time": "2026-11-07T08:00:00Z",
+            "side": "long",
+            "execution_mode": "limit",
             "entry": 4065.52,
             "stop_loss": 4080.97,
             "tp1_neg_027": 4014.45,
             "tp2_neg_0618": 3996.22,
-            "r_multiple": -0.65,
-            "pnl_usd": -8.56,
-            "equity_after": 1089.01
-          },
-          {
-            "time": "2026-11-09T06:00:00Z",
-            "side": "long",
-            "execution_mode": "limit",
-            "entry": 4068.53,
-            "stop_loss": 4069.92,
-            "tp1_neg_027": 4063.95,
-            "tp2_neg_0618": 4062.32,
-            "r_multiple": 0.88,
-            "pnl_usd": 11.5,
-            "equity_after": 1100.51
-          },
-          {
-            "time": "2026-11-09T13:00:00Z",
-            "side": "long",
-            "execution_mode": "limit",
-            "entry": 4105.49,
-            "stop_loss": 4126.68,
-            "tp1_neg_027": 4035.47,
-            "tp2_neg_0618": 4010.48,
             "r_multiple": 0.99,
-            "pnl_usd": 13.07,
-            "equity_after": 1113.58
+            "pnl_usd": 14.12,
+            "equity_after": 1202.29
           },
           {
-            "time": "2026-11-09T20:00:00Z",
+            "time": "2026-11-09T14:00:00Z",
             "side": "long",
             "execution_mode": "limit",
             "entry": 4110.44,
@@ -44804,68 +44516,356 @@
             "tp1_neg_027": 4033.57,
             "tp2_neg_0618": 4006.14,
             "r_multiple": 0.99,
-            "pnl_usd": 13.23,
-            "equity_after": 1126.81
+            "pnl_usd": 14.28,
+            "equity_after": 1216.57
           },
           {
-            "time": "2026-11-10T03:00:00Z",
+            "time": "2026-11-10T08:00:00Z",
             "side": "long",
             "execution_mode": "limit",
-            "entry": 4110.65,
-            "stop_loss": 4133.7,
-            "tp1_neg_027": 4034.45,
-            "tp2_neg_0618": 4007.25,
-            "r_multiple": 0.99,
-            "pnl_usd": 13.39,
-            "equity_after": 1140.2
-          },
-          {
-            "time": "2026-11-10T10:00:00Z",
-            "side": "long",
-            "execution_mode": "zone_confirm",
             "entry": 4129.58,
             "stop_loss": 4149.01,
             "tp1_neg_027": 4065.38,
             "tp2_neg_0618": 4042.46,
             "r_multiple": 0.99,
-            "pnl_usd": 13.55,
-            "equity_after": 1153.75
+            "pnl_usd": 14.45,
+            "equity_after": 1231.02
           },
           {
-            "time": "2026-11-11T14:00:00Z",
-            "side": "short",
-            "execution_mode": "limit",
-            "entry": 4060.57,
-            "stop_loss": 4080.13,
-            "tp1_neg_027": 3995.9,
-            "tp2_neg_0618": 3972.82,
-            "r_multiple": -0.52,
-            "pnl_usd": -7.2,
-            "equity_after": 1146.55
-          },
-          {
-            "time": "2026-11-11T21:00:00Z",
+            "time": "2026-11-11T20:00:00Z",
             "side": "long",
-            "execution_mode": "limit",
+            "execution_mode": "zone_confirm",
             "entry": 4051.27,
             "stop_loss": 4066.53,
             "tp1_neg_027": 4000.83,
             "tp2_neg_0618": 3982.83,
             "r_multiple": 0.99,
-            "pnl_usd": 13.62,
-            "equity_after": 1160.17
+            "pnl_usd": 14.62,
+            "equity_after": 1245.64
           },
           {
-            "time": "2026-11-13T15:00:00Z",
+            "time": "2026-11-16T08:00:00Z",
+            "side": "long",
+            "execution_mode": "limit",
+            "entry": 3879.49,
+            "stop_loss": 3881.63,
+            "tp1_neg_027": 3872.42,
+            "tp2_neg_0618": 3869.9,
+            "r_multiple": 0.93,
+            "pnl_usd": 13.9,
+            "equity_after": 1259.54
+          }
+        ]
+      },
+      {
+        "agent_id": "ai-1",
+        "display_name": "Gemini 3.8",
+        "model_name": "gemini-3.8-flash",
+        "provider": "gemini",
+        "color": "#00adff",
+        "dataset_label": "London Session H1 + M15 Pullback Window",
+        "backtest_file": "data/backtests/ai-1.json",
+        "backtest_bars_total": 1200,
+        "trades_simulated": 29,
+        "win_rate_pct": 75.9,
+        "profit_factor": 4.65,
+        "sharpe_ratio": 5.0,
+        "max_drawdown_pct": 2.14,
+        "net_pnl_usd": 243.8,
+        "final_equity_usd": 1243.8,
+        "in_sample_pnl_usd": 162.34,
+        "out_of_sample_pnl_usd": 81.46,
+        "breakeven_saves": 2,
+        "tp1_neg_027_hit_rate_pct": 69.0,
+        "tp2_neg_0618_hit_rate_pct": 0.0,
+        "execution_mix": {
+          "limit": 58,
+          "zone_confirm": 28,
+          "market": 14
+        },
+        "primary_skills": [
+          "charting",
+          "trading-analysis",
+          "backtesting-frameworks",
+          "scenario-analyzer"
+        ],
+        "calibrated_note": "Calibrated 0.705 Limit entry with +1.0R Break-Even lock and 50/50 split at -0.27 & -0.618",
+        "recent_trades": [
+          {
+            "time": "2026-10-29T05:00:00Z",
+            "side": "short",
+            "execution_mode": "limit",
+            "entry": 4050.51,
+            "stop_loss": 4059.92,
+            "tp1_neg_027": 4019.39,
+            "tp2_neg_0618": 4008.29,
+            "r_multiple": 1.65,
+            "pnl_usd": 23.49,
+            "equity_after": 1162.34
+          },
+          {
+            "time": "2026-11-02T17:00:00Z",
+            "side": "long",
+            "execution_mode": "zone_confirm",
+            "entry": 3903.15,
+            "stop_loss": 3918.69,
+            "tp1_neg_027": 3851.8,
+            "tp2_neg_0618": 3833.47,
+            "r_multiple": 0.99,
+            "pnl_usd": 14.38,
+            "equity_after": 1176.72
+          },
+          {
+            "time": "2026-11-03T11:00:00Z",
+            "side": "long",
+            "execution_mode": "market",
+            "entry": 3946.6,
+            "stop_loss": 3969.99,
+            "tp1_neg_027": 3869.28,
+            "tp2_neg_0618": 3841.68,
+            "r_multiple": 0.99,
+            "pnl_usd": 14.56,
+            "equity_after": 1191.28
+          },
+          {
+            "time": "2026-11-04T05:00:00Z",
+            "side": "short",
+            "execution_mode": "limit",
+            "entry": 3947.67,
+            "stop_loss": 3969.2,
+            "tp1_neg_027": 3876.5,
+            "tp2_neg_0618": 3851.1,
+            "r_multiple": -0.47,
+            "pnl_usd": -7.0,
+            "equity_after": 1184.28
+          },
+          {
+            "time": "2026-11-05T17:00:00Z",
+            "side": "long",
+            "execution_mode": "limit",
+            "entry": 4112.88,
+            "stop_loss": 4147.6,
+            "tp1_neg_027": 3998.13,
+            "tp2_neg_0618": 3957.18,
+            "r_multiple": 1.0,
+            "pnl_usd": 14.8,
+            "equity_after": 1199.08
+          },
+          {
+            "time": "2026-11-07T05:00:00Z",
+            "side": "short",
+            "execution_mode": "limit",
+            "entry": 4065.52,
+            "stop_loss": 4080.97,
+            "tp1_neg_027": 4014.45,
+            "tp2_neg_0618": 3996.22,
+            "r_multiple": -0.65,
+            "pnl_usd": -9.74,
+            "equity_after": 1189.34
+          },
+          {
+            "time": "2026-11-09T11:00:00Z",
             "side": "short",
             "execution_mode": "zone_confirm",
-            "entry": 3920.86,
-            "stop_loss": 3949.14,
-            "tp1_neg_027": 3827.39,
-            "tp2_neg_0618": 3794.02,
-            "r_multiple": -0.36,
-            "pnl_usd": -5.01,
-            "equity_after": 1155.16
+            "entry": 4068.61,
+            "stop_loss": 4074.37,
+            "tp1_neg_027": 4049.59,
+            "tp2_neg_0618": 4042.8,
+            "r_multiple": 1.65,
+            "pnl_usd": 24.53,
+            "equity_after": 1213.87
+          },
+          {
+            "time": "2026-11-10T05:00:00Z",
+            "side": "short",
+            "execution_mode": "market",
+            "entry": 4118.79,
+            "stop_loss": 4133.7,
+            "tp1_neg_027": 4069.51,
+            "tp2_neg_0618": 4051.93,
+            "r_multiple": 0.05,
+            "pnl_usd": 0.76,
+            "equity_after": 1214.63
+          },
+          {
+            "time": "2026-11-11T17:00:00Z",
+            "side": "long",
+            "execution_mode": "limit",
+            "entry": 4050.05,
+            "stop_loss": 4065.21,
+            "tp1_neg_027": 3999.93,
+            "tp2_neg_0618": 3982.04,
+            "r_multiple": 0.99,
+            "pnl_usd": 15.03,
+            "equity_after": 1229.66
+          },
+          {
+            "time": "2026-11-16T05:00:00Z",
+            "side": "long",
+            "execution_mode": "zone_confirm",
+            "entry": 3879.0,
+            "stop_loss": 3880.93,
+            "tp1_neg_027": 3872.61,
+            "tp2_neg_0618": 3870.33,
+            "r_multiple": 0.92,
+            "pnl_usd": 14.14,
+            "equity_after": 1243.8
+          }
+        ]
+      },
+      {
+        "agent_id": "ai-3",
+        "display_name": "Mistral 4",
+        "model_name": "mistral-small-4",
+        "provider": "mistral",
+        "color": "#F59E0B",
+        "dataset_label": "4H + 1H Institutional OI Wall Window",
+        "backtest_file": "data/backtests/ai-3.json",
+        "backtest_bars_total": 360,
+        "trades_simulated": 29,
+        "win_rate_pct": 72.4,
+        "profit_factor": 5.9,
+        "sharpe_ratio": 5.74,
+        "max_drawdown_pct": 1.03,
+        "net_pnl_usd": 196.6,
+        "final_equity_usd": 1196.6,
+        "in_sample_pnl_usd": 70.75,
+        "out_of_sample_pnl_usd": 125.85,
+        "breakeven_saves": 2,
+        "tp1_neg_027_hit_rate_pct": 65.5,
+        "tp2_neg_0618_hit_rate_pct": 0.0,
+        "execution_mix": {
+          "limit": 64,
+          "zone_confirm": 24,
+          "market": 12
+        },
+        "primary_skills": [
+          "okx",
+          "trading-analysis",
+          "prediction-market-risk-review",
+          "charting"
+        ],
+        "calibrated_note": "Aligns GLD options strike walls with 0.618\u20130.705 limit resting orders",
+        "recent_trades": [
+          {
+            "time": "2026-10-28T07:00:00Z",
+            "side": "long",
+            "execution_mode": "limit",
+            "entry": 4039.59,
+            "stop_loss": 4065.54,
+            "tp1_neg_027": 3953.83,
+            "tp2_neg_0618": 3923.22,
+            "r_multiple": 0.99,
+            "pnl_usd": 12.47,
+            "equity_after": 1107.74
+          },
+          {
+            "time": "2026-10-29T03:00:00Z",
+            "side": "long",
+            "execution_mode": "limit",
+            "entry": 4042.86,
+            "stop_loss": 4070.17,
+            "tp1_neg_027": 3952.58,
+            "tp2_neg_0618": 3920.36,
+            "r_multiple": 0.99,
+            "pnl_usd": 12.61,
+            "equity_after": 1120.35
+          },
+          {
+            "time": "2026-11-02T07:00:00Z",
+            "side": "short",
+            "execution_mode": "market",
+            "entry": 3968.78,
+            "stop_loss": 4009.62,
+            "tp1_neg_027": 3833.81,
+            "tp2_neg_0618": 3785.64,
+            "r_multiple": -0.25,
+            "pnl_usd": -3.22,
+            "equity_after": 1117.13
+          },
+          {
+            "time": "2026-11-03T03:00:00Z",
+            "side": "long",
+            "execution_mode": "limit",
+            "entry": 3937.67,
+            "stop_loss": 3967.65,
+            "tp1_neg_027": 3838.58,
+            "tp2_neg_0618": 3803.21,
+            "r_multiple": 0.99,
+            "pnl_usd": 12.72,
+            "equity_after": 1129.85
+          },
+          {
+            "time": "2026-11-03T23:00:00Z",
+            "side": "long",
+            "execution_mode": "limit",
+            "entry": 3939.32,
+            "stop_loss": 3969.99,
+            "tp1_neg_027": 3837.95,
+            "tp2_neg_0618": 3801.77,
+            "r_multiple": 0.99,
+            "pnl_usd": 12.86,
+            "equity_after": 1142.71
+          },
+          {
+            "time": "2026-11-05T15:00:00Z",
+            "side": "long",
+            "execution_mode": "limit",
+            "entry": 4073.33,
+            "stop_loss": 4147.6,
+            "tp1_neg_027": 3827.88,
+            "tp2_neg_0618": 3740.27,
+            "r_multiple": 1.0,
+            "pnl_usd": 13.14,
+            "equity_after": 1155.85
+          },
+          {
+            "time": "2026-11-06T11:00:00Z",
+            "side": "long",
+            "execution_mode": "limit",
+            "entry": 4073.44,
+            "stop_loss": 4147.6,
+            "tp1_neg_027": 3828.33,
+            "tp2_neg_0618": 3740.85,
+            "r_multiple": 1.0,
+            "pnl_usd": 13.29,
+            "equity_after": 1169.14
+          },
+          {
+            "time": "2026-11-08T23:00:00Z",
+            "side": "short",
+            "execution_mode": "zone_confirm",
+            "entry": 4090.09,
+            "stop_loss": 4115.82,
+            "tp1_neg_027": 4005.04,
+            "tp2_neg_0618": 3974.68,
+            "r_multiple": 0.05,
+            "pnl_usd": 0.67,
+            "equity_after": 1169.81
+          },
+          {
+            "time": "2026-11-09T19:00:00Z",
+            "side": "long",
+            "execution_mode": "market",
+            "entry": 4110.09,
+            "stop_loss": 4133.7,
+            "tp1_neg_027": 4032.06,
+            "tp2_neg_0618": 4004.21,
+            "r_multiple": 0.99,
+            "pnl_usd": 13.32,
+            "equity_after": 1183.13
+          },
+          {
+            "time": "2026-11-10T15:00:00Z",
+            "side": "long",
+            "execution_mode": "limit",
+            "entry": 4121.24,
+            "stop_loss": 4149.01,
+            "tp1_neg_027": 4029.44,
+            "tp2_neg_0618": 3996.68,
+            "r_multiple": 0.99,
+            "pnl_usd": 13.47,
+            "equity_after": 1196.6
           }
         ]
       },

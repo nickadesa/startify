@@ -101,7 +101,7 @@ class HistoricalBacktestTrainer:
         self.provider = PriceProvider("XAUUSD")
         self.engine = PaperTradingEngine(base_spread=0.20, slippage=0.08)
 
-    def _load_dukascopy_csv_if_available(self, filename: str, max_bars: int = 1200) -> List[Dict[str, Any]]:
+    def _load_dukascopy_csv_if_available(self, filename: str, max_bars: int = 5000) -> List[Dict[str, Any]]:
         csv_path = self.base_dir / "data" / filename
         if not csv_path.exists():
             return []

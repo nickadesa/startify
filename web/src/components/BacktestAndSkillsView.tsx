@@ -147,18 +147,18 @@ export const BacktestAndSkillsView: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-w-0">
       {/* Header Card */}
       <Card className="p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2.5">
+        <div className="space-y-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="apple-title text-[#F5F5F7]">
               Per-model historical walk-forward backtest & skills.sh
             </h1>
             <Badge variant="positive">Independent datasets</Badge>
           </div>
-          <p className="text-[13px] text-[#8E8E93]">
-            Each AI model backtests on its own historical XAUUSD timeframe slice and saves its individual results (`data/backtests/ai-1.json` through `ai-8.json`) alongside the 11 skills.sh modules
+          <p className="text-[13px] text-[#8E8E93] break-words">
+            Each AI model backtests on its own historical XAUUSD timeframe slice and saves its individual results (data/backtests/ai-1.json through ai-8.json) alongside the 11 skills.sh modules
           </p>
         </div>
 

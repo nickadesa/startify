@@ -202,26 +202,26 @@ export function App() {
       </aside>
 
       {/* Main Content Shell */}
-      <div className="flex-1 lg:pl-[248px] flex flex-col min-h-screen pb-20 lg:pb-10">
+      <div className="flex-1 min-w-0 overflow-x-hidden lg:pl-[248px] flex flex-col min-h-screen pb-20 lg:pb-10">
         {/* Translucent Sticky Top Bar */}
         <header className="sticky top-0 z-20 apple-glass border-b border-white/[0.08] px-4 sm:px-8 h-14 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="lg:hidden flex items-center gap-2">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="lg:hidden flex items-center gap-2 shrink-0">
               <div className="w-7 h-7 rounded-lg bg-[#141417] border border-white/[0.1] flex items-center justify-center text-[13px] font-bold text-[#00adff]">
                 S
               </div>
               <span className="text-[15px] font-semibold tracking-[-0.015em]">Startify</span>
             </div>
-            <div className="hidden lg:flex items-center gap-2 text-[13px]">
-              <span className="text-[#8E8E93]">Startify</span>
-              <span className="text-[#636366]">/</span>
-              <span className="text-[#F5F5F7] font-medium">
+            <div className="hidden lg:flex items-center gap-2 text-[13px] min-w-0">
+              <span className="text-[#8E8E93] shrink-0">Startify</span>
+              <span className="text-[#636366] shrink-0">/</span>
+              <span className="text-[#F5F5F7] font-medium truncate">
                 {navItems.find((n) => n.id === activeNav)?.label}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 shrink-0">
             <Badge variant="secondary" className="font-mono-tabular hidden sm:inline-flex">
               XAUUSD $4,028.90
             </Badge>
@@ -231,7 +231,7 @@ export function App() {
               className="cursor-pointer active:scale-[0.97] transition-transform"
             >
               <Badge variant="positive" className="font-mono-tabular">
-                USD Calendar ({arenaData.news_events.length})
+                Calendar ({arenaData.news_events.length})
               </Badge>
             </button>
             <Button
@@ -249,7 +249,7 @@ export function App() {
         </header>
 
         {/* Page Container */}
-        <main className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 pt-6 space-y-6">
+        <main className="w-full min-w-0 max-w-[1440px] mx-auto px-4 sm:px-8 pt-6 space-y-6">
           {/* ==================== VIEW 1: OVERVIEW ==================== */}
           {activeNav === 'overview' && (
             <div className="space-y-6">
@@ -543,7 +543,13 @@ export function App() {
           )}
 
           {/* ==================== VIEW 2: USD CALENDAR ==================== */}
-          {activeNav === 'calendar' && <UsdCalendarView events={arenaData.news_events} />}
+          {activeNav === 'calendar' && (
+            <UsdCalendarView
+              events={arenaData.news_events}
+              trades={arenaData.trades}
+              leaderboard={arenaData.leaderboard}
+            />
+          )}
 
           {/* ==================== VIEW 3: MARKET TERMINAL ==================== */}
           {activeNav === 'terminal' && (
@@ -554,9 +560,9 @@ export function App() {
               />
 
               <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
-                <Card className="xl:col-span-7 overflow-hidden">
-                  <div className="p-5 sm:p-6 border-b border-white/[0.07] flex items-center justify-between">
-                    <div>
+                <Card className="xl:col-span-7 overflow-hidden min-w-0">
+                  <div className="p-5 sm:p-6 border-b border-white/[0.07] flex items-center justify-between gap-3">
+                    <div className="min-w-0">
                       <h2 className="apple-title text-[#F5F5F7]">
                         USD high-impact macroeconomic calendar
                       </h2>
@@ -564,7 +570,7 @@ export function App() {
                         Strictly filtered to USD releases with ±30m blackout protection
                       </p>
                     </div>
-                    <Button variant="secondary" size="sm" onClick={() => setActiveNav('calendar')}>
+                    <Button variant="secondary" size="sm" className="shrink-0" onClick={() => setActiveNav('calendar')}>
                       Full calendar
                     </Button>
                   </div>
@@ -584,9 +590,9 @@ export function App() {
                           <TableCell className="font-mono-tabular text-[#8E8E93] whitespace-nowrap">
                             {ev.time.slice(0, 16).replace('T', ' ')}
                           </TableCell>
-                          <TableCell>
-                            <div className="font-medium text-[#F5F5F7]">{ev.name}</div>
-                            <div className="text-[11px] text-[#8E8E93]">{ev.neutral_summary}</div>
+                          <TableCell className="max-w-[260px]">
+                            <div className="font-medium text-[#F5F5F7] truncate">{ev.name}</div>
+                            <div className="text-[11px] text-[#8E8E93] line-clamp-2">{ev.neutral_summary}</div>
                           </TableCell>
                           <TableCell className="text-right font-mono-tabular whitespace-nowrap">
                             <span className="text-[#F5F5F7]">{ev.actual}</span>{' '}
