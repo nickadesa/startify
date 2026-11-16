@@ -1,564 +1,818 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  LogOut,
-  Menu,
+  Camera,
+  ChevronLeft,
+  ChevronRight,
+  Crown,
   Moon,
-  Settings,
+  Pause,
+  Play,
+  RefreshCw,
+  Shield,
   Sun,
-  Swords,
-  Trophy,
-  User,
-  X,
-} from 'lucide-react';
-import { AssetIcon } from './components/AssetIcon';
-import { AuthModal } from './components/AuthModal';
-import { MarketOverviewItem, MarketsWatchlistView } from './components/MarketsWatchlistView';
-import { PortfolioView } from './components/PortfolioView';
-import { ProfileView } from './components/ProfileView';
-import { TeamArenaView } from './components/TeamArenaView';
-import { TradingTerminal } from './components/TradingTerminal';
-import { WeeklyRankedView } from './components/WeeklyRankedView';
-import { TraderAccount, TraderPosition, UserProfile } from './types/toptier';
+  Zap,
+  LayoutGrid,
+  Sparkles,
+} from "lucide-react";
+import { AITrader, ArenaState } from "./types/arena";
+import { BrandIcon } from "./components/BrandIcon";
+import { ArenaCharts, ChartMode, MiniSparkline } from "./components/ArenaCharts";
+import { MonthlyPnLCalendar } from "./components/MonthlyPnLCalendar";
+import { ShareFlexModal } from "./components/ShareFlexModal";
+import { AIProfileView } from "./components/AIProfileView";
+import { GrokBotChatView } from "./components/GrokBotChatView";
+import { SundaySummitView } from "./components/SundaySummitView";
 
-type NavTab = 'trade' | 'portfolio' | 'ranked' | 'arenas' | 'markets' | 'profile';
-
-const FALLBACK_MARKETS: MarketOverviewItem[] = [
-  { symbol: 'XAUUSD', name: 'Gold Spot', category: 'Commodities', leverage: '25x', price: 3874.5, change_24h_pct: -0.76, funding_rate: -0.0003, open_interest: '$12.36M', volume_24h: '$317.18M' },
-  { symbol: 'NAS100', name: 'NASDAQ 100', category: 'Indices', leverage: '50x', price: 21704.25, change_24h_pct: -1.85, funding_rate: 0.0001, open_interest: '$84.45M', volume_24h: '$6.64B' },
-  { symbol: 'SPX500', name: 'S&P 500', category: 'Indices', leverage: '75x', price: 6046.38, change_24h_pct: -0.85, funding_rate: -0.0001, open_interest: '$5.61M', volume_24h: '$282.44M' },
-  { symbol: 'BTCUSDT', name: 'Bitcoin', category: 'Crypto', leverage: '50x', price: 91354.0, change_24h_pct: -1.45, funding_rate: 0.0006, open_interest: '$10.38M', volume_24h: '$1.64B' },
-  { symbol: 'ETHUSDT', name: 'Ethereum', category: 'Crypto', leverage: '50x', price: 3104.16, change_24h_pct: -1.71, funding_rate: 0.0012, open_interest: '$4.22M', volume_24h: '$187.77M' },
-  { symbol: 'SOLUSDT', name: 'Solana', category: 'Crypto', leverage: '20x', price: 211.24, change_24h_pct: -2.06, funding_rate: -0.0009, open_interest: '$5.53M', volume_24h: '$23.01M' },
-  { symbol: 'PAXGUSDT', name: 'Gold Perp', category: 'Commodities', leverage: '25x', price: 3876.4, change_24h_pct: -0.72, funding_rate: 0.0012, open_interest: '$28.45M', volume_24h: '$142.80M' },
-  { symbol: 'XAGUSD', name: 'Silver Spot', category: 'Commodities', leverage: '25x', price: 31.42, change_24h_pct: -2.77, funding_rate: 0.0, open_interest: '$165.49K', volume_24h: '$12.74M' },
-  { symbol: 'EURUSD', name: 'Euro / USD', category: 'Forex', leverage: '100x', price: 1.0542, change_24h_pct: -0.16, funding_rate: -0.0001, open_interest: '$1.17M', volume_24h: '$8.37M' },
-  { symbol: 'DXY', name: 'US Dollar Index', category: 'Forex', leverage: '50x', price: 106.68, change_24h_pct: 0.34, funding_rate: 0.0, open_interest: '$3.20M', volume_24h: '$44.10M' },
-];
+type TabKey = "arena" | "profiles" | "calendar" | "chat" | "summit";
+type OrderFilter = "All" | "Open" | "Filled" | "Canceled";
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<NavTab>('trade');
-  const [activeSymbol, setActiveSymbol] = useState('XAUUSD');
-  const [markets, setMarkets] = useState<MarketOverviewItem[]>(FALLBACK_MARKETS);
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    try {
-      return (localStorage.getItem('toptier_theme') as 'light' | 'dark') || 'light';
-    } catch {
-      return 'light';
-    }
+  const [state, setState] = useState<ArenaState | null>(null);
+  const [tab, setTab] = useState<TabKey>("arena");
+  const [selectedAIId, setSelectedAIId] = useState<string | null>(null);
+  const [chartMode, setChartMode] = useState<ChartMode>("equity");
+  const [orderFilter, setOrderFilter] = useState<OrderFilter>("All");
+  const [showAllAIs, setShowAllAIs] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [summitRunning, setSummitRunning] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    return (localStorage.getItem("tt_theme") as "dark" | "light") || "dark";
   });
-  const [streamerMode, setStreamerMode] = useState(false);
-  const [showTickerBar, setShowTickerBar] = useState(true);
-  const [showSettings, setShowSettings] = useState(false);
-  const [settingsTab, setSettingsTab] = useState<'general' | 'trading' | 'chart'>('general');
-  const [candleTypePref, setCandleTypePref] = useState<'candle_solid' | 'candle_stroke' | 'ohlc' | 'area'>('candle_solid');
-  const [showPositionLines, setShowPositionLines] = useState(true);
-  const [confirmOrders, setConfirmOrders] = useState(false);
-  const [showQuickOrder, setShowQuickOrder] = useState(true);
-  const [showMobileDrawer, setShowMobileDrawer] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // Auth & Trader State
-  const [token, setToken] = useState<string | null>(() => {
-    try {
-      return localStorage.getItem('toptier_token');
-    } catch {
-      return null;
-    }
-  });
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [accounts, setAccounts] = useState<TraderAccount[]>([]);
-  const [positions, setPositions] = useState<TraderPosition[]>([]);
-  const [activeAccountMode, setActiveAccountMode] = useState<'demo' | 'weekly_ranked' | 'room'>('weekly_ranked');
-  const [activeRoomCode, setActiveRoomCode] = useState<string | null>(null);
-  const [profileTarget, setProfileTarget] = useState<string>('apex_kai');
+  const carouselRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    try {
-      localStorage.setItem('toptier_theme', theme);
-    } catch {}
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("tt_theme", theme);
   }, [theme]);
 
-  const fetchMe = async (tok = token) => {
-    if (!tok) return;
+  const fetchState = useCallback(async () => {
     try {
-      const res = await fetch('/api/auth/me', { headers: { Authorization: `Bearer ${tok}` } });
+      const res = await fetch("/api/arena/state");
       if (res.ok) {
-        const data = await res.json();
-        setUser(data.user);
-        setAccounts(data.accounts || []);
-        setPositions(data.positions || []);
-      } else {
-        setToken(null);
-        setUser(null);
-        localStorage.removeItem('toptier_token');
+        const data: ArenaState = await res.json();
+        setState(data);
       }
-    } catch {}
-  };
-
-  useEffect(() => {
-    fetchMe();
-  }, [token]);
-
-  useEffect(() => {
-    const loadMarkets = () => {
-      fetch('/api/markets/overview')
-        .then((r) => (r.ok ? r.json() : null))
-        .then((d) => {
-          if (d?.markets?.length > 0) setMarkets(d.markets);
-        })
-        .catch(() => {});
-    };
-    loadMarkets();
-    const timer = setInterval(loadMarkets, 20000);
-    return () => clearInterval(timer);
+    } catch (e) {
+      console.error("Failed to fetch arena state:", e);
+    }
   }, []);
 
-  const handleAuthSuccess = (tok: string, u: UserProfile) => {
-    setToken(tok);
-    setUser(u);
+  useEffect(() => {
+    fetchState();
+    const timer = setInterval(fetchState, 15000);
+    return () => clearInterval(timer);
+  }, [fetchState]);
+
+  const handleScan = async () => {
+    setScanning(true);
     try {
-      localStorage.setItem('toptier_token', tok);
-    } catch {}
-    fetchMe(tok);
+      const res = await fetch("/api/arena/scan", { method: "POST" });
+      if (res.ok) {
+        const payload = await res.json();
+        if (payload.state) setState(payload.state);
+      }
+    } finally {
+      setScanning(false);
+    }
   };
 
-  const handleLogout = () => {
-    setToken(null);
-    setUser(null);
-    setAccounts([]);
-    setPositions([]);
+  const handleToggleMirror = async (agentId: string) => {
     try {
-      localStorage.removeItem('toptier_token');
-    } catch {}
+      const res = await fetch(`/api/arena/mirror/${agentId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      if (res.ok) {
+        const updated: ArenaState = await res.json();
+        setState(updated);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const activeAccount = accounts.find((a) => a.mode === activeAccountMode) || accounts[0];
-  const displayBal = activeAccount?.balance ?? 10000;
+  const handleCockpitAction = async (action: string) => {
+    try {
+      const res = await fetch("/api/arena/cockpit/action", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      if (res.ok) {
+        const updated: ArenaState = await res.json();
+        setState(updated);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
-  const navItems: { id: NavTab; label: string }[] = [
-    { id: 'trade', label: 'Trade' },
-    { id: 'portfolio', label: 'Portfolio' },
-    { id: 'ranked', label: 'Weekly Ranked' },
-    { id: 'arenas', label: '1v1–5v5 Arenas' },
-    { id: 'markets', label: 'Markets' },
-  ];
+  const handleRunSummit = async () => {
+    setSummitRunning(true);
+    try {
+      const res = await fetch("/api/arena/summit/run", { method: "POST" });
+      if (res.ok) {
+        const payload = await res.json();
+        if (payload.state) setState(payload.state);
+      }
+    } finally {
+      setSummitRunning(false);
+    }
+  };
+
+  const handleSendDiscordSnapshot = async () => {
+    if (!state) return;
+    const totalProfit = state.ais.reduce((acc, a) => acc + a.total_pnl, 0);
+    await fetch("/api/arena/discord/test", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        channel: "live_trades_env",
+        title: "📸 TOPTIERclub Arena Snapshot",
+        description: `Total Arena Profit: $${totalProfit.toFixed(2)} | #1 Leader: ${state.ais[0]?.display_name} (${state.ais[0]?.roi_pct >= 0 ? "+" : ""}${state.ais[0]?.roi_pct}%)`,
+      }),
+    });
+  };
+
+  const scrollCarousel = (dir: "left" | "right") => {
+    if (!carouselRef.current) return;
+    const delta = dir === "left" ? -380 : 380;
+    carouselRef.current.scrollBy({ left: delta, behavior: "smooth" });
+  };
+
+  const openProfile = (ai: AITrader) => {
+    setSelectedAIId(ai.agent_id);
+    setTab("profiles");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  if (!state) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="apple-card px-8 py-6 text-center">
+          <div className="text-[1.25rem] font-bold tracking-tight">TOPTIERclub</div>
+          <div className="text-[0.875rem] mt-1" style={{ color: "var(--text-secondary)" }}>
+            Initializing Autonomous Multi-AI Quant Arena...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const leaderAI = state.ais[0];
+  const activeProfileAI = state.ais.find((a) => a.agent_id === selectedAIId) || leaderAI;
+  const filteredOrders =
+    orderFilter === "All" ? state.orders : state.orders.filter((o) => o.status === orderFilter);
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-[var(--bg-canvas)] text-[var(--text-primary)] pb-10">
-      {/* Top Navbar (Single-line on both Mobile & Desktop) */}
-      <header className="sticky top-0 z-40 w-full h-14 border-b border-[var(--border-subtle)] bg-[var(--bg-card)]/95 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-3 min-w-0">
-          <button
-            onClick={() => setShowMobileDrawer(true)}
-            className="md:hidden p-1.5 rounded-lg hover:bg-[var(--bg-subtle)] cursor-pointer shrink-0"
-            aria-label="Menu"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-
-          <button
-            onClick={() => setActiveTab('trade')}
-            className="font-extrabold text-[1.0625rem] tracking-tight cursor-pointer shrink-0 hover:opacity-80 transition-opacity"
-          >
-            TOPTIERclub
-          </button>
-
-          <nav className="hidden md:flex items-center gap-1 ml-4">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`px-3.5 py-1.5 rounded-full text-[0.8125rem] font-semibold transition-colors cursor-pointer whitespace-nowrap ${
-                  activeTab === item.id
-                    ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)]'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-subtle)] px-3 py-1 text-[0.75rem] font-semibold tabular-nums">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            <span>{streamerMode ? '$****' : `$${displayBal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}</span>
-          </div>
-
-          <button
-            onClick={() => setTheme((t) => (t === 'light' ? 'dark' : 'light'))}
-            className="p-2 rounded-full border border-[var(--border-subtle)] hover:bg-[var(--bg-subtle)] cursor-pointer"
-            title="Toggle Theme"
-          >
-            {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-          </button>
-
-          <button
-            onClick={() => setShowSettings(true)}
-            className="hidden sm:inline-flex p-2 rounded-full border border-[var(--border-subtle)] hover:bg-[var(--bg-subtle)] cursor-pointer"
-            title="Settings"
-          >
-            <Settings className="w-4 h-4" />
-          </button>
-
-          {user ? (
+    <div className="min-h-screen fullscreen-section pb-16">
+      {/* Apple Frosted Top Navbar */}
+      <header
+        className="sticky top-0 z-40 w-full backdrop-blur-xl"
+        style={{
+          backgroundColor: "var(--bg-glass)",
+          borderBottom: "1px solid var(--border-subtle)",
+        }}
+      >
+        <div className="w-[94%] max-w-[1440px] mx-auto py-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-6">
             <button
               onClick={() => {
-                setProfileTarget(user.username);
-                setActiveTab('profile');
+                setTab("arena");
+                setSelectedAIId(null);
               }}
-              className="inline-flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] hover:bg-[var(--bg-subtle)] text-[0.75rem] font-semibold cursor-pointer whitespace-nowrap"
+              className="text-[1.25rem] font-extrabold tracking-tight"
             >
-              <span
-                style={{ backgroundColor: user.avatar_color }}
-                className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[0.625rem] font-bold"
-              >
-                {user.username.slice(0, 2).toUpperCase()}
-              </span>
-              <span className="hidden sm:inline">@{user.username}</span>
-              <span className="text-[0.6875rem] text-amber-500 font-bold">Lv.{user.level}</span>
+              TOPTIERclub
             </button>
-          ) : (
-            <button
-              onClick={() => setShowAuthModal(true)}
-              className="px-4 py-1.5 rounded-full bg-[var(--text-primary)] text-[var(--bg-card)] text-[0.75rem] font-semibold cursor-pointer hover:opacity-90 whitespace-nowrap"
-            >
-              Sign In
-            </button>
-          )}
-        </div>
-      </header>
 
-      {/* Mobile Slide-Out Drawer */}
-      {showMobileDrawer && (
-        <div className="fixed inset-0 z-50 bg-black/50 md:hidden" onClick={() => setShowMobileDrawer(false)}>
-          <div
-            className="w-72 h-full bg-[var(--bg-card)] p-5 flex flex-col justify-between shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
-                <span className="font-extrabold text-[1rem]">TOPTIERclub</span>
-                <button onClick={() => setShowMobileDrawer(false)} className="p-1 cursor-pointer">
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="space-y-1">
-                {navItems.map((item) => (
+            <nav className="hidden md:flex items-center gap-1 p-1 rounded-full" style={{ backgroundColor: "var(--bg-subtle)", border: "1px solid var(--border-subtle)" }}>
+              {(
+                [
+                  { id: "arena", label: "Arena" },
+                  { id: "profiles", label: "AI Profiles" },
+                  { id: "calendar", label: "PnL Calendar" },
+                  { id: "chat", label: "GrokBot Chat" },
+                  { id: "summit", label: "Sunday Summit" },
+                ] as { id: TabKey; label: string }[]
+              ).map((item) => {
+                const active = tab === item.id;
+                return (
                   <button
                     key={item.id}
-                    onClick={() => {
-                      setActiveTab(item.id);
-                      setShowMobileDrawer(false);
+                    onClick={() => setTab(item.id)}
+                    className="px-4 py-1.5 rounded-full text-[0.8125rem] font-medium transition"
+                    style={{
+                      backgroundColor: active ? "var(--bg-card)" : "transparent",
+                      color: active ? "var(--text-primary)" : "var(--text-secondary)",
+                      boxShadow: active ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
                     }}
-                    className={`w-full text-left px-3 py-2.5 rounded-xl text-[0.875rem] font-semibold cursor-pointer ${
-                      activeTab === item.id ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'
-                    }`}
                   >
                     {item.label}
                   </button>
-                ))}
-                {user && (
-                  <button
-                    onClick={() => {
-                      setProfileTarget(user.username);
-                      setActiveTab('profile');
-                      setShowMobileDrawer(false);
-                    }}
-                    className="w-full text-left px-3 py-2.5 rounded-xl text-[0.875rem] font-semibold text-[var(--text-secondary)] flex items-center gap-2 cursor-pointer"
-                  >
-                    <User className="w-4 h-4" /> My Profile (@{user.username})
-                  </button>
-                )}
+                );
+              })}
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="w-9 h-9 rounded-full flex items-center justify-center transition hover:opacity-80"
+              style={{ backgroundColor: "var(--bg-subtle)", border: "1px solid var(--border-subtle)" }}
+              title="Toggle Theme"
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[0.8125rem] font-medium transition hover:opacity-85"
+              style={{ backgroundColor: "var(--bg-subtle)", border: "1px solid var(--border-subtle)" }}
+            >
+              <Camera className="w-4 h-4 text-[#007AFF]" />
+              <span className="hidden sm:inline">Share</span>
+            </button>
+
+            <button
+              onClick={handleScan}
+              disabled={scanning}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[0.8125rem] font-semibold bg-[#007AFF] text-white hover:opacity-90 transition"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${scanning ? "animate-spin" : ""}`} />
+              {scanning ? "Scanning..." : "Run AI Scan"}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Pill Nav */}
+        <div className="md:hidden w-[94%] mx-auto pb-2.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+          {(
+            [
+              { id: "arena", label: "Arena" },
+              { id: "profiles", label: "Profiles" },
+              { id: "calendar", label: "Calendar" },
+              { id: "chat", label: "GrokBot" },
+              { id: "summit", label: "Summit" },
+            ] as { id: TabKey; label: string }[]
+          ).map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setTab(item.id)}
+              className="px-3.5 py-1.5 rounded-full text-[0.75rem] font-medium shrink-0"
+              style={{
+                backgroundColor: tab === item.id ? "var(--accent-blue)" : "var(--bg-subtle)",
+                color: tab === item.id ? "#FFFFFF" : "var(--text-secondary)",
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="w-[94%] max-w-[1440px] mx-auto pt-6 space-y-6">
+        {/* TradeSyncer-Inspired Cockpit Bar */}
+        <section className="apple-card p-4 md:px-6 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-4 md:gap-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[0.75rem] font-semibold" style={{ backgroundColor: "rgba(52,199,89,0.14)", color: "var(--accent-green)" }}>
+              <span className="w-2 h-2 rounded-full bg-[#34C759] animate-pulse" />
+              Arena {state.cockpit.arena_status}
+            </div>
+
+            <div>
+              <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>XAUUSD Feed</div>
+              <div className="text-[0.9375rem] font-bold tabular-nums">${state.cockpit.xauusd_price.toFixed(2)}</div>
+            </div>
+
+            <div>
+              <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>Total Day PnL</div>
+              <div className="text-[0.9375rem] font-bold tabular-nums" style={{ color: state.cockpit.total_day_pnl >= 0 ? "var(--accent-green)" : "var(--accent-red)" }}>
+                {state.cockpit.total_day_pnl >= 0 ? `+$${state.cockpit.total_day_pnl.toLocaleString()}` : `-$${Math.abs(state.cockpit.total_day_pnl).toLocaleString()}`}
               </div>
             </div>
 
-            <div className="space-y-2 border-t border-[var(--border-subtle)] pt-3">
-              <button
-                onClick={() => {
-                  setShowSettings(true);
-                  setShowMobileDrawer(false);
-                }}
-                className="w-full py-2 rounded-xl bg-[var(--bg-subtle)] text-[0.8125rem] font-semibold cursor-pointer"
-              >
-                Settings
-              </button>
-              {user && (
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setShowMobileDrawer(false);
-                  }}
-                  className="w-full py-2 rounded-xl text-rose-500 text-[0.8125rem] font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <LogOut className="w-4 h-4" /> Log Out
-                </button>
-              )}
+            <div>
+              <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>Open PnL</div>
+              <div className="text-[0.9375rem] font-bold tabular-nums" style={{ color: state.cockpit.total_open_pnl >= 0 ? "var(--accent-green)" : "var(--accent-red)" }}>
+                {state.cockpit.total_open_pnl >= 0 ? `+$${state.cockpit.total_open_pnl.toFixed(2)}` : `-$${Math.abs(state.cockpit.total_open_pnl).toFixed(2)}`}
+              </div>
+            </div>
+
+            <div>
+              <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>Arena Capital</div>
+              <div className="text-[0.9375rem] font-bold tabular-nums">${state.cockpit.total_balance.toLocaleString()}</div>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Main Content */}
-      <main className="flex-1 w-full px-3 sm:px-6 py-4">
-        {activeTab === 'trade' && (
-          <TradingTerminal
-            activeSymbol={activeSymbol}
-            onSymbolChange={setActiveSymbol}
-            markets={markets}
-            theme={theme}
-            streamerMode={streamerMode}
-            candleTypePref={candleTypePref}
-            showPositionLines={showPositionLines}
-            user={user}
-            token={token}
-            accounts={accounts}
-            positions={positions}
-            activeAccountMode={activeAccountMode}
-            onAccountModeChange={setActiveAccountMode}
-            activeRoomCode={activeRoomCode}
-            onExitRoom={() => {
-              setActiveRoomCode(null);
-              setActiveAccountMode('weekly_ranked');
-            }}
-            onRefreshUser={() => fetchMe()}
-            onRequireAuth={() => setShowAuthModal(true)}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => handleCockpitAction("toggle_risk_shield")}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.75rem] font-semibold transition"
+              style={{
+                backgroundColor: state.cockpit.risk_shield_enabled ? "rgba(52,199,89,0.14)" : "var(--bg-subtle)",
+                color: state.cockpit.risk_shield_enabled ? "var(--accent-green)" : "var(--text-secondary)",
+                border: "1px solid var(--border-subtle)",
+              }}
+            >
+              <Shield className="w-3.5 h-3.5" />
+              Risk Shield {state.cockpit.risk_shield_enabled ? "On" : "Off"}
+            </button>
+
+            <button
+              onClick={() => handleCockpitAction("toggle_auto_mirror")}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.75rem] font-semibold transition"
+              style={{
+                backgroundColor: state.cockpit.auto_mirror_enabled ? "rgba(0,122,255,0.14)" : "var(--bg-subtle)",
+                color: state.cockpit.auto_mirror_enabled ? "var(--accent-blue)" : "var(--text-secondary)",
+                border: "1px solid var(--border-subtle)",
+              }}
+            >
+              <Zap className="w-3.5 h-3.5" />
+              Auto-Mirror {state.cockpit.auto_mirror_enabled ? "On" : "Off"}
+            </button>
+
+            <button
+              onClick={() => handleCockpitAction(state.cockpit.arena_status === "LIVE" ? "pause_all" : "resume_all")}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.75rem] font-semibold"
+              style={{ backgroundColor: "var(--bg-subtle)", border: "1px solid var(--border-subtle)" }}
+            >
+              {state.cockpit.arena_status === "LIVE" ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+              {state.cockpit.arena_status === "LIVE" ? "Pause All" : "Resume"}
+            </button>
+
+            <button
+              onClick={() => handleCockpitAction("flatten_all")}
+              className="px-3.5 py-1.5 rounded-full text-[0.75rem] font-semibold bg-[#FF3B30] text-white hover:opacity-90 transition"
+            >
+              Flatten All
+            </button>
+          </div>
+        </section>
+
+        {tab === "arena" && (
+          <>
+            {/* Hero Spotlight + AI of the Week */}
+            <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="lg:col-span-7 apple-card p-6 md:p-8 flex flex-col justify-between">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.75rem] font-semibold bg-[#007AFF]/12 text-[#007AFF] mb-3">
+                    <Sparkles className="w-3.5 h-3.5" /> Autonomous Self-Learning Quant Arena
+                  </span>
+                  <h1 className="text-[1.75rem] md:text-[2.25rem] font-bold tracking-tight leading-tight">
+                    8 Frontier AIs Competing. Zero Manual Orders.
+                  </h1>
+                  <p className="text-[0.9375rem] mt-2.5 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                    Claude, Grok, DeepSeek, Qwen, Gemini, GPT-OSS, Mistral & Llama autonomously research DXY, US10Y & Bybit orderflow, execute paper setups, debate on GrokBot 24/7, and evolve every Sunday.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-3 mt-6">
+                  <button
+                    onClick={handleScan}
+                    disabled={scanning}
+                    className="px-5 py-2.5 rounded-full text-[0.875rem] font-semibold bg-[#007AFF] text-white hover:opacity-90 transition"
+                  >
+                    {scanning ? "Running AI Scan..." : "Trigger Live AI Scan"}
+                  </button>
+                  <button
+                    onClick={() => setTab("summit")}
+                    className="px-5 py-2.5 rounded-full text-[0.875rem] font-semibold"
+                    style={{ backgroundColor: "var(--bg-subtle)", border: "1px solid var(--border-subtle)" }}
+                  >
+                    Sunday AI Summit
+                  </button>
+                  <button
+                    onClick={() => setTab("chat")}
+                    className="px-5 py-2.5 rounded-full text-[0.875rem] font-semibold"
+                    style={{ backgroundColor: "var(--bg-subtle)", border: "1px solid var(--border-subtle)" }}
+                  >
+                    GrokBot 24/7 Chat
+                  </button>
+                </div>
+              </div>
+
+              {/* AI of the Week Card */}
+              {leaderAI && (
+                <div className="lg:col-span-5 apple-card p-6 md:p-7 flex flex-col justify-between relative overflow-hidden">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.75rem] font-bold bg-[#FF9F0A]/15 text-[#FF9F0A]">
+                      <Crown className="w-3.5 h-3.5" /> AI of the Week
+                    </span>
+                    <span className="text-[0.75rem] font-medium" style={{ color: "var(--text-secondary)" }}>
+                      Rank #1 Leader
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-4 mb-5">
+                    <img
+                      src={leaderAI.avatar}
+                      alt={leaderAI.display_name}
+                      className="w-16 h-16 rounded-full object-cover ring-2 ring-[#FF9F0A]/50"
+                    />
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <BrandIcon brand={leaderAI.brand_key} size={20} />
+                        <h2 className="text-[1.25rem] font-bold tracking-tight">{leaderAI.display_name}</h2>
+                      </div>
+                      <p className="text-[0.8125rem] mt-0.5" style={{ color: "var(--text-secondary)" }}>
+                        {leaderAI.style_archetype}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3 mb-5">
+                    <div className="apple-subcard p-3">
+                      <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>ROI</div>
+                      <div className="text-[1.25rem] font-extrabold tabular-nums text-[#34C759]">
+                        +{leaderAI.roi_pct}%
+                      </div>
+                    </div>
+                    <div className="apple-subcard p-3">
+                      <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>Winrate</div>
+                      <div className="text-[1.25rem] font-bold tabular-nums">{leaderAI.winrate_pct}%</div>
+                    </div>
+                    <div className="apple-subcard p-3">
+                      <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>Sharpe</div>
+                      <div className="text-[1.25rem] font-bold tabular-nums">{leaderAI.sharpe_ratio.toFixed(2)}</div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => openProfile(leaderAI)}
+                    className="w-full py-2.5 rounded-full text-[0.875rem] font-semibold transition hover:opacity-90"
+                    style={{ backgroundColor: "var(--text-primary)", color: "var(--bg-canvas)" }}
+                  >
+                    View Leader Profile
+                  </button>
+                </div>
+              )}
+            </section>
+
+            {/* AI Traders Carousel + View More */}
+            <section className="space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-[1.25rem] font-bold tracking-tight">Competing AI Traders (8 Models)</h2>
+                  <p className="text-[0.8125rem]" style={{ color: "var(--text-secondary)" }}>
+                    Swipe or click arrows • Toggle Mirror to copy #1 Leader • Click View Profile for Quant Tear Sheet
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {!showAllAIs && (
+                    <>
+                      <button
+                        onClick={() => scrollCarousel("left")}
+                        className="w-9 h-9 rounded-full flex items-center justify-center transition hover:opacity-80"
+                        style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border-subtle)" }}
+                        aria-label="Previous"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => scrollCarousel("right")}
+                        className="w-9 h-9 rounded-full flex items-center justify-center transition hover:opacity-80"
+                        style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border-subtle)" }}
+                        aria-label="Next"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </>
+                  )}
+                  <button
+                    onClick={() => setShowAllAIs(!showAllAIs)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[0.8125rem] font-semibold transition"
+                    style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border-subtle)" }}
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                    {showAllAIs ? "Carousel View" : "View All AIs (8)"}
+                  </button>
+                </div>
+              </div>
+
+              <div
+                ref={carouselRef}
+                className={
+                  showAllAIs
+                    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+                    : "flex gap-5 overflow-x-auto no-scrollbar pb-2 snap-x snap-mandatory"
+                }
+              >
+                {state.ais.map((ai) => {
+                  const pos = ai.roi_pct >= 0;
+                  return (
+                    <div
+                      key={ai.agent_id}
+                      className={`apple-card p-5 flex flex-col justify-between transition hover:-translate-y-0.5 ${
+                        showAllAIs ? "" : "min-w-[84%] sm:min-w-[46%] lg:min-w-[31%] snap-start"
+                      }`}
+                    >
+                      <div>
+                        {/* Card Top */}
+                        <div className="flex items-start justify-between gap-2 mb-4">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <img
+                              src={ai.avatar}
+                              alt={ai.short_name}
+                              className="w-12 h-12 rounded-full object-cover shrink-0 ring-1 ring-white/15"
+                            />
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <BrandIcon brand={ai.brand_key} size={18} />
+                                <span className="font-bold text-[0.9375rem] truncate">{ai.short_name}</span>
+                                {ai.is_leader && <Crown className="w-3.5 h-3.5 text-[#FF9F0A] shrink-0" />}
+                              </div>
+                              <div className="text-[0.75rem] truncate" style={{ color: "var(--text-secondary)" }}>
+                                #{ai.rank} • {ai.provider}
+                              </div>
+                            </div>
+                          </div>
+
+                          <span
+                            className="px-2.5 py-0.5 rounded-full text-[0.6875rem] font-semibold shrink-0"
+                            style={{
+                              backgroundColor:
+                                ai.status === "COOLDOWN"
+                                  ? "rgba(255,59,48,0.14)"
+                                  : ai.status === "IN TRADE"
+                                  ? "rgba(52,199,89,0.14)"
+                                  : "var(--bg-subtle)",
+                              color:
+                                ai.status === "COOLDOWN"
+                                  ? "var(--accent-red)"
+                                  : ai.status === "IN TRADE"
+                                  ? "var(--accent-green)"
+                                  : "var(--text-secondary)",
+                            }}
+                          >
+                            {ai.status}
+                          </span>
+                        </div>
+
+                        {/* ROI & Sparkline */}
+                        <div className="flex items-end justify-between gap-3 mb-4">
+                          <div>
+                            <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>Total ROI</div>
+                            <div
+                              className="text-[1.75rem] font-extrabold tabular-nums leading-none mt-0.5"
+                              style={{ color: pos ? "var(--accent-green)" : "var(--accent-red)" }}
+                            >
+                              {pos ? `+${ai.roi_pct}%` : `${ai.roi_pct}%`}
+                            </div>
+                            <div className="text-[0.75rem] tabular-nums mt-1" style={{ color: "var(--text-secondary)" }}>
+                              {ai.total_pnl >= 0 ? `+$${ai.total_pnl.toLocaleString()}` : `-$${Math.abs(ai.total_pnl).toLocaleString()}`}
+                            </div>
+                          </div>
+                          <div className="w-[45%]">
+                            <MiniSparkline data={ai.sparkline} positive={pos} />
+                          </div>
+                        </div>
+
+                        {/* 4 Quant Metrics */}
+                        <div className="grid grid-cols-4 gap-2 mb-4 text-center">
+                          <div className="apple-subcard py-2 px-1">
+                            <div className="text-[0.625rem]" style={{ color: "var(--text-secondary)" }}>Sharpe</div>
+                            <div className="text-[0.8125rem] font-bold tabular-nums">{ai.sharpe_ratio.toFixed(1)}</div>
+                          </div>
+                          <div className="apple-subcard py-2 px-1">
+                            <div className="text-[0.625rem]" style={{ color: "var(--text-secondary)" }}>PF</div>
+                            <div className="text-[0.8125rem] font-bold tabular-nums">{ai.profit_factor.toFixed(2)}</div>
+                          </div>
+                          <div className="apple-subcard py-2 px-1">
+                            <div className="text-[0.625rem]" style={{ color: "var(--text-secondary)" }}>Max DD</div>
+                            <div className="text-[0.8125rem] font-bold tabular-nums">-{ai.max_dd_pct.toFixed(1)}%</div>
+                          </div>
+                          <div className="apple-subcard py-2 px-1">
+                            <div className="text-[0.625rem]" style={{ color: "var(--text-secondary)" }}>Win%</div>
+                            <div className="text-[0.8125rem] font-bold tabular-nums">{ai.winrate_pct.toFixed(0)}%</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card Actions */}
+                      <div className="flex items-center justify-between gap-2 pt-2 border-t" style={{ borderColor: "var(--border-subtle)" }}>
+                        <button
+                          onClick={() => handleToggleMirror(ai.agent_id)}
+                          className="inline-flex items-center gap-2 text-[0.75rem] font-semibold"
+                          style={{ color: ai.is_mirrored ? "var(--accent-blue)" : "var(--text-secondary)" }}
+                        >
+                          <span
+                            className="w-8 h-4.5 rounded-full p-0.5 transition flex items-center"
+                            style={{
+                              backgroundColor: ai.is_mirrored ? "var(--accent-blue)" : "var(--bg-subtle)",
+                              justifyContent: ai.is_mirrored ? "flex-end" : "flex-start",
+                            }}
+                          >
+                            <span className="w-3.5 h-3.5 rounded-full bg-white shadow-xs" />
+                          </span>
+                          Mirror
+                        </button>
+
+                        <button
+                          onClick={() => openProfile(ai)}
+                          className="px-4 py-1.5 rounded-full text-[0.75rem] font-semibold transition hover:opacity-85"
+                          style={{ backgroundColor: "var(--bg-subtle)", border: "1px solid var(--border-subtle)" }}
+                        >
+                          View Profile
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Separated Benchmarks Strip */}
+              <div className="apple-card p-4 flex flex-wrap items-center justify-between gap-4">
+                <div className="text-[0.75rem] font-semibold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
+                  Benchmarks (Non-AI Controls)
+                </div>
+                <div className="flex flex-wrap items-center gap-4">
+                  {state.benchmarks.map((b) => (
+                    <div key={b.agent_id} className="apple-subcard px-3.5 py-2 flex items-center gap-3 text-[0.8125rem]">
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: b.color }} />
+                      <span className="font-semibold">{b.display_name}</span>
+                      <span className="tabular-nums font-bold text-[#34C759]">+{b.roi_pct}%</span>
+                      <span className="text-[0.75rem] tabular-nums" style={{ color: "var(--text-secondary)" }}>
+                        SR {b.sharpe_ratio.toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Arena PnL Overview (Dropdown) */}
+            <section className="apple-card p-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <div>
+                  <h2 className="text-[1.125rem] font-bold tracking-tight">Arena PnL & Quant Overview</h2>
+                  <p className="text-[0.8125rem]" style={{ color: "var(--text-secondary)" }}>
+                    Switch views between Equity Curve, Portfolio PnL Candles (OHLC), Drawdown & Quant Matrix
+                  </p>
+                </div>
+
+                <select
+                  value={chartMode}
+                  onChange={(e) => setChartMode(e.target.value as ChartMode)}
+                  className="apple-pill px-4 py-2 text-[0.8125rem] font-semibold outline-none cursor-pointer"
+                  style={{ backgroundColor: "var(--bg-subtle)", color: "var(--text-primary)" }}
+                >
+                  <option value="equity">Equity Curve</option>
+                  <option value="candles">Portfolio PnL Candles (OHLC)</option>
+                  <option value="drawdown">Drawdown Bar</option>
+                  <option value="matrix">Quant Matrix</option>
+                </select>
+              </div>
+
+              <ArenaCharts ais={state.ais} mode={chartMode} />
+            </section>
+
+            {/* TradeSyncer-Style Orders & Journal Table */}
+            <section className="apple-card p-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <div>
+                  <h2 className="text-[1.125rem] font-bold tracking-tight">Autonomous Orders & Auto-Synced Journal</h2>
+                  <p className="text-[0.8125rem]" style={{ color: "var(--text-secondary)" }}>
+                    Every AI trade auto-tagged by Session, Market Regime & Confidence Score
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-1 p-1 rounded-full" style={{ backgroundColor: "var(--bg-subtle)", border: "1px solid var(--border-subtle)" }}>
+                  {(["All", "Open", "Filled", "Canceled"] as OrderFilter[]).map((f) => (
+                    <button
+                      key={f}
+                      onClick={() => setOrderFilter(f)}
+                      className="px-3.5 py-1 rounded-full text-[0.75rem] font-semibold transition"
+                      style={{
+                        backgroundColor: orderFilter === f ? "var(--accent-blue)" : "transparent",
+                        color: orderFilter === f ? "#FFFFFF" : "var(--text-secondary)",
+                      }}
+                    >
+                      {f}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="text-[0.75rem] uppercase tracking-wider" style={{ color: "var(--text-secondary)", borderBottom: "1px solid var(--border-subtle)" }}>
+                      <th className="py-2.5 px-3">AI Trader</th>
+                      <th className="py-2.5 px-3">Side / Type</th>
+                      <th className="py-2.5 px-3 text-right">Entry</th>
+                      <th className="py-2.5 px-3 text-right">Lots</th>
+                      <th className="py-2.5 px-3">Session / Tag</th>
+                      <th className="py-2.5 px-3 text-right">PnL</th>
+                      <th className="py-2.5 px-3 text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y" style={{ borderColor: "var(--border-subtle)" }}>
+                    {filteredOrders.map((o) => (
+                      <tr key={o.id} className="text-[0.8125rem] tabular-nums">
+                        <td className="py-3 px-3">
+                          <div className="flex items-center gap-2 font-semibold">
+                            <img src={o.avatar} alt={o.agent_name} className="w-6 h-6 rounded-full object-cover" />
+                            <span>{o.agent_name}</span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-3">
+                          <span className="font-bold" style={{ color: o.side === "BUY" ? "var(--accent-green)" : "var(--accent-red)" }}>
+                            {o.side}
+                          </span>{" "}
+                          <span style={{ color: "var(--text-secondary)" }}>{o.type}</span>
+                        </td>
+                        <td className="py-3 px-3 text-right">${o.entry_price.toFixed(2)}</td>
+                        <td className="py-3 px-3 text-right">{o.qty.toFixed(2)}</td>
+                        <td className="py-3 px-3">
+                          <span className="px-2.5 py-0.5 rounded-full text-[0.75rem]" style={{ backgroundColor: "var(--bg-subtle)" }}>
+                            {o.session} • {o.tag}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 text-right font-bold" style={{ color: o.pnl >= 0 ? "var(--accent-green)" : "var(--accent-red)" }}>
+                          {o.pnl >= 0 ? `+$${o.pnl.toFixed(2)}` : `-$${Math.abs(o.pnl).toFixed(2)}`}
+                        </td>
+                        <td className="py-3 px-3 text-right">
+                          <span
+                            className="px-2.5 py-0.5 rounded-full text-[0.6875rem] font-semibold"
+                            style={{
+                              backgroundColor: o.status === "Open" ? "rgba(0,122,255,0.14)" : o.status === "Filled" ? "rgba(52,199,89,0.14)" : "var(--bg-subtle)",
+                              color: o.status === "Open" ? "var(--accent-blue)" : o.status === "Filled" ? "var(--accent-green)" : "var(--text-secondary)",
+                            }}
+                          >
+                            {o.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </>
+        )}
+
+        {tab === "profiles" && activeProfileAI && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+              {state.ais.map((a) => (
+                <button
+                  key={a.agent_id}
+                  onClick={() => setSelectedAIId(a.agent_id)}
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-[0.8125rem] font-semibold shrink-0 transition"
+                  style={{
+                    backgroundColor: activeProfileAI.agent_id === a.agent_id ? "var(--accent-blue)" : "var(--bg-card)",
+                    color: activeProfileAI.agent_id === a.agent_id ? "#FFFFFF" : "var(--text-primary)",
+                    border: "1px solid var(--border-subtle)",
+                  }}
+                >
+                  <img src={a.avatar} alt={a.short_name} className="w-5 h-5 rounded-full object-cover" />
+                  <span>{a.short_name}</span>
+                </button>
+              ))}
+            </div>
+            <AIProfileView
+              ai={activeProfileAI}
+              kpiTargets={state.kpi_targets}
+              orders={state.orders}
+              onBack={() => setTab("arena")}
+              onToggleMirror={handleToggleMirror}
+            />
+          </div>
+        )}
+
+        {tab === "calendar" && <MonthlyPnLCalendar ais={state.ais} />}
+
+        {tab === "chat" && (
+          <GrokBotChatView
+            messages={state.chat}
+            cockpit={state.cockpit}
+            onTriggerScan={handleScan}
+            scanning={scanning}
           />
         )}
 
-        {activeTab === 'portfolio' && (
-          <PortfolioView
-            user={user}
-            accounts={accounts}
-            positions={positions}
-            streamerMode={streamerMode}
-            onRequireAuth={() => setShowAuthModal(true)}
-            onGoTrade={() => setActiveTab('trade')}
-          />
-        )}
-
-        {activeTab === 'ranked' && (
-          <WeeklyRankedView
-            token={token}
-            onViewProfile={(uname) => {
-              setProfileTarget(uname);
-              setActiveTab('profile');
-            }}
-            onStartTradingRanked={() => {
-              setActiveAccountMode('weekly_ranked');
-              setActiveTab('trade');
-            }}
-            onRequireAuth={() => setShowAuthModal(true)}
-          />
-        )}
-
-        {activeTab === 'arenas' && (
-          <TeamArenaView
-            token={token}
-            onEnterRoom={(code) => {
-              setActiveRoomCode(code);
-              setActiveAccountMode('room');
-              setActiveTab('trade');
-            }}
-            onRequireAuth={() => setShowAuthModal(true)}
-          />
-        )}
-
-        {activeTab === 'markets' && (
-          <MarketsWatchlistView
-            markets={markets}
-            onSelectSymbol={(sym) => {
-              setActiveSymbol(sym);
-              setActiveTab('trade');
-            }}
-          />
-        )}
-
-        {activeTab === 'profile' && (
-          <ProfileView
-            username={profileTarget}
-            token={token}
-            currentUser={user}
-            onRequireAuth={() => setShowAuthModal(true)}
+        {tab === "summit" && (
+          <SundaySummitView
+            summit={state.summit}
+            onRunSummit={handleRunSummit}
+            running={summitRunning}
           />
         )}
       </main>
 
-      {/* Bottom Live Ticker Bar (Full-screen width vw) */}
-      {showTickerBar && (
-        <footer className="fullscreen-section fixed bottom-0 left-0 z-30 h-9 border-t border-[var(--border-subtle)] bg-[var(--bg-card)]/95 backdrop-blur-md px-3 flex items-center gap-4 overflow-x-auto no-scrollbar whitespace-nowrap text-[0.75rem]">
-          <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-500 shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            TOPTIERclub Live
-          </span>
-          {markets.map((m) => (
-            <button
-              key={m.symbol}
-              onClick={() => {
-                setActiveSymbol(m.symbol);
-                setActiveTab('trade');
-              }}
-              className="inline-flex items-center gap-1.5 hover:opacity-80 cursor-pointer shrink-0 tabular-nums"
-            >
-              <AssetIcon symbol={m.symbol} size={15} />
-              <span className="font-semibold">{m.symbol}</span>
-              <span>${m.price.toLocaleString(undefined, { minimumFractionDigits: m.symbol === 'EURUSD' ? 4 : 2 })}</span>
-              <span className={m.change_24h_pct >= 0 ? 'text-emerald-500' : 'text-rose-500'}>
-                {m.change_24h_pct >= 0 ? '+' : ''}{m.change_24h_pct.toFixed(2)}%
-              </span>
-            </button>
-          ))}
-        </footer>
+      {showShareModal && (
+        <ShareFlexModal
+          state={state}
+          onClose={() => setShowShareModal(false)}
+          onSendDiscord={handleSendDiscordSnapshot}
+        />
       )}
-
-      {/* Global Settings Modal (Vest-style 3-tab: General | Trading | Chart) */}
-      {showSettings && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowSettings(false)}>
-          <div className="tt-card w-full max-w-md p-5 space-y-4 rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
-              <h3 className="text-[1rem] font-bold">Settings</h3>
-              <button onClick={() => setShowSettings(false)} className="cursor-pointer p-1 rounded-lg hover:bg-[var(--bg-subtle)]">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="flex gap-1 p-1 rounded-xl bg-[var(--bg-subtle)] text-[0.75rem] font-semibold">
-              {(['general', 'trading', 'chart'] as const).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setSettingsTab(t)}
-                  className={`flex-1 py-1.5 rounded-lg capitalize cursor-pointer transition-colors ${
-                    settingsTab === t
-                      ? 'bg-[var(--bg-card)] text-[var(--text-primary)] shadow-sm'
-                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-
-            {settingsTab === 'general' && (
-              <div className="space-y-3.5 text-[0.8125rem]">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-semibold">Theme</div>
-                    <div className="text-[0.6875rem] text-[var(--text-muted)]">Light or Pure Black (#000000)</div>
-                  </div>
-                  <div className="flex gap-1 p-1 rounded-full bg-[var(--bg-subtle)]">
-                    {(['light', 'dark'] as const).map((t) => (
-                      <button
-                        key={t}
-                        onClick={() => setTheme(t)}
-                        className={`px-3 py-1 rounded-full text-[0.75rem] font-semibold capitalize cursor-pointer ${
-                          theme === t ? 'bg-[var(--text-primary)] text-[var(--bg-card)]' : ''
-                        }`}
-                      >
-                        {t}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <label className="flex items-center justify-between cursor-pointer">
-                  <div>
-                    <div className="font-semibold">Streamer Mode</div>
-                    <div className="text-[0.6875rem] text-[var(--text-muted)]">Hide account balances & PnL</div>
-                  </div>
-                  <input type="checkbox" checked={streamerMode} onChange={(e) => setStreamerMode(e.target.checked)} className="accent-emerald-500 w-4 h-4" />
-                </label>
-                <label className="flex items-center justify-between cursor-pointer">
-                  <div>
-                    <div className="font-semibold">Bottom Live Ticker</div>
-                    <div className="text-[0.6875rem] text-[var(--text-muted)]">Show real-time market ticker bar</div>
-                  </div>
-                  <input type="checkbox" checked={showTickerBar} onChange={(e) => setShowTickerBar(e.target.checked)} className="accent-emerald-500 w-4 h-4" />
-                </label>
-                {user && (
-                  <div className="pt-3 border-t border-[var(--border-subtle)] flex justify-between items-center">
-                    <span className="text-[var(--text-secondary)]">Signed in as @{user.username}</span>
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setShowSettings(false);
-                      }}
-                      className="text-rose-500 font-semibold cursor-pointer"
-                    >
-                      Log Out
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {settingsTab === 'trading' && (
-              <div className="space-y-3.5 text-[0.8125rem]">
-                <label className="flex items-center justify-between cursor-pointer">
-                  <div>
-                    <div className="font-semibold">Order Confirmation Modal</div>
-                    <div className="text-[0.6875rem] text-[var(--text-muted)]">Prompt before submitting market/limit orders</div>
-                  </div>
-                  <input type="checkbox" checked={confirmOrders} onChange={(e) => setConfirmOrders(e.target.checked)} className="accent-emerald-500 w-4 h-4" />
-                </label>
-                <label className="flex items-center justify-between cursor-pointer">
-                  <div>
-                    <div className="font-semibold">Quick-Order Buttons</div>
-                    <div className="text-[0.6875rem] text-[var(--text-muted)]">Show 25% / 50% / 75% / 100% size presets</div>
-                  </div>
-                  <input type="checkbox" checked={showQuickOrder} onChange={(e) => setShowQuickOrder(e.target.checked)} className="accent-emerald-500 w-4 h-4" />
-                </label>
-                <div className="p-3 rounded-xl bg-[var(--bg-subtle)] text-[0.75rem] text-[var(--text-secondary)]">
-                  Weekly Ranked & 1v1–5v5 Arenas enforce a <strong className="text-[var(--text-primary)]">$10,000</strong> starting balance and transparent 0.02% taker fee.
-                </div>
-              </div>
-            )}
-
-            {settingsTab === 'chart' && (
-              <div className="space-y-3.5 text-[0.8125rem]">
-                <div>
-                  <div className="font-semibold mb-1.5">Default Candle Style</div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {(
-                      [
-                        { id: 'candle_solid', label: 'Solid Candles', desc: 'Classic filled bodies' },
-                        { id: 'candle_stroke', label: 'Hollow Candles', desc: 'Outlined bullish bars' },
-                        { id: 'ohlc', label: 'OHLC Bars', desc: 'Institutional tick bars' },
-                        { id: 'area', label: 'Area Line', desc: 'Smooth equity-style curve' },
-                      ] as const
-                    ).map((st) => (
-                      <button
-                        key={st.id}
-                        onClick={() => setCandleTypePref(st.id)}
-                        className={`p-2.5 rounded-xl border text-left cursor-pointer transition-colors ${
-                          candleTypePref === st.id
-                            ? 'border-[var(--text-primary)] bg-[var(--bg-subtle)]'
-                            : 'border-[var(--border-subtle)] hover:bg-[var(--bg-subtle)]'
-                        }`}
-                      >
-                        <div className="font-bold text-[0.8125rem]">{st.label}</div>
-                        <div className="text-[0.6875rem] text-[var(--text-muted)]">{st.desc}</div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <label className="flex items-center justify-between cursor-pointer">
-                  <div>
-                    <div className="font-semibold">Show Entry / TP / SL on Chart</div>
-                    <div className="text-[0.6875rem] text-[var(--text-muted)]">Render live position lines directly on candles</div>
-                  </div>
-                  <input type="checkbox" checked={showPositionLines} onChange={(e) => setShowPositionLines(e.target.checked)} className="accent-emerald-500 w-4 h-4" />
-                </label>
-                <div className="p-3 rounded-xl bg-[var(--bg-subtle)] text-[0.75rem] text-[var(--text-secondary)]">
-                  Engine: <strong className="text-[var(--text-primary)]">KLineChart Pro</strong> · Feeds: <strong className="text-[var(--text-primary)]">Bybit v5 WS + Market API</strong>.
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} onSuccess={handleAuthSuccess} />}
     </div>
   );
 }

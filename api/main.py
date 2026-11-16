@@ -30,6 +30,14 @@ from api.competition_engine import (
     utc_iso,
     vote_team_proposal,
 )
+from api.arena_engine import (
+    cockpit_action,
+    get_state as get_arena_state,
+    run_autonomous_scan,
+    run_sunday_summit,
+    send_discord_webhook,
+    toggle_mirror,
+)
 from data.orderflow_provider import OrderflowProvider
 from db.database import BASE_DIR, query_all, query_one
 
@@ -609,9 +617,71 @@ async def serve_spa_or_vercel_rewrite(
                 return api_post_rtc(code, RtcSignalReq(**body), authorization)
             if sub == "rtc" and request.method == "GET":
                 return api_get_rtc(code, authorization)
+        if api_path == "arena/state":
+            return get_arena_state()
+        if api_path == "arena/scan" and request.method == "POST":
+            return run_autonomous_scan()
+        if api_path == "arena/summit/run" and request.method == "POST":
+            return run_sunday_summit()
+        if api_path == "arena/cockpit/action" and request.method == "POST":
+            return cockpit_action(str(body.get("action", "")))
+        if api_path.startswith("arena/mirror/") and request.method == "POST":
+            aid = api_path.split("/")[-1]
+            return toggle_mirror(aid, body.get("multiplier"))
+        if api_path == "arena/discord/test" and request.method == "POST":
+            return send_discord_webhook(
+                str(body.get("channel", "live_trades_env")),
+                str(body.get("title", "TOPTIERclub Arena Snapshot")),
+                str(body.get("description", "Live Multi-AI Quant Arena update")),
+            )
         return JSONResponse({"error": f"Unknown API route: {api_path}"}, status_code=404)
 
     return HTMLResponse(get_inlined_spa_html())
+
+
+@app.get("/avatars/{filename}")
+def serve_avatar(filename: str):
+    safe_name = Path(filename).name
+    for folder in (WEB_DIST_DIR / "avatars", BASE_DIR / "web" / "public" / "avatars"):
+        p = folder / safe_name
+        if p.exists() and p.is_file():
+            return FileResponse(p, media_type="image/jpeg")
+    return JSONResponse({"error": "Avatar not found"}, status_code=404)
+
+
+@app.get("/api/arena/state")
+def api_arena_state():
+    return get_arena_state()
+
+
+@app.post("/api/arena/scan")
+def api_arena_scan():
+    return run_autonomous_scan()
+
+
+@app.post("/api/arena/summit/run")
+def api_arena_summit():
+    return run_sunday_summit()
+
+
+@app.post("/api/arena/cockpit/action")
+def api_arena_cockpit_action(payload: Dict[str, Any]):
+    return cockpit_action(str(payload.get("action", "")))
+
+
+@app.post("/api/arena/mirror/{agent_id}")
+def api_arena_mirror(agent_id: str, payload: Optional[Dict[str, Any]] = None):
+    mult = payload.get("multiplier") if payload else None
+    return toggle_mirror(agent_id, mult)
+
+
+@app.post("/api/arena/discord/test")
+def api_arena_discord_test(payload: Dict[str, Any]):
+    return send_discord_webhook(
+        str(payload.get("channel", "live_trades_env")),
+        str(payload.get("title", "TOPTIERclub Arena Snapshot")),
+        str(payload.get("description", "Live Multi-AI Quant Arena update")),
+    )
 
 
 @app.api_route("/{full_path:path}", methods=["GET", "POST", "PATCH", "DELETE"])
