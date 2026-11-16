@@ -13,13 +13,14 @@ import {
 import { AssetIcon } from './components/AssetIcon';
 import { AuthModal } from './components/AuthModal';
 import { MarketOverviewItem, MarketsWatchlistView } from './components/MarketsWatchlistView';
+import { PortfolioView } from './components/PortfolioView';
 import { ProfileView } from './components/ProfileView';
 import { TeamArenaView } from './components/TeamArenaView';
 import { TradingTerminal } from './components/TradingTerminal';
 import { WeeklyRankedView } from './components/WeeklyRankedView';
 import { TraderAccount, TraderPosition, UserProfile } from './types/toptier';
 
-type NavTab = 'trade' | 'ranked' | 'arenas' | 'markets' | 'profile';
+type NavTab = 'trade' | 'portfolio' | 'ranked' | 'arenas' | 'markets' | 'profile';
 
 const FALLBACK_MARKETS: MarketOverviewItem[] = [
   { symbol: 'XAUUSD', name: 'Gold Spot', category: 'Commodities', leverage: '25x', price: 3874.5, change_24h_pct: -0.76, funding_rate: -0.0003, open_interest: '$12.36M', volume_24h: '$317.18M' },
@@ -48,6 +49,10 @@ export function App() {
   const [streamerMode, setStreamerMode] = useState(false);
   const [showTickerBar, setShowTickerBar] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+  const [settingsTab, setSettingsTab] = useState<'general' | 'trading' | 'chart'>('general');
+  const [chartEnginePref, setChartEnginePref] = useState<'tv' | 'lightweight'>('tv');
+  const [confirmOrders, setConfirmOrders] = useState(false);
+  const [showQuickOrder, setShowQuickOrder] = useState(true);
   const [showMobileDrawer, setShowMobileDrawer] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -132,6 +137,7 @@ export function App() {
 
   const navItems: { id: NavTab; label: string }[] = [
     { id: 'trade', label: 'Trade' },
+    { id: 'portfolio', label: 'Portfolio' },
     { id: 'ranked', label: 'Weekly Ranked' },
     { id: 'arenas', label: '1v1–5v5 Arenas' },
     { id: 'markets', label: 'Markets' },
@@ -152,12 +158,9 @@ export function App() {
 
           <button
             onClick={() => setActiveTab('trade')}
-            className="flex items-center gap-2 font-extrabold text-[1rem] tracking-tight cursor-pointer shrink-0"
+            className="font-extrabold text-[1.0625rem] tracking-tight cursor-pointer shrink-0 hover:opacity-80 transition-opacity"
           >
-            <span className="w-7 h-7 rounded-lg bg-[var(--text-primary)] text-[var(--bg-card)] flex items-center justify-center text-[0.75rem] font-black">
-              TT
-            </span>
-            <span>TOPTIERclub</span>
+            TOPTIERclub
           </button>
 
           <nav className="hidden md:flex items-center gap-1 ml-4">
@@ -306,6 +309,7 @@ export function App() {
             markets={markets}
             theme={theme}
             streamerMode={streamerMode}
+            chartEnginePref={chartEnginePref}
             user={user}
             token={token}
             accounts={accounts}
@@ -396,56 +400,141 @@ export function App() {
         </footer>
       )}
 
-      {/* Global Settings Modal */}
+      {/* Global Settings Modal (Vest-style 3-tab: General | Trading | Chart) */}
       {showSettings && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => setShowSettings(false)}>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowSettings(false)}>
           <div className="tt-card w-full max-w-md p-5 space-y-4 rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
-              <h3 className="text-[1rem] font-bold">TOPTIERclub Settings</h3>
-              <button onClick={() => setShowSettings(false)} className="cursor-pointer">
+              <h3 className="text-[1rem] font-bold">Settings</h3>
+              <button onClick={() => setShowSettings(false)} className="cursor-pointer p-1 rounded-lg hover:bg-[var(--bg-subtle)]">
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="space-y-3 text-[0.8125rem]">
-              <div className="flex items-center justify-between">
-                <span>Theme</span>
-                <div className="flex gap-1 p-1 rounded-full bg-[var(--bg-subtle)]">
-                  {(['light', 'dark'] as const).map((t) => (
+
+            <div className="flex gap-1 p-1 rounded-xl bg-[var(--bg-subtle)] text-[0.75rem] font-semibold">
+              {(['general', 'trading', 'chart'] as const).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setSettingsTab(t)}
+                  className={`flex-1 py-1.5 rounded-lg capitalize cursor-pointer transition-colors ${
+                    settingsTab === t
+                      ? 'bg-[var(--bg-card)] text-[var(--text-primary)] shadow-sm'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+
+            {settingsTab === 'general' && (
+              <div className="space-y-3.5 text-[0.8125rem]">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold">Theme</div>
+                    <div className="text-[0.6875rem] text-[var(--text-muted)]">Light or Pure Black (#000000)</div>
+                  </div>
+                  <div className="flex gap-1 p-1 rounded-full bg-[var(--bg-subtle)]">
+                    {(['light', 'dark'] as const).map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setTheme(t)}
+                        className={`px-3 py-1 rounded-full text-[0.75rem] font-semibold capitalize cursor-pointer ${
+                          theme === t ? 'bg-[var(--text-primary)] text-[var(--bg-card)]' : ''
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <label className="flex items-center justify-between cursor-pointer">
+                  <div>
+                    <div className="font-semibold">Streamer Mode</div>
+                    <div className="text-[0.6875rem] text-[var(--text-muted)]">Hide account balances & PnL</div>
+                  </div>
+                  <input type="checkbox" checked={streamerMode} onChange={(e) => setStreamerMode(e.target.checked)} className="accent-emerald-500 w-4 h-4" />
+                </label>
+                <label className="flex items-center justify-between cursor-pointer">
+                  <div>
+                    <div className="font-semibold">Bottom Live Ticker</div>
+                    <div className="text-[0.6875rem] text-[var(--text-muted)]">Show real-time market ticker bar</div>
+                  </div>
+                  <input type="checkbox" checked={showTickerBar} onChange={(e) => setShowTickerBar(e.target.checked)} className="accent-emerald-500 w-4 h-4" />
+                </label>
+                {user && (
+                  <div className="pt-3 border-t border-[var(--border-subtle)] flex justify-between items-center">
+                    <span className="text-[var(--text-secondary)]">Signed in as @{user.username}</span>
                     <button
-                      key={t}
-                      onClick={() => setTheme(t)}
-                      className={`px-3 py-1 rounded-full text-[0.75rem] font-semibold capitalize cursor-pointer ${
-                        theme === t ? 'bg-[var(--text-primary)] text-[var(--bg-card)]' : ''
-                      }`}
+                      onClick={() => {
+                        handleLogout();
+                        setShowSettings(false);
+                      }}
+                      className="text-rose-500 font-semibold cursor-pointer"
                     >
-                      {t}
+                      Log Out
                     </button>
-                  ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {settingsTab === 'trading' && (
+              <div className="space-y-3.5 text-[0.8125rem]">
+                <label className="flex items-center justify-between cursor-pointer">
+                  <div>
+                    <div className="font-semibold">Order Confirmation Modal</div>
+                    <div className="text-[0.6875rem] text-[var(--text-muted)]">Prompt before submitting market/limit orders</div>
+                  </div>
+                  <input type="checkbox" checked={confirmOrders} onChange={(e) => setConfirmOrders(e.target.checked)} className="accent-emerald-500 w-4 h-4" />
+                </label>
+                <label className="flex items-center justify-between cursor-pointer">
+                  <div>
+                    <div className="font-semibold">Quick-Order Buttons</div>
+                    <div className="text-[0.6875rem] text-[var(--text-muted)]">Show 25% / 50% / 75% / 100% size presets</div>
+                  </div>
+                  <input type="checkbox" checked={showQuickOrder} onChange={(e) => setShowQuickOrder(e.target.checked)} className="accent-emerald-500 w-4 h-4" />
+                </label>
+                <div className="p-3 rounded-xl bg-[var(--bg-subtle)] text-[0.75rem] text-[var(--text-secondary)]">
+                  Weekly Ranked & 1v1–5v5 Arenas enforce a <strong className="text-[var(--text-primary)]">$10,000</strong> starting balance and transparent 0.02% taker fee.
                 </div>
               </div>
-              <label className="flex items-center justify-between cursor-pointer">
-                <span>Streamer Mode (Hide Balances)</span>
-                <input type="checkbox" checked={streamerMode} onChange={(e) => setStreamerMode(e.target.checked)} className="accent-emerald-500" />
-              </label>
-              <label className="flex items-center justify-between cursor-pointer">
-                <span>Show Bottom Live Ticker</span>
-                <input type="checkbox" checked={showTickerBar} onChange={(e) => setShowTickerBar(e.target.checked)} className="accent-emerald-500" />
-              </label>
-              {user && (
-                <div className="pt-2 border-t border-[var(--border-subtle)] flex justify-between items-center">
-                  <span className="text-[var(--text-secondary)]">Signed in as @{user.username}</span>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setShowSettings(false);
-                    }}
-                    className="text-rose-500 font-semibold cursor-pointer"
-                  >
-                    Log Out
-                  </button>
+            )}
+
+            {settingsTab === 'chart' && (
+              <div className="space-y-3.5 text-[0.8125rem]">
+                <div>
+                  <div className="font-semibold mb-1.5">Default Chart Engine</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setChartEnginePref('tv')}
+                      className={`p-3 rounded-xl border text-left cursor-pointer transition-colors ${
+                        chartEnginePref === 'tv'
+                          ? 'border-[var(--text-primary)] bg-[var(--bg-subtle)]'
+                          : 'border-[var(--border-subtle)] hover:bg-[var(--bg-subtle)]'
+                      }`}
+                    >
+                      <div className="font-bold text-[0.8125rem]">TradingView Full</div>
+                      <div className="text-[0.6875rem] text-[var(--text-muted)]">Drawing tools, indicators & live feed</div>
+                    </button>
+                    <button
+                      onClick={() => setChartEnginePref('lightweight')}
+                      className={`p-3 rounded-xl border text-left cursor-pointer transition-colors ${
+                        chartEnginePref === 'lightweight'
+                          ? 'border-[var(--text-primary)] bg-[var(--bg-subtle)]'
+                          : 'border-[var(--border-subtle)] hover:bg-[var(--bg-subtle)]'
+                      }`}
+                    >
+                      <div className="font-bold text-[0.8125rem]">Orderflow / Replay</div>
+                      <div className="text-[0.6875rem] text-[var(--text-muted)]">Bybit WS, 10m 30x Replay & Team Sync</div>
+                    </button>
+                  </div>
                 </div>
-              )}
-            </div>
+                <div className="p-3 rounded-xl bg-[var(--bg-subtle)] text-[0.75rem] text-[var(--text-secondary)]">
+                  Data feeds: <strong className="text-[var(--text-primary)]">Bybit v5 Public Linear WS</strong> (Crypto & PAXG Gold Perps) + <strong className="text-[var(--text-primary)]">TradingView</strong>.
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

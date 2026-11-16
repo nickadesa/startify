@@ -170,8 +170,8 @@ export const VestChart: React.FC<VestChartProps> = ({
       width: el.clientWidth,
       height: el.clientHeight,
       layout: {
-        background: { type: ColorType.Solid, color: isDark ? '#13161E' : '#FFFFFF' },
-        textColor: isDark ? '#9CA3AF' : '#6B7280',
+        background: { type: ColorType.Solid, color: isDark ? '#0A0A0A' : '#FFFFFF' },
+        textColor: isDark ? '#8A8A8A' : '#6B7280',
         fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
         fontSize: 11,
       },
@@ -187,15 +187,15 @@ export const VestChart: React.FC<VestChartProps> = ({
       },
       crosshair: {
         mode: CrosshairMode.Normal,
-        vertLine: { labelBackgroundColor: isDark ? '#1F242D' : '#111827' },
-        horzLine: { labelBackgroundColor: isDark ? '#1F242D' : '#111827' },
+        vertLine: { labelBackgroundColor: isDark ? '#1F1F1F' : '#111827' },
+        horzLine: { labelBackgroundColor: isDark ? '#1F1F1F' : '#111827' },
       },
       rightPriceScale: {
-        borderColor: isDark ? '#1F242D' : '#E5E7EB',
+        borderColor: isDark ? '#1F1F1F' : '#E5E7EB',
         scaleMargins: { top: 0.08, bottom: showRsi ? 0.28 : 0.16 },
       },
       timeScale: {
-        borderColor: isDark ? '#1F242D' : '#E5E7EB',
+        borderColor: isDark ? '#1F1F1F' : '#E5E7EB',
         timeVisible: true,
         secondsVisible: false,
       },

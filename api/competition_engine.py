@@ -631,3 +631,115 @@ def vote_team_proposal(conn: sqlite3.Connection, user: Dict[str, Any], proposal_
     conn.execute("UPDATE room_proposals SET status = ?, voters_json = ? WHERE id = ?", (new_status, json.dumps(voters), proposal_id))
     conn.commit()
     return {"proposal": query_one(conn, "SELECT * FROM room_proposals WHERE id = ?", (proposal_id,)), "executed": bool(executed_pos), "position": executed_pos}
+
+
+def oauth_login_or_register(conn: sqlite3.Connection, provider: str, email: str, display_name: str) -> Dict[str, Any]:
+    mail = email.strip().lower()
+    row = query_one(conn, "SELECT * FROM users WHERE email = ?", (mail,))
+    if not row:
+        base_uname = "".join(ch for ch in display_name.lower() if ch.isalnum() or ch == "_")[:14] or f"{provider}_trader"
+        uname = base_uname
+        suffix = 1
+        while query_one(conn, "SELECT id FROM users WHERE username = ?", (uname,)):
+            uname = f"{base_uname}_{suffix}"
+            suffix += 1
+        return register_user(conn, uname, mail, secrets.token_hex(12))
+    token = sign_token(row["id"], row["username"])
+    user = {k: v for k, v in row.items() if k not in ("password_hash", "salt")}
+    return {"token": token, "user": user}
+
+
+def get_historical_replay_session(symbol: str = "XAUUSD", seed_date: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Returns a 380-bar historical slice (80 warmup + 300 replay bars) from real historical CSVs
+    for 10-minute Time-Warp Competitions (30x speed = 1 bar every 2 seconds = 300 bars in 10 mins).
+    """
+    import csv
+    import random
+    from db.database import BASE_DIR
+
+    sym = symbol.upper()
+    csv_path = BASE_DIR / "XAUUSD15.csv"
+    bars: List[Dict[str, Any]] = []
+
+    if csv_path.exists():
+        try:
+            with csv_path.open("r", encoding="utf-8", errors="ignore") as f:
+                reader = csv.reader(f)
+                rows = list(reader)
+            # Filter numeric OHLC rows
+            parsed: List[Dict[str, Any]] = []
+            for r in rows:
+                if len(r) < 6:
+                    continue
+                try:
+                    # Format: YYYY.MM.DD,HH:MM,O,H,L,C,V or ISO,O,H,L,C,V
+                    dt_str = f"{r[0]} {r[1]}" if "." in r[0] else r[0]
+                    o, h, l, c = float(r[2] if "." in r[0] else r[1]), float(r[3] if "." in r[0] else r[2]), float(r[4] if "." in r[0] else r[3]), float(r[5] if "." in r[0] else r[4])
+                    v = float(r[6]) if len(r) > 6 and r[6].replace(".", "", 1).isdigit() else 120.0
+                    ts = dt_str.replace(".", "-")
+                    if " " in ts and "T" not in ts:
+                        ts = ts.replace(" ", "T") + ":00+00:00"
+                    parsed.append({"time": ts, "open": o, "high": h, "low": l, "close": c, "volume": v})
+                except Exception:
+                    continue
+            if len(parsed) > 420:
+                max_start = len(parsed) - 385
+                idx = random.randint(0, max_start)
+                bars = parsed[idx : idx + 380]
+        except Exception:
+            bars = []
+
+    if len(bars) < 380:
+        # Deterministic high-fidelity fallback if CSV missing
+        base_px = {"XAUUSD": 2740.0, "NAS100": 20450.0, "BTCUSDT": 78500.0, "SPX500": 5850.0}.get(sym, 2740.0)
+        rng = random.Random(seed_date or secrets.token_hex(4))
+        t0 = datetime(2024, rng.randint(1, 12), rng.randint(1, 26), 8, 0, tzinfo=timezone.utc)
+        px = base_px
+        bars = []
+        for i in range(380):
+            drift = rng.uniform(-0.0022, 0.0024) * px
+            o = px
+            c = round(o + drift, 2)
+            wick_up = abs(rng.uniform(0.0004, 0.0016) * px)
+            wick_dn = abs(rng.uniform(0.0004, 0.0016) * px)
+            h = round(max(o, c) + wick_up, 2)
+            l = round(min(o, c) - wick_dn, 2)
+            bars.append({
+                "time": (t0 + timedelta(minutes=15 * i)).isoformat(),
+                "open": round(o, 2),
+                "high": h,
+                "low": l,
+                "close": c,
+                "volume": round(rng.uniform(80, 420), 1),
+            })
+            px = c
+
+    # Rescale if non-XAUUSD symbol selected from XAUUSD CSV
+    if sym != "XAUUSD" and sym != "PAXGUSDT" and bars:
+        target_base = {"NAS100": 21200.0, "SPX500": 5980.0, "BTCUSDT": 89500.0, "ETHUSDT": 3080.0, "SOLUSDT": 205.0, "XAGUSD": 31.2, "EURUSD": 1.0620, "DXY": 105.8}.get(sym, 21200.0)
+        scale = target_base / max(1e-6, bars[0]["open"])
+        dec = 4 if sym == "EURUSD" else 2
+        bars = [
+            {
+                "time": b["time"],
+                "open": round(b["open"] * scale, dec),
+                "high": round(b["high"] * scale, dec),
+                "low": round(b["low"] * scale, dec),
+                "close": round(b["close"] * scale, dec),
+                "volume": b["volume"],
+            }
+            for b in bars
+        ]
+
+    session_date = bars[80]["time"][:10] if len(bars) > 80 else "2024-05-15"
+    return {
+        "symbol": sym,
+        "replay_date": session_date,
+        "duration_seconds": 600,
+        "speed_label": "30x (1 bar / 2s)",
+        "interval_ms": 2000,
+        "warmup_candles": bars[:80],
+        "stream_candles": bars[80:380],
+    }
+

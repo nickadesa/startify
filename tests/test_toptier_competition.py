@@ -6,10 +6,12 @@ from api.competition_engine import (
     close_position,
     create_room,
     ensure_seeded,
+    get_historical_replay_session,
     get_profile,
     get_weekly_leaderboard,
     join_room,
     login_user,
+    oauth_login_or_register,
     place_order,
     propose_team_trade,
     register_user,
@@ -78,6 +80,22 @@ class TopTierCompetitionTests(unittest.TestCase):
         vote_res = vote_team_proposal(self.conn, u2, prop_id, "approve")
         self.assertTrue(vote_res["executed"])
         self.assertEqual(vote_res["proposal"]["status"], "approved")
+
+    def test_oauth_login_or_register(self) -> None:
+        g = oauth_login_or_register(self.conn, "google", "gtest@gmail.com", "Google Trader")
+        self.assertIn("token", g)
+        self.assertEqual(g["user"]["email"], "gtest@gmail.com")
+
+        d = oauth_login_or_register(self.conn, "discord", "dtest@discord.gg", "Discord Trader")
+        self.assertIn("token", d)
+        self.assertEqual(d["user"]["email"], "dtest@discord.gg")
+
+    def test_historical_replay_session(self) -> None:
+        session = get_historical_replay_session("XAUUSD")
+        self.assertEqual(session["duration_seconds"], 600)
+        self.assertEqual(session["interval_ms"], 2000)
+        self.assertEqual(len(session["warmup_candles"]), 80)
+        self.assertEqual(len(session["stream_candles"]), 300)
 
 
 if __name__ == "__main__":

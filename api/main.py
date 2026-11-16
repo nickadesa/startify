@@ -14,12 +14,14 @@ from api.competition_engine import (
     close_position,
     create_room,
     ensure_seeded,
+    get_historical_replay_session,
     get_profile,
     get_room_detail,
     get_user_by_token,
     get_weekly_leaderboard,
     join_room,
     login_user,
+    oauth_login_or_register,
     place_order,
     propose_team_trade,
     register_user,
@@ -201,12 +203,29 @@ def get_klines(interval: str = "M15", limit: int = 120, symbol: str = "XAUUSD") 
     return {"symbol": symbol.upper(), "interval": interval.upper(), "candles": candles}
 
 
+@app.get("/api/replay/session")
+def api_replay_session(symbol: str = "XAUUSD", seed: Optional[str] = None) -> Dict[str, Any]:
+    return get_historical_replay_session(symbol=symbol, seed_date=seed)
+
+
 @app.get("/api/orderflow/live")
 def get_orderflow_live(symbol: str = "XAUUSD") -> Dict[str, Any]:
     return _ORDERFLOW.get_live_orderflow()
 
 
 # --- Auth & Social Profile ---
+@app.post("/api/auth/oauth/demo")
+def api_oauth_demo(body: Dict[str, Any]) -> Dict[str, Any]:
+    conn = ensure_seeded()
+    provider = str(body.get("provider", "google")).lower()
+    return oauth_login_or_register(
+        conn,
+        provider,
+        str(body.get("email", f"{provider}_user@toptier.club")),
+        str(body.get("display_name", f"{provider}_trader")),
+    )
+
+
 @app.post("/api/auth/register")
 def api_register(req: RegisterReq) -> Dict[str, Any]:
     conn = ensure_seeded()
@@ -523,12 +542,23 @@ async def serve_spa_or_vercel_rewrite(
             return get_markets_overview()
         if api_path == "klines":
             return get_klines(qp.get("interval", "M15"), int(qp.get("limit", "120")), qp.get("symbol", "XAUUSD"))
+        if api_path == "replay/session":
+            return get_historical_replay_session(qp.get("symbol", "XAUUSD"), qp.get("seed"))
         if api_path == "orderflow/live":
             return get_orderflow_live(qp.get("symbol", "XAUUSD"))
         if api_path == "auth/register" and request.method == "POST":
             return api_register(RegisterReq(**body))
         if api_path == "auth/login" and request.method == "POST":
             return api_login(LoginReq(**body))
+        if api_path == "auth/oauth/demo" and request.method == "POST":
+            conn = ensure_seeded()
+            provider = str(body.get("provider", "google")).lower()
+            return oauth_login_or_register(
+                conn,
+                provider,
+                body.get("email", f"{provider}_user@toptier.club"),
+                body.get("display_name", f"{provider}_trader"),
+            )
         if api_path == "auth/me":
             return api_me(authorization)
         if api_path.startswith("profile/"):
