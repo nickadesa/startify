@@ -190,6 +190,57 @@ def run_walk_forward_backtest() -> Dict[str, Any]:
     return HistoricalBacktestTrainer(BASE_DIR).run_all_agents_backtest(cfg["agents"])
 
 
+@app.get("/api/orderflow/live")
+def get_live_orderflow() -> Dict[str, Any]:
+    from data.orderflow_provider import OrderflowProvider
+
+    snap = get_live_market_snapshot("2026-11-15T15:00:00Z")
+    spot_px = float(snap["snapshot"].get("price", 4028.90))
+    return OrderflowProvider().get_live_orderflow(spot_xauusd_price=spot_px)
+
+
+@app.get("/api/desk/evaluate")
+@app.post("/api/desk/evaluate")
+def evaluate_team_desk(send_discord: bool = Query(default=False)) -> Dict[str, Any]:
+    from agents.desk_roles import SpecializedDeskCoordinator
+    from data.orderflow_provider import OrderflowProvider
+    from notifications.discord_webhook import DiscordNotifier
+
+    snap = get_live_market_snapshot("2026-11-15T15:00:00Z")["snapshot"]
+    orderflow = OrderflowProvider().get_live_orderflow(spot_xauusd_price=float(snap.get("price", 4028.90)))
+    desk_res = SpecializedDeskCoordinator().evaluate_desk(
+        snapshot=snap,
+        orderflow=orderflow,
+        portfolio_equity=1000.0,
+        news_blackout_active=False,
+    )
+    if send_discord and desk_res.get("approved"):
+        desk_res["discord_delivery"] = DiscordNotifier().send_entry_signal(desk_res)
+    else:
+        desk_res["discord_delivery"] = {"sent": False, "reason": "send_discord=false or not approved"}
+    return desk_res
+
+
+@app.post("/api/discord/test")
+@app.get("/api/discord/test")
+def test_discord_webhook() -> Dict[str, Any]:
+    from notifications.discord_webhook import DiscordNotifier
+
+    notifier = DiscordNotifier()
+    res = notifier.send_embed(
+        title="STARTIFY XAUUSD DESK — CONNECTED",
+        description="8-AI Specialized Desk ($1,000 Portfolio) is now connected to Discord for real-time XAUUSD entry signals, Break-Even locks, and USD macro alerts.",
+        color=0x00ADFF,
+    )
+    return {"configured": notifier.is_configured(), "delivery": res}
+
+
+@app.get("/api/cron/scan")
+@app.post("/api/cron/scan")
+def vercel_cron_scan() -> Dict[str, Any]:
+    return evaluate_team_desk(send_discord=True)
+
+
 @app.get("/assets/{asset_path:path}")
 def serve_static_asset(asset_path: str):
     file_path = WEB_DIST_DIR / "assets" / asset_path
@@ -223,6 +274,15 @@ def serve_spa_or_rewritten_route(request: Request, full_path: str = ""):
             return JSONResponse(trigger_reseed())
         if api_subpath == "backtest":
             return JSONResponse(run_walk_forward_backtest())
+        if api_subpath == "orderflow/live":
+            return JSONResponse(get_live_orderflow())
+        if api_subpath == "desk/evaluate":
+            send_d = request.query_params.get("send_discord", "false").lower() == "true"
+            return JSONResponse(evaluate_team_desk(send_discord=send_d))
+        if api_subpath == "discord/test":
+            return JSONResponse(test_discord_webhook())
+        if api_subpath == "cron/scan":
+            return JSONResponse(vercel_cron_scan())
 
 
     # 2. Check if Vercel rewrote an /assets/* route into /api/main.py?__asset=...

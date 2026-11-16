@@ -4,61 +4,9 @@ export const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
   ({ className = '', ...props }, ref) => (
     <div
       ref={ref}
-      className={`rounded-2xl border border-white/[0.07] bg-[#0A0A0C] text-[#F5F5F7] ${className}`}
+      className={`rounded-none bg-[#0A0A0A] border border-white/[0.12] ${className}`}
       {...props}
     />
   )
 );
 Card.displayName = 'Card';
-
-export const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className = '', ...props }, ref) => (
-    <div
-      ref={ref}
-      className={`flex flex-col space-y-1 p-5 sm:p-6 ${className}`}
-      {...props}
-    />
-  )
-);
-CardHeader.displayName = 'CardHeader';
-
-export const CardTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
-  ({ className = '', ...props }, ref) => (
-    <h3
-      ref={ref}
-      className={`text-[15px] font-medium tracking-[-0.015em] leading-[1.25] text-[#F5F5F7] ${className}`}
-      {...props}
-    />
-  )
-);
-CardTitle.displayName = 'CardTitle';
-
-export const CardDescription = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className = '', ...props }, ref) => (
-  <p
-    ref={ref}
-    className={`text-[13px] tracking-[-0.005em] leading-[1.4] text-[#8E8E93] ${className}`}
-    {...props}
-  />
-));
-CardDescription.displayName = 'CardDescription';
-
-export const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className = '', ...props }, ref) => (
-    <div ref={ref} className={`p-5 sm:p-6 pt-0 ${className}`} {...props} />
-  )
-);
-CardContent.displayName = 'CardContent';
-
-export const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className = '', ...props }, ref) => (
-    <div
-      ref={ref}
-      className={`flex items-center p-5 sm:p-6 pt-0 ${className}`}
-      {...props}
-    />
-  )
-);
-CardFooter.displayName = 'CardFooter';

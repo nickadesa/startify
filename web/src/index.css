@@ -4,24 +4,22 @@
   :root {
     color-scheme: dark;
     --bg-canvas: #000000;
-    --bg-card: #09090B;
-    --bg-elevated: #121215;
-    --bg-selection: #1C1C1E;
-    --border-hairline: rgba(255, 255, 255, 0.08);
-    --text-primary: #F5F5F7;
+    --bg-surface: #0A0A0A;
+    --bg-elevated: #141414;
+    --border-hairline: #262626;
+    --text-primary: #FFFFFF;
     --text-secondary: #A1A1AA;
     --text-muted: #71717A;
     --accent-primary: #00adff;
     --semantic-green: #30D158;
     --semantic-red: #FF453A;
-    --semantic-amber: #FFD60A;
   }
 
   html,
   body {
     background-color: #000000;
-    color: #F5F5F7;
-    font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: #FFFFFF;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     font-optical-sizing: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -31,68 +29,44 @@
   }
 }
 
-/* Smooth Tabular Figures (No boxy monospace font) */
-.font-mono-tabular {
-  font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1, "cv05" 1;
-}
-
+.font-mono-tabular,
 .tabular-nums {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
 }
 
 .apple-display {
-  font-size: clamp(1.65rem, 2.5vw, 2.15rem);
-  line-height: 1.1;
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  line-height: 1.05;
   letter-spacing: -0.03em;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
 .apple-title {
-  font-size: 1.0625rem;
+  font-size: 1rem;
   line-height: 1.25;
-  letter-spacing: -0.018em;
+  letter-spacing: -0.015em;
   font-weight: 600;
 }
 
 .apple-glass {
-  background: rgba(9, 9, 11, 0.78);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 120ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .apple-glass {
-    background: #09090B !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: #000000;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1C1C1E;
-  border-radius: 9999px;
+  background: #262626;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2C2C2E;
+  background: #404040;
 }

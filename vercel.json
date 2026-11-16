@@ -1,5 +1,11 @@
 {
   "version": 2,
+  "crons": [
+    {
+      "path": "/api/cron/scan",
+      "schedule": "*/15 * * * *"
+    }
+  ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/main.py?__api=$1" },
     { "source": "/assets/(.*)", "destination": "/api/main.py?__asset=$1" },
