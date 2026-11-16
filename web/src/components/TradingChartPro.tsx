@@ -111,6 +111,15 @@ export const TradingChartPro: React.FC<TradingChartProProps> = ({
   const [activeDraft, setActiveDraft] = useState<DrawingItem | null>(null);
   const [sendingDiscord, setSendingDiscord] = useState(false);
   const [discordToast, setDiscordToast] = useState<string | null>(null);
+  const [resizeTick, setResizeTick] = useState(0);
+
+  useEffect(() => {
+    const el = canvasRef.current?.parentElement;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => setResizeTick((t) => t + 1));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const [settings, setSettings] = useState<ChartSettings>({
     bg: '#08080A',
@@ -624,6 +633,7 @@ export const TradingChartPro: React.FC<TradingChartProProps> = ({
     activeDraft,
     crosshair,
     isFullscreen,
+    resizeTick,
     getLayout,
   ]);
 

@@ -184,6 +184,32 @@ export const UsdCalendarView: React.FC<Props> = ({
       }
     }
 
+    for (const j of liveJournal) {
+      const dateStr = (j.timestamp || '').slice(0, 10);
+      if (!dateStr) continue;
+      const d = ensureDay(dateStr);
+      d.pnlUsd += j.pnl_usd || 0;
+      d.tradesCount += 1;
+      if ((j.pnl_usd || 0) >= 0) d.wins += 1;
+      else d.losses += 1;
+      d.trades.push({
+        trade_id: j.id,
+        agent_id: 'consensus',
+        model_name: `Desk (${(j.execution_mode || 'limit').toUpperCase()})`,
+        action: j.direction as 'long' | 'short',
+        entry: j.entry,
+        stop_loss: j.stop_loss,
+        exit_price: j.tp1 || j.entry,
+        lot: j.lot,
+        pnl_usd: j.pnl_usd || 0,
+        r_multiple: 0,
+        opened_at: j.timestamp,
+        closed_at: j.timestamp,
+        style_tag: j.status,
+      } as TradeRecord);
+      if (!d.tags.includes(j.status)) d.tags.push(j.status);
+    }
+
     for (const ev of events) {
       const dateStr = (ev.date || ev.time || '').slice(0, 10);
       if (!dateStr) continue;
@@ -196,7 +222,7 @@ export const UsdCalendarView: React.FC<Props> = ({
     });
 
     return map;
-  }, [filteredTrades, events]);
+  }, [filteredTrades, liveJournal, events]);
 
   // Build calendar weeks for currentYear / currentMonth
   const calendarWeeks = useMemo(() => {
@@ -1039,7 +1065,7 @@ export const UsdCalendarView: React.FC<Props> = ({
               <TableHeader>
                 <TableRow>
                   <TableHead>ID</TableHead>
-                  <TableHead>Side</TableHead>
+                  <TableHead>Side / Mode</TableHead>
                   <TableHead className="text-right">Entry</TableHead>
                   <TableHead className="text-right">SL</TableHead>
                   <TableHead className="text-right">Status</TableHead>
@@ -1048,13 +1074,18 @@ export const UsdCalendarView: React.FC<Props> = ({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {liveJournal.slice(0, 12).map((j) => (
+                {liveJournal.slice(0, 12).map((j: any) => (
                   <TableRow key={j.id}>
                     <TableCell className="font-mono-tabular text-white">{j.id}</TableCell>
-                    <TableCell>
-                      <Badge variant={j.direction === 'long' ? 'positive' : 'negative'}>
-                        {j.direction.toUpperCase()}
-                      </Badge>
+                    <TableCell className="whitespace-nowrap">
+                      <div className="flex items-center gap-1.5">
+                        <Badge variant={j.direction === 'long' ? 'positive' : 'negative'}>
+                          {j.direction.toUpperCase()}
+                        </Badge>
+                        <span className="text-[10px] uppercase text-[#A1A1AA] border border-white/[0.12] px-1.5 py-0.5">
+                          {(j.execution_mode || 'limit').replace('_', ' ')}
+                        </span>
+                      </div>
                     </TableCell>
                     <TableCell className="text-right font-mono-tabular">${j.entry.toFixed(2)}</TableCell>
                     <TableCell className="text-right font-mono-tabular">${j.stop_loss.toFixed(2)}</TableCell>

@@ -12,6 +12,7 @@ export interface ShareTradeData {
   lot: number;
   pnl_usd: number;
   status: string;
+  execution_mode?: string;
   setup_label?: string;
 }
 
@@ -197,7 +198,16 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({ mode, trade, cal
   useEffect(() => {
     const canvas = previewCanvasRef.current;
     if (!canvas) return;
-    renderCardToCanvas(canvas, targetW, targetH, mode, trade, calendar);
+    // Render preview at <= 1280px so mobile GPUs never hit canvas size limits; download uses full 1080p/2K/4K
+    const previewScale = Math.min(1, 1280 / Math.max(targetW, targetH));
+    renderCardToCanvas(
+      canvas,
+      Math.round(targetW * previewScale),
+      Math.round(targetH * previewScale),
+      mode,
+      trade,
+      calendar
+    );
   }, [targetW, targetH, mode, trade, calendar]);
 
   const handleDownload = () => {
@@ -210,7 +220,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({ mode, trade, cal
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center p-4">
       <div className="bg-[#0A0A0A] border border-white/[0.16] w-full max-w-3xl p-5 space-y-4">
         <div className="flex items-center justify-between border-b border-white/[0.1] pb-3">
           <div>

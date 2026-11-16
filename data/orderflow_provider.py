@@ -18,6 +18,37 @@ class OrderflowProvider:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             return json.loads(resp.read().decode("utf-8"))
 
+    def get_live_klines(self, interval: str = "15m", limit: int = 80) -> List[Dict[str, Any]]:
+        iv_map = {"M5": "5m", "M15": "15m", "1H": "1h", "H1": "1h", "4H": "4h", "H4": "4h"}
+        iv = iv_map.get(interval.upper(), interval.lower())
+        try:
+            raw = self._get_json(
+                f"https://fapi.binance.com/fapi/v1/klines?symbol=PAXGUSDT&interval={iv}&limit={limit}"
+            )
+            out: List[Dict[str, Any]] = []
+            for row in raw:
+                o = float(row[1])
+                h = float(row[2])
+                l = float(row[3])
+                c = float(row[4])
+                vol = float(row[5])
+                taker_buy = float(row[9]) if len(row) > 9 else vol * 0.5
+                delta = taker_buy - (vol - taker_buy)
+                out.append({
+                    "time": datetime.fromtimestamp(int(row[0]) / 1000, tz=timezone.utc).isoformat(),
+                    "open": round(o, 2),
+                    "high": round(h, 2),
+                    "low": round(l, 2),
+                    "close": round(c, 2),
+                    "volume": round(vol, 2),
+                    "delta": round(delta, 2),
+                })
+            if out:
+                return out
+        except Exception:
+            pass
+        return []
+
     def get_live_orderflow(self, spot_xauusd_price: float = 4028.90) -> Dict[str, Any]:
         now_iso = datetime.now(timezone.utc).isoformat()
         bids: List[Dict[str, float]] = []

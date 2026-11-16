@@ -139,20 +139,21 @@ def render_setup_chart_png(
     ote: Optional[Dict[str, Any]] = None,
     width: int = 880,
     height: int = 480,
+    timeframe: str = "H1",
 ) -> bytes:
     """
     Renders a crisp architectural Black & White XAUUSD candlestick chart with Fib OTE zone,
     Entry, Stop Loss, and TP1/TP2/TP3 levels into PNG bytes (pure Python, Vercel-safe).
     """
     c = _Canvas(width, height, bg=(10, 10, 10))
-    pad_l, pad_r, pad_t, pad_b = 24, 106, 48, 28
+    pad_l, pad_r, pad_t, pad_b = 20, 118, 48, 28
     plot_w = width - pad_l - pad_r
     plot_h = height - pad_t - pad_b
 
-    recent = candles[-45:] if candles else []
+    recent = candles[-26:] if candles else []
     if not recent:
         px = float(signal.get("entry", 4020.0))
-        recent = [{"open": px - 2, "high": px + 3, "low": px - 4, "close": px + 1} for _ in range(30)]
+        recent = [{"open": px - 2, "high": px + 3, "low": px - 4, "close": px + 1} for _ in range(24)]
 
     entry = float(signal.get("entry", recent[-1]["close"]))
     sl = float(signal.get("stop_loss", entry - 8.0))
@@ -190,10 +191,10 @@ def render_setup_chart_png(
         c.h_line(pad_l, width - pad_r, y_hi, (0, 120, 180), dashed=True)
         c.h_line(pad_l, width - pad_r, y_lo, (0, 120, 180), dashed=True)
 
-    # Candlesticks
+    # Candlesticks (leave 2 slots on right for TradingView-style breathing room)
     n = len(recent)
-    step = plot_w / max(n, 1)
-    body_w = max(int(step * 0.58), 3)
+    step = plot_w / max(n + 2, 1)
+    body_w = max(int(step * 0.60), 4)
     for i, bar in enumerate(recent):
         o = float(bar["open"])
         h = float(bar["high"])
@@ -227,7 +228,7 @@ def render_setup_chart_png(
     # Header bar
     direction = str(signal.get("direction", "long")).upper()
     score = int(signal.get("conviction_score", 0))
-    c.draw_text(pad_l, 14, f"XAUUSD {direction}  STARTIFY 8-AI DESK", (255, 255, 255), scale=2)
+    c.draw_text(pad_l, 14, f"XAUUSD {timeframe.upper()} {direction}  STARTIFY DESK", (255, 255, 255), scale=2)
     c.draw_text(pad_l, 32, f"CONVICTION {score}/100  LOT {signal.get('lot', 0.01)}  RISK {signal.get('risk_pct', 0.5)}%", (161, 161, 170), scale=1)
 
     # Border

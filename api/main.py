@@ -233,6 +233,8 @@ def _record_desk_trade(desk_res: Dict[str, Any]) -> Dict[str, Any]:
     conn = ensure_seeded()
     _ensure_journal_table(conn)
     ts = desk_res.get("timestamp") or datetime.now(timezone.utc).isoformat()
+    exec_mode = str(desk_res.get("execution_mode", "limit")).lower()
+    initial_status = "PENDING" if exec_mode == "limit" else "OPEN"
     trade_id = "DSK-" + hashlib.md5(f"{ts[:16]}-{desk_res.get('direction')}-{desk_res.get('entry')}".encode()).hexdigest()[:8].upper()
     conn.execute(
         """
@@ -244,7 +246,7 @@ def _record_desk_trade(desk_res: Dict[str, Any]) -> Dict[str, Any]:
             trade_id,
             ts,
             str(desk_res.get("direction", "long")),
-            str(desk_res.get("execution_mode", "limit")),
+            exec_mode,
             str(desk_res.get("setup_label", "Fib OTE + Orderflow")),
             float(desk_res.get("entry", 0.0)),
             float(desk_res.get("stop_loss", 0.0)),
@@ -255,13 +257,28 @@ def _record_desk_trade(desk_res: Dict[str, Any]) -> Dict[str, Any]:
             float(desk_res.get("risk_pct", 0.5)),
             float(desk_res.get("risk_usd", 5.0)),
             int(desk_res.get("conviction_score", 0)),
-            "OPEN",
+            initial_status,
             0.0,
             str(desk_res.get("rationale", "")),
         ),
     )
     conn.commit()
-    return {"id": trade_id}
+    return {"id": trade_id, "status": initial_status}
+
+
+@app.get("/api/klines")
+def get_live_klines_endpoint(interval: str = Query(default="M15"), limit: int = Query(default=80)) -> Dict[str, Any]:
+    from data.orderflow_provider import OrderflowProvider
+
+    candles = OrderflowProvider().get_live_klines(interval=interval, limit=limit)
+    source = "Binance PAXGUSDT Live"
+    if not candles:
+        tf_map = {"M5": "M5", "M15": "M15", "1H": "H1", "H1": "H1", "4H": "H4", "H4": "H4"}
+        tf_key = tf_map.get(interval.upper(), "H1")
+        mtf = PriceProvider("XAUUSD").get_multi_timeframe_bundle("2026-11-15T15:00:00Z")
+        candles = mtf.get(tf_key, [])[-limit:]
+        source = "Historical XAUUSD Fallback"
+    return {"interval": interval.upper(), "source": source, "candles": candles}
 
 
 @app.get("/api/desk/journal")
@@ -274,8 +291,12 @@ def get_or_update_desk_journal(live_price: Optional[float] = Query(default=None)
     cur_px = live_price
     if cur_px is None:
         try:
-            of = OrderflowProvider().get_live_orderflow()
-            cur_px = float(of.get("paxg_price", 0.0)) or None
+            kl = OrderflowProvider().get_live_klines("15m", 2)
+            if kl:
+                cur_px = float(kl[-1]["close"])
+            else:
+                of = OrderflowProvider().get_live_orderflow()
+                cur_px = float(of.get("paxg_price", 0.0)) or None
         except Exception:
             cur_px = None
 
@@ -283,13 +304,25 @@ def get_or_update_desk_journal(live_price: Optional[float] = Query(default=None)
     updated = False
     if cur_px:
         for row in rows:
-            if row["status"] in ("OPEN", "TP1_BE"):
-                side = row["direction"].lower()
-                entry = float(row["entry"])
-                sl = float(row["stop_loss"])
-                tp1 = float(row["tp1"])
-                tp2 = float(row["tp2"])
-                lot = float(row["lot"])
+            entry = float(row["entry"])
+            # Sanity guard: ignore mismatched price feeds >15% away
+            if abs(cur_px - entry) > entry * 0.15:
+                continue
+
+            side = row["direction"].lower()
+            sl = float(row["stop_loss"])
+            tp1 = float(row["tp1"])
+            tp2 = float(row["tp2"])
+            lot = float(row["lot"])
+
+            if row["status"] == "PENDING":
+                filled = (cur_px <= entry) if side == "long" else (cur_px >= entry)
+                if filled:
+                    row["status"] = "OPEN"
+                    row["pnl_usd"] = 0.0
+                    conn.execute("UPDATE desk_journal SET status = ?, pnl_usd = ? WHERE id = ?", ("OPEN", 0.0, row["id"]))
+                    updated = True
+            elif row["status"] in ("OPEN", "TP1_BE"):
                 new_status = row["status"]
                 new_pnl = float(row["pnl_usd"])
                 if side == "long":
@@ -340,10 +373,29 @@ def evaluate_team_desk(send_discord: bool = Query(default=False)) -> Dict[str, A
     from notifications.chart_renderer import render_setup_chart_png
     from notifications.discord_webhook import DiscordNotifier
 
+    of_provider = OrderflowProvider()
     live_res = get_live_market_snapshot("2026-11-15T15:00:00Z")
-    snap = live_res["snapshot"]
+    snap = dict(live_res["snapshot"])
     candles = live_res.get("recent_candles_h1", [])
-    orderflow = OrderflowProvider().get_live_orderflow(spot_xauusd_price=float(snap.get("price", 4028.90)))
+
+    live_klines = of_provider.get_live_klines("1h", 60)
+    if live_klines:
+        candles = live_klines
+        live_px = float(live_klines[-1]["close"])
+        hi = max(b["high"] for b in live_klines[-24:])
+        lo = min(b["low"] for b in live_klines[-24:])
+        rng = max(hi - lo, 6.0)
+        is_bull = live_px >= float(live_klines[-12]["close"])
+        snap["price"] = live_px
+        snap["trend_h4"] = "bullish" if is_bull else "bearish"
+        snap["ote"] = {
+            "zone_low": round(lo + rng * 0.21, 2) if is_bull else round(lo + rng * 0.62, 2),
+            "zone_high": round(lo + rng * 0.38, 2) if is_bull else round(lo + rng * 0.79, 2),
+            "sweet_spot": round(lo + rng * 0.295, 2) if is_bull else round(lo + rng * 0.705, 2),
+            "invalidation": round(lo, 2) if is_bull else round(hi, 2),
+        }
+
+    orderflow = of_provider.get_live_orderflow(spot_xauusd_price=float(snap.get("price", 4028.90)))
     desk_res = SpecializedDeskCoordinator().evaluate_desk(
         snapshot=snap,
         orderflow=orderflow,
@@ -355,7 +407,7 @@ def evaluate_team_desk(send_discord: bool = Query(default=False)) -> Dict[str, A
         desk_res["journal_id"] = rec["id"]
 
     if send_discord and desk_res.get("approved"):
-        chart_png = render_setup_chart_png(candles=candles, signal=desk_res, ote=snap.get("ote"))
+        chart_png = render_setup_chart_png(candles=candles, signal=desk_res, ote=snap.get("ote"), timeframe="H1")
         desk_res["discord_delivery"] = DiscordNotifier().send_entry_signal(desk_res, chart_png=chart_png)
     else:
         desk_res["discord_delivery"] = {"sent": False, "reason": "send_discord=false or not approved"}
@@ -439,6 +491,10 @@ async def serve_spa_or_rewritten_route(request: Request, full_path: str = ""):
             return JSONResponse(run_walk_forward_backtest())
         if api_subpath == "orderflow/live":
             return JSONResponse(get_live_orderflow())
+        if api_subpath == "klines":
+            iv = request.query_params.get("interval", "M15")
+            lim = int(request.query_params.get("limit", "80"))
+            return JSONResponse(get_live_klines_endpoint(interval=iv, limit=lim))
         if api_subpath == "desk/evaluate":
             send_d = request.query_params.get("send_discord", "false").lower() == "true"
             return JSONResponse(evaluate_team_desk(send_discord=send_d))

@@ -87,17 +87,20 @@ export const OrderflowTerminal: React.FC = () => {
   const [discordStatus, setDiscordStatus] = useState<string | null>(null);
   const cvdRef = useRef<number>(0);
 
-  const fetchBackendOrderflowAndDesk = async (sendDiscord = false) => {
+  const fetchBackendOrderflowAndDesk = async (sendDiscord = false, tf = timeframe) => {
     try {
-      const [ofRes, deskRes, snapRes] = await Promise.all([
+      const [ofRes, deskRes, snapRes, klinesRes] = await Promise.all([
         fetch('/api/orderflow/live').then((r) => (r.ok ? r.json() : null)),
         fetch(`/api/desk/evaluate?send_discord=${sendDiscord}`).then((r) =>
           r.ok ? r.json() : null
         ),
         fetch('/api/snapshot/live').then((r) => (r.ok ? r.json() : null)),
+        fetch(`/api/klines?interval=${tf}&limit=80`).then((r) => (r.ok ? r.json() : null)),
       ]);
       if (ofRes) setOfState(ofRes);
-      if (snapRes?.recent_candles_h1) {
+      if (klinesRes?.candles && klinesRes.candles.length > 0) {
+        setLiveCandles(klinesRes.candles);
+      } else if (snapRes?.recent_candles_h1) {
         setLiveCandles(snapRes.recent_candles_h1);
       }
       if (snapRes?.snapshot?.ote) {
@@ -117,6 +120,10 @@ export const OrderflowTerminal: React.FC = () => {
       // Offline fallback handled gracefully
     }
   };
+
+  useEffect(() => {
+    fetchBackendOrderflowAndDesk(false, timeframe);
+  }, [timeframe]);
 
   useEffect(() => {
     fetchBackendOrderflowAndDesk(false);
