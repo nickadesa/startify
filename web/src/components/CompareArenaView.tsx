@@ -746,7 +746,7 @@ export const CompareArenaView: React.FC<Props> = ({ data, onSelectAgentForCalend
                   </div>
                   <div className="text-right">
                     <div className="text-[#00adff] font-semibold">
-                      🏆 {wc.champion_agent_id.toUpperCase()}
+                      {wc.champion_agent_id.toUpperCase()}
                     </div>
                     <div className="text-emerald-400">
                       +${wc.net_pnl_usd.toFixed(2)} ({wc.win_rate}% WR)

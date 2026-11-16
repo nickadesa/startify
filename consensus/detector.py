@@ -23,22 +23,34 @@ class ConsensusDetector:
             if len(matching) < self.min_agreeing_agents:
                 continue
 
-            entries = [float(p["entry"]) for p in matching]
-            sls = [float(p["stop_loss"]) for p in matching]
-            tps = [
-                float(p["take_profits"][0]["price"])
-                for p in matching
-                if p.get("take_profits")
-            ]
-            if (max(entries) - min(entries)) <= self.max_entry_diff_usd:
-                avg_conf = sum(float(p.get("confidence", 0.75)) for p in matching) / len(matching)
+            # Find largest cluster of plans within max_entry_diff_usd
+            matching_sorted = sorted(matching, key=lambda x: float(x["entry"]))
+            best_cluster: List[Dict[str, Any]] = []
+            for i, base_p in enumerate(matching_sorted):
+                base_e = float(base_p["entry"])
+                cluster = [
+                    p for p in matching_sorted[i:]
+                    if (float(p["entry"]) - base_e) <= self.max_entry_diff_usd
+                ]
+                if len(cluster) > len(best_cluster):
+                    best_cluster = cluster
+
+            if len(best_cluster) >= self.min_agreeing_agents:
+                entries = [float(p["entry"]) for p in best_cluster]
+                sls = [float(p["stop_loss"]) for p in best_cluster]
+                tps = [
+                    float(p["take_profits"][0]["price"])
+                    for p in best_cluster
+                    if p.get("take_profits")
+                ]
+                avg_conf = sum(float(p.get("confidence", 0.75)) for p in best_cluster) / len(best_cluster)
                 events.append({
                     "event_id": f"cons-{uuid.uuid4().hex[:8]}",
                     "time": time_iso,
                     "direction": direction,
-                    "agreeing_count": len(matching),
+                    "agreeing_count": len(best_cluster),
                     "total_active_agents": total_active_agents,
-                    "agents": [p.get("agent_id", "") for p in matching],
+                    "agents": [p.get("agent_id", "") for p in best_cluster],
                     "entry_range": f"${min(entries):.2f} - ${max(entries):.2f}",
                     "sl_range": f"${min(sls):.2f} - ${max(sls):.2f}",
                     "tp_range": f"${min(tps):.2f} - ${max(tps):.2f}" if tps else "N/A",

@@ -202,6 +202,60 @@ export interface WeeklyChampion {
   summary_markdown: string;
 }
 
+export interface TrainedSkillItem {
+  id: string;
+  name: string;
+  source: string;
+  role: string;
+  file: string;
+}
+
+export interface AgentBacktestResult {
+  agent_id: string;
+  display_name: string;
+  model_name: string;
+  provider: string;
+  color: string;
+  backtest_bars_total: number;
+  trades_simulated: number;
+  win_rate_pct: number;
+  profit_factor: number;
+  sharpe_ratio: number;
+  max_drawdown_pct: number;
+  net_pnl_usd: number;
+  final_equity_usd: number;
+  in_sample_pnl_usd: number;
+  out_of_sample_pnl_usd: number;
+  breakeven_saves: number;
+  tp1_neg_027_hit_rate_pct: number;
+  tp2_neg_0618_hit_rate_pct: number;
+  execution_mix: {
+    market: number;
+    limit: number;
+    zone_confirm: number;
+  };
+  primary_skills: string[];
+  calibrated_note: string;
+}
+
+export interface BacktestSummary {
+  status: string;
+  as_of_time: string;
+  dataset: {
+    symbol: string;
+    timeframes: {
+      '4H': number;
+      '1H': number;
+      M15: number;
+      M5: number;
+    };
+    total_candles: number;
+    walk_forward_split: string;
+  };
+  skills_trained: TrainedSkillItem[];
+  agent_backtests: AgentBacktestResult[];
+}
+
 export interface ArenaPayload {
   brand: {
     name: string;
@@ -221,4 +275,6 @@ export interface ArenaPayload {
   news_events: UsdNewsEvent[];
   weekly_champions: WeeklyChampion[];
   health_logs: { log_id: number; time: string; component: string; severity: string; message: string }[];
+  backtest_summary?: BacktestSummary;
 }
+

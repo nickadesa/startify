@@ -325,12 +325,6 @@ class AITraderAgent:
         prof = agent_profiles.get(self.agent_id, agent_profiles["ai-1"])
 
         entry = round(sweet + (prof["entry_bias"] if direction == "long" else -prof["entry_bias"]), 2)
-        sl = round(invalidation - (0.8 if direction == "long" else -0.8), 2)
-        sl_dist = max(abs(entry - sl), 3.5)
-        if sl_dist > 16.0:
-            sl = round(entry - 7.5 if direction == "long" else entry + 7.5, 2)
-            sl_dist = 7.5
-
         if abs(price - entry) <= 2.0 or prof["pref_mode"] == "market":
             order_type = "market"
             entry = price
@@ -338,6 +332,13 @@ class AITraderAgent:
             order_type = "zone_confirm"
         else:
             order_type = "limit"
+
+        sl = round(invalidation - (0.8 if direction == "long" else -0.8), 2)
+        sl_dist = max(abs(entry - sl), 3.5)
+        if sl_dist > 8.5:
+            sl = round(entry - 7.5 if direction == "long" else entry + 7.5, 2)
+            sl_dist = 7.5
+
 
         # Ensure TP1 (-0.27) and TP2 (-0.618) satisfy >= 1.5R minimum Risk-Reward required by Hard Risk Validator
         min_tp1 = round(entry + (sl_dist * 1.65 if direction == "long" else -sl_dist * 1.65), 2)

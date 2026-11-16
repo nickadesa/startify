@@ -180,6 +180,16 @@ def trigger_reseed() -> Dict[str, Any]:
     return {"status": "ok", "accounts": len(payload["leaderboard"]), "trades": len(payload["trades"])}
 
 
+@app.get("/api/backtest")
+@app.post("/api/backtest")
+def run_walk_forward_backtest() -> Dict[str, Any]:
+    from api.seed_demo import load_config
+    from paper.backtester import HistoricalBacktestTrainer
+
+    cfg = load_config()
+    return HistoricalBacktestTrainer(BASE_DIR).run_all_agents_backtest(cfg["agents"])
+
+
 @app.get("/assets/{asset_path:path}")
 def serve_static_asset(asset_path: str):
     file_path = WEB_DIST_DIR / "assets" / asset_path
@@ -211,6 +221,9 @@ def serve_spa_or_rewritten_route(request: Request, full_path: str = ""):
             return JSONResponse(trigger_run_once())
         if api_subpath == "reseed":
             return JSONResponse(trigger_reseed())
+        if api_subpath == "backtest":
+            return JSONResponse(run_walk_forward_backtest())
+
 
     # 2. Check if Vercel rewrote an /assets/* route into /api/main.py?__asset=...
     asset_subpath = request.query_params.get("__asset", "").strip("/")

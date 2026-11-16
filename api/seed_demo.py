@@ -690,6 +690,12 @@ def build_full_arena_payload(conn) -> Dict[str, Any]:
     for rank_idx, item in enumerate(leaderboard, start=1):
         item["rank"] = rank_idx
 
+    from paper.backtester import HistoricalBacktestTrainer
+
+    cfg = load_config()
+    backtest_summary = HistoricalBacktestTrainer(BASE_DIR).run_all_agents_backtest(cfg["agents"])
+
+
     return {
         "brand": {
             "name": "Startify",
@@ -697,7 +703,7 @@ def build_full_arena_payload(conn) -> Dict[str, Any]:
             "initial_equity": 1000.0,
             "primary_color": "#00adff",
             "currency_news_filter": "USD ONLY",
-            "last_updated": "2026-11-15T21:00:00Z",
+            "last_updated": "2026-11-15T21:45:00Z",
         },
         "leaderboard": leaderboard,
         "account_runs": runs,
@@ -709,7 +715,9 @@ def build_full_arena_payload(conn) -> Dict[str, Any]:
         "news_events": news_events,
         "weekly_champions": weekly_champions,
         "health_logs": health_logs,
+        "backtest_summary": backtest_summary,
     }
+
 
 
 if __name__ == "__main__":

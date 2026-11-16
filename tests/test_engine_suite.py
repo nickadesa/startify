@@ -201,6 +201,19 @@ class TestStartifyEngineSuite(unittest.TestCase):
         sent = notifier.send_signal("ai-1", "Alpha-Gemini", plans[0], 1026.0)
         self.assertEqual(sent["channel"], "ai-1")
 
+    def test_walk_forward_backtest_and_11_skills(self):
+        from api.seed_demo import load_config
+        from db.database import BASE_DIR
+        from paper.backtester import HistoricalBacktestTrainer
+
+        cfg = load_config()
+        bt = HistoricalBacktestTrainer(BASE_DIR).run_all_agents_backtest(cfg["agents"])
+        self.assertEqual(bt["status"], "COMPLETED")
+        self.assertEqual(len(bt["skills_trained"]), 11)
+        self.assertEqual(len(bt["agent_backtests"]), 8)
+        self.assertGreaterEqual(bt["dataset"]["total_candles"], 2500)
+
 
 if __name__ == "__main__":
     unittest.main()
+

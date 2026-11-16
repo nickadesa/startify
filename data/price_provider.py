@@ -330,15 +330,20 @@ class PriceProvider:
         else:
             aligned_end = aligned_end.replace(minute=(aligned_end.minute // minutes) * minutes)
 
-        start_dt = aligned_end - timedelta(minutes=minutes * (count + 8))
-        scale = math.sqrt(minutes / 60.0)
+        # Collect valid market timestamps stepping backwards so weekend closures never reduce bar count
+        valid_dts: List[datetime] = []
+        cursor_dt = aligned_end - timedelta(minutes=minutes)
+        target_len = max(count, 30)
+        while len(valid_dts) < target_len:
+            if not (cursor_dt.weekday() == 5 or (cursor_dt.weekday() == 6 and cursor_dt.hour < 22)):
+                valid_dts.append(cursor_dt)
+            cursor_dt -= timedelta(minutes=minutes)
+        valid_dts.reverse()
 
+        scale = math.sqrt(minutes / 60.0)
         bars: List[Dict[str, Any]] = []
         price = 3988.00
-        for i in range(count + 6):
-            bar_dt = start_dt + timedelta(minutes=minutes * i)
-            if bar_dt.weekday() == 5 or (bar_dt.weekday() == 6 and bar_dt.hour < 22):
-                continue
+        for i, bar_dt in enumerate(valid_dts):
             wave_macro = math.sin(i / 9.5) * (18.5 * scale)
             wave_micro = math.cos(i / 3.2) * (6.8 * scale)
             drift = i * (0.22 * scale)
@@ -362,3 +367,4 @@ class PriceProvider:
             })
             price = close_p
         return bars
+

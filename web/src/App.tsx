@@ -1,740 +1,751 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Calendar,
-  Trophy,
-  Globe,
-  Cpu,
-  Search,
-  Menu,
-  X,
-  RefreshCw,
-  ShieldCheck,
-  Zap,
   Activity,
-  ChevronRight,
+  BarChart3,
+  BookOpen,
+  Calendar,
+  Cpu,
+  LayoutGrid,
   Layers,
-  DollarSign,
-  Sparkles,
-  Play,
+  Search,
+  SlidersHorizontal,
+  ArrowUpRight,
 } from 'lucide-react';
-import rawSnapshot from './data/arenaSnapshot.json';
-import { ArenaPayload } from './types/arena';
-import { CalendarAndStatsView } from './components/CalendarAndStatsView';
-import { CompareArenaView } from './components/CompareArenaView';
-import { UsdMacroAndConsensusView } from './components/UsdMacroAndConsensusView';
+import arenaSnapshotRaw from './data/arenaSnapshot.json';
+import { ArenaPayload, LeaderboardEntry } from './types/arena';
+import { EquityCurveChart } from './components/EquityCurveChart';
+import { OteCandlestickChart } from './components/OteCandlestickChart';
+import { AgentDetailModal } from './components/AgentDetailModal';
 import { PlaybooksAndSystemView } from './components/PlaybooksAndSystemView';
+import { BacktestAndSkillsView } from './components/BacktestAndSkillsView';
+import { Card } from './components/ui/card';
+import { Badge } from './components/ui/badge';
+import { Button } from './components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from './components/ui/table';
 
-type TabId = 'calendar' | 'arena' | 'macro' | 'playbooks';
+const initialArenaData = arenaSnapshotRaw as unknown as ArenaPayload;
 
-const initialSnapshot = rawSnapshot as unknown as ArenaPayload;
+type NavSection = 'overview' | 'terminal' | 'backtest' | 'models' | 'journal';
 
 export function App() {
-  const [data, setData] = useState<ArenaPayload>(initialSnapshot);
-  const [activeTab, setActiveTab] = useState<TabId>('calendar');
-  const [selectedAgentId, setSelectedAgentId] = useState<string>('all');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const [searchOpen, setSearchOpen] = useState<boolean>(false);
+  const [arenaData, setArenaData] = useState<ArenaPayload>(initialArenaData);
+  const [activeNav, setActiveNav] = useState<NavSection>('overview');
+  const [selectedChartAgentId, setSelectedChartAgentId] = useState<string | null>(null);
+  const [modalAgent, setModalAgent] = useState<LeaderboardEntry | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [isSyncing, setIsSyncing] = useState<boolean>(false);
-  const [apiConnected, setApiConnected] = useState<boolean>(false);
-  const [lastSyncNote, setLastSyncNote] = useState<string>('4H/1H/M15/M5 Warm-Up Active');
-
-  const syncFromBackend = async (runCycle = false) => {
-    setIsSyncing(true);
-    try {
-      const endpoint = runCycle ? '/api/run-once' : '/api/arena';
-      const method = runCycle ? 'POST' : 'GET';
-      const res = await fetch(endpoint, { method });
-      if (res.ok) {
-        if (runCycle) {
-          const refreshed = await fetch('/api/arena');
-          if (refreshed.ok) {
-            const payload = await refreshed.json();
-            if (payload && Array.isArray(payload.leaderboard)) {
-              setData(payload);
-            }
-            setApiConnected(true);
-            setLastSyncNote('Live Cycle Executed via FastAPI');
-          }
-        } else {
-          const payload = await res.json();
-          if (payload && Array.isArray(payload.leaderboard)) {
-            setData(payload);
-          }
-          setApiConnected(true);
-          setLastSyncNote('Connected to Live SQLite API');
-        }
-      }
-    } catch {
-      setApiConnected(false);
-      setLastSyncNote('4H/1H/M15/M5 Snapshot Ready');
-    } finally {
-      setTimeout(() => setIsSyncing(false), 350);
-    }
-  };
+  const [accountFilter, setAccountFilter] = useState<'all' | 'ai_only' | 'benchmarks'>('all');
 
   useEffect(() => {
-    syncFromBackend(false);
+    fetch('/api/arena')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((json) => {
+        if (json && json.leaderboard && json.leaderboard.length > 0) {
+          setArenaData(json);
+        }
+      })
+      .catch(() => {
+        // Offline / static snapshot fallback already loaded
+      });
   }, []);
 
+  // Keyboard shortcut Cmd+K / Ctrl+K focuses search input
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        setSearchOpen((prev) => !prev);
-      } else if (e.key === 'Escape') {
-        setSearchOpen(false);
+        const el = document.getElementById('startify-search-input');
+        el?.focus();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  const navItems: {
-    id: TabId;
-    label: string;
-    shortLabel: string;
-    sublabel: string;
-    icon: React.ComponentType<{ className?: string }>;
-    badge?: string;
-  }[] = [
-    {
-      id: 'calendar',
-      label: 'Calendar & Stats',
-      shortLabel: 'Calendar',
-      sublabel: 'M5/M15/1H/4H Chart & P&L Grid',
-      icon: Calendar,
-      badge: `${data.trades.length} Trades`,
-    },
-    {
-      id: 'arena',
-      label: 'AI Comparison Arena',
-      shortLabel: 'AI Arena',
-      sublabel: '8 Free AIs + Consensus + Controls',
-      icon: Trophy,
-      badge: '11 Active',
-    },
-    {
-      id: 'macro',
-      label: 'USD Macro & Consensus',
-      shortLabel: 'USD Macro',
-      sublabel: 'USD-Only News Gate & OI Proxies',
-      icon: Globe,
-      badge: 'USD Only',
-    },
-    {
-      id: 'playbooks',
-      label: 'AI Journal & System',
-      shortLabel: 'AI Journal',
-      sublabel: 'Warm-Up, -0.27/-0.618 & BE Stats',
-      icon: Cpu,
-      badge: 'v2.5',
-    },
+  const filteredLeaderboard = useMemo(() => {
+    return arenaData.leaderboard.filter((item) => {
+      const isCtrl = item.agent_id.startsWith('ctrl-') || item.agent_id === 'consensus';
+      if (accountFilter === 'ai_only' && isCtrl) return false;
+      if (accountFilter === 'benchmarks' && !isCtrl) return false;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        return (
+          item.display_name.toLowerCase().includes(q) ||
+          item.model_name.toLowerCase().includes(q) ||
+          item.provider.toLowerCase().includes(q) ||
+          item.style_archetype.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    });
+  }, [arenaData.leaderboard, accountFilter, searchQuery]);
+
+  const topChampion = arenaData.leaderboard[0];
+  const consensusAccount =
+    arenaData.leaderboard.find((a) => a.agent_id === 'consensus') || arenaData.leaderboard[1];
+  const totalTradesCount = arenaData.trades.length;
+  const backtestCandlesCount =
+    arenaData.backtest_summary?.dataset?.total_candles || 2700;
+
+  const navItems: { id: NavSection; label: string; icon: React.FC<any>; count?: string }[] = [
+    { id: 'overview', label: 'Overview', icon: LayoutGrid },
+    { id: 'terminal', label: 'Market terminal', icon: BarChart3, count: '4 TF' },
+    { id: 'backtest', label: 'Backtest & skills', icon: Layers, count: '11' },
+    { id: 'models', label: 'AI models', icon: Cpu, count: '8' },
+    { id: 'journal', label: 'Journal & playbooks', icon: BookOpen },
   ];
 
-  const arenaHeadline = useMemo(() => {
-    const aiAccounts = data.leaderboard.filter((a) => a.agent_id.startsWith('ai-'));
-    const bestAccount = [...data.leaderboard].sort((a, b) => b.net_pnl_usd - a.net_pnl_usd)[0];
-    const totalNetPnl = aiAccounts.reduce((acc, a) => acc + a.net_pnl_usd, 0);
-    const activeSelected =
-      selectedAgentId === 'all'
-        ? null
-        : data.leaderboard.find((a) => a.agent_id === selectedAgentId) || null;
-    const latestTrade = data.trades[0];
-    const spotPrice = latestTrade?.snapshot?.price ?? 4028.9;
-    const sweetSpot = latestTrade?.snapshot?.ote?.sweet_spot ?? 4024.5;
-    return { bestAccount, totalNetPnl, activeSelected, spotPrice, sweetSpot };
-  }, [data.leaderboard, data.trades, selectedAgentId]);
-
-  const searchResults = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) {
-      return {
-        accounts: data.leaderboard.slice(0, 6),
-        trades: data.trades.slice(0, 5),
-      };
-    }
-    return {
-      accounts: data.leaderboard.filter(
-        (a) =>
-          a.display_name.toLowerCase().includes(q) ||
-          a.provider.toLowerCase().includes(q) ||
-          a.model_name.toLowerCase().includes(q) ||
-          a.style_archetype.toLowerCase().includes(q)
-      ),
-      trades: data.trades
-        .filter(
-          (t) =>
-            t.trade_id.toLowerCase().includes(q) ||
-            t.agent_id.toLowerCase().includes(q) ||
-            t.action.toLowerCase().includes(q) ||
-            t.reasoning.toLowerCase().includes(q)
-        )
-        .slice(0, 8),
-    };
-  }, [searchQuery, data.leaderboard, data.trades]);
-
   return (
-    <div className="min-h-screen bg-[#07090E] text-[#F3F6FA] flex flex-col lg:flex-row selection:bg-[#00adff]/30 selection:text-white">
-      {/* DESKTOP SIDEBAR */}
-      <aside className="hidden lg:flex lg:w-[272px] lg:flex-col lg:fixed lg:inset-y-0 bg-[#0A0E15] border-r border-[#1E2636] z-30 select-none">
-        <div className="p-5 border-b border-[#1E2636] flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#00adff] to-[#006699] flex items-center justify-center shadow-[0_0_24px_rgba(0,173,255,0.4)] border border-[#38C4FF]/40">
-              <Zap className="w-5 h-5 text-[#07090E] fill-[#07090E]" />
+    <div className="min-h-screen bg-[#000000] text-[#F5F5F7] flex flex-col lg:flex-row">
+      {/* Left Sidebar (Desktop) — Inspired by Reference Images 5 & 13 */}
+      <aside className="hidden lg:flex lg:w-[248px] lg:flex-col lg:fixed lg:inset-y-0 bg-[#000000] border-r border-white/[0.07] px-4 py-5 select-none z-30">
+        {/* Brand Row */}
+        <div className="flex items-center justify-between px-2 pb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-[#141417] border border-white/[0.1] flex items-center justify-center">
+              <span className="text-[14px] font-semibold tracking-tight text-[#00adff]">S</span>
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold tracking-tight text-white">Startify</span>
-                <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#00adff]/15 text-[#00adff] border border-[#00adff]/30 font-semibold">
-                  QUANT v2.5
-                </span>
+              <div className="text-[15px] font-semibold tracking-[-0.015em] text-[#F5F5F7] leading-none">
+                Startify
               </div>
-              <p className="text-[11px] text-[#8E9BAE]">XAUUSD Multi-AI Paper Arena</p>
+              <div className="text-[11px] text-[#636366] mt-1 font-mono-tabular">
+                XAUUSD Arena v2.5
+              </div>
             </div>
           </div>
+          <span className="w-2 h-2 rounded-full bg-[#30D158]" title="Engine online" />
         </div>
 
-        <div className="px-4 pt-4 pb-2">
-          <button
-            onClick={() => setSearchOpen(true)}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-[#07090E] border border-[#1E2636] hover:border-[#00adff]/40 text-xs text-[#8E9BAE] transition-all cursor-pointer"
-          >
-            <span className="flex items-center gap-2">
-              <Search className="w-3.5 h-3.5 text-[#00adff]" />
-              <span>Search agents, trades...</span>
-            </span>
-            <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-[#111722] text-[#8E9BAE] rounded border border-[#1E2636]">
-              ⌘K
+        {/* Search Input with Command+K Keycaps (Reference Image 5 Style) */}
+        <div className="relative mb-5">
+          <Search
+            className="w-3.5 h-3.5 text-[#636366] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+            strokeWidth={1.5}
+          />
+          <input
+            id="startify-search-input"
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search models"
+            className="w-full h-9 pl-8 pr-14 rounded-xl bg-[#121215] border border-white/[0.07] text-[13px] text-[#F5F5F7] placeholder:text-[#636366] focus:outline-none focus:border-white/[0.18] transition-colors"
+          />
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none">
+            <kbd className="px-1.5 py-0.5 text-[10px] font-mono-tabular text-[#8E8E93] bg-[#1C1C1E] rounded border border-white/[0.08]">
+              ⌘
             </kbd>
-          </button>
+            <kbd className="px-1.5 py-0.5 text-[10px] font-mono-tabular text-[#8E8E93] bg-[#1C1C1E] rounded border border-white/[0.08]">
+              K
+            </kbd>
+          </div>
         </div>
 
-        <nav className="px-3 py-3 space-y-1.5 flex-1 overflow-y-auto">
-          <div className="px-2 pb-1.5 text-[10px] font-mono uppercase tracking-wider text-[#586579]">
-            Terminal Views
-          </div>
+        {/* Navigation Items (4px Grid, 36px Row Height, 16px Stroke-1.5 Icons) */}
+        <nav className="space-y-1 flex-1">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = activeTab === item.id;
+            const active = activeNav === item.id;
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`w-full group flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
+                type="button"
+                onClick={() => setActiveNav(item.id)}
+                className={`w-full h-9 px-3 rounded-xl flex items-center justify-between text-[13px] font-medium tracking-[-0.005em] cursor-pointer active:scale-[0.98] transition-[transform,background-color,color,border-color] duration-150 ${
                   active
-                    ? 'bg-[#00adff]/14 text-white border border-[#00adff]/40 shadow-[0_0_25px_rgba(0,173,255,0.12)]'
-                    : 'text-[#8E9BAE] hover:text-white hover:bg-[#111722]/70 border border-transparent'
+                    ? 'bg-[#1C1C1E] text-[#F5F5F7] border border-white/[0.09]'
+                    : 'text-[#8E8E93] hover:text-[#F5F5F7] hover:bg-[#121215] border border-transparent'
                 }`}
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
-                      active
-                        ? 'bg-[#00adff] text-[#07090E]'
-                        : 'bg-[#111722] text-[#8E9BAE] group-hover:text-[#00adff]'
+                <div className="flex items-center gap-2.5">
+                  <Icon
+                    className={`w-4 h-4 shrink-0 ${
+                      active ? 'text-[#00adff]' : 'text-[#8E8E93]'
                     }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <div className="truncate">
-                    <div className="text-xs font-semibold truncate">{item.label}</div>
-                    <div className="text-[10px] text-[#586579] truncate">{item.sublabel}</div>
-                  </div>
+                    strokeWidth={1.5}
+                  />
+                  <span>{item.label}</span>
                 </div>
-                {item.badge && (
-                  <span
-                    className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                      active
-                        ? 'bg-[#00adff]/20 text-[#38C4FF]'
-                        : 'bg-[#111722] text-[#8E9BAE]'
-                    }`}
-                  >
-                    {item.badge}
+                {item.count && (
+                  <span className="text-[11px] font-mono-tabular text-[#636366]">
+                    {item.count}
                   </span>
                 )}
               </button>
             );
           })}
-
-          <div className="pt-5">
-            <div className="px-2 pb-2 flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[#586579]">
-                Competing Accounts ($1K Base)
-              </span>
-              {selectedAgentId !== 'all' && (
-                <button
-                  onClick={() => setSelectedAgentId('all')}
-                  className="text-[10px] text-[#00adff] hover:underline cursor-pointer"
-                >
-                  Reset
-                </button>
-              )}
-            </div>
-
-            <div className="space-y-1 max-h-[310px] overflow-y-auto pr-1">
-              <button
-                onClick={() => setSelectedAgentId('all')}
-                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
-                  selectedAgentId === 'all'
-                    ? 'bg-[#00adff]/15 text-[#00adff] border border-[#00adff]/30 font-medium'
-                    : 'text-[#8E9BAE] hover:bg-[#111722] hover:text-white'
-                }`}
-              >
-                <span className="flex items-center gap-2">
-                  <Layers className="w-3.5 h-3.5 text-[#00adff]" />
-                  <span>All 11 Accounts Aggregate</span>
-                </span>
-                <span className="font-mono text-[11px] text-[#00E676]">
-                  +${arenaHeadline.totalNetPnl.toFixed(0)}
-                </span>
-              </button>
-
-              {data.leaderboard.map((acc) => {
-                const isSelected = selectedAgentId === acc.agent_id;
-                const pos = acc.net_pnl_usd >= 0;
-                return (
-                  <button
-                    key={acc.agent_id}
-                    onClick={() => setSelectedAgentId(acc.agent_id)}
-                    className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
-                      isSelected
-                        ? 'bg-[#111722] text-white border border-[#00adff]/50'
-                        : 'text-[#8E9BAE] hover:bg-[#111722]/60 hover:text-white border border-transparent'
-                    }`}
-                  >
-                    <span className="flex items-center gap-2 truncate">
-                      <span
-                        className="w-2 h-2 rounded-full shrink-0"
-                        style={{ backgroundColor: acc.color }}
-                      />
-                      <span className="truncate">{acc.display_name}</span>
-                      {acc.blowup_count > 0 && (
-                        <span
-                          title="Account had a blowup and restarted at $1,000"
-                          className="text-[9px] px-1 rounded bg-[#FF3B5C]/20 text-[#FF3B5C] font-mono"
-                        >
-                          R2
-                        </span>
-                      )}
-                    </span>
-                    <span
-                      className={`font-mono text-[11px] shrink-0 ${
-                        pos ? 'text-[#00E676]' : 'text-[#FF3B5C]'
-                      }`}
-                    >
-                      ${acc.current_equity.toFixed(0)}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
         </nav>
 
-        <div className="p-3.5 m-3 rounded-xl bg-[#07090E] border border-[#1E2636] space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-white flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#00adff]" />
-              OTE + Break-Even Guard
-            </span>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#00E676]/15 text-[#00E676]">
-              ACTIVE
-            </span>
+        {/* Bottom Arena Parameters Summary Card */}
+        <div className="rounded-xl bg-[#0A0A0C] border border-white/[0.07] p-3.5 space-y-2 mt-4">
+          <div className="flex items-center justify-between text-[12px]">
+            <span className="text-[#8E8E93]">Base equity</span>
+            <span className="font-mono-tabular text-[#F5F5F7] font-medium">$1,000.00</span>
           </div>
-          <div className="grid grid-cols-2 gap-1.5 text-[10px] text-[#8E9BAE] font-mono">
-            <div className="bg-[#0C1017] px-2 py-1 rounded border border-[#1E2636]/70">
-              Start: <span className="text-white">$1,000</span>
-            </div>
-            <div className="bg-[#0C1017] px-2 py-1 rounded border border-[#1E2636]/70">
-              News: <span className="text-[#00adff]">USD Only</span>
-            </div>
-            <div className="bg-[#0C1017] px-2 py-1 rounded border border-[#1E2636]/70">
-              TP1/2: <span className="text-emerald-400">-0.27 / -0.618</span>
-            </div>
-            <div className="bg-[#0C1017] px-2 py-1 rounded border border-[#1E2636]/70">
-              SL Lock: <span className="text-amber-300">Break-Even</span>
-            </div>
+          <div className="flex items-center justify-between text-[12px]">
+            <span className="text-[#8E8E93]">Daily scan budget</span>
+            <span className="font-mono-tabular text-[#00adff]">100–500 / day</span>
+          </div>
+          <div className="flex items-center justify-between text-[12px]">
+            <span className="text-[#8E8E93]">Macro filter</span>
+            <span className="font-mono-tabular text-[#30D158]">USD only</span>
           </div>
         </div>
       </aside>
 
-      {/* MAIN CONTENT AREA */}
-      <div className="flex-1 lg:pl-[272px] flex flex-col min-w-0 pb-20 lg:pb-8">
-        <header className="sticky top-0 z-20 bg-[#07090E]/90 backdrop-blur-md border-b border-[#1E2636]">
-          <div className="max-w-[1600px] mx-auto px-3.5 sm:px-6 py-3 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3 min-w-0">
-              <button
-                onClick={() => setMobileMenuOpen(true)}
-                className="lg:hidden p-2 rounded-lg bg-[#0C1017] border border-[#1E2636] text-[#8E9BAE] hover:text-white"
-                aria-label="Open menu"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
-
-              <div className="lg:hidden flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-[#00adff] flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-[#07090E] fill-[#07090E]" />
-                </div>
-                <span className="font-bold text-base text-white tracking-tight">Startify</span>
+      {/* Main Content Shell */}
+      <div className="flex-1 lg:pl-[248px] flex flex-col min-h-screen pb-20 lg:pb-10">
+        {/* Translucent Sticky Top Bar */}
+        <header className="sticky top-0 z-20 apple-glass border-b border-white/[0.07] px-4 sm:px-8 h-14 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="lg:hidden flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-[#141417] border border-white/[0.1] flex items-center justify-center text-[13px] font-semibold text-[#00adff]">
+                S
               </div>
-
-              <div className="hidden sm:flex items-center gap-3 bg-[#0C1017] border border-[#1E2636] rounded-xl px-3 py-1.5">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse" />
-                  <span className="text-xs font-bold tracking-tight text-white">XAUUSD</span>
-                  <span className="text-xs font-mono font-semibold text-[#00adff]">
-                    ${arenaHeadline.spotPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                  </span>
-                </div>
-                <span className="text-[#1E2636]">|</span>
-                <div className="hidden md:flex items-center gap-2 text-[11px] text-[#8E9BAE] font-mono">
-                  <span className="text-[#38C4FF]">M5 • M15 • 1H • 4H</span>
-                  <span>•</span>
-                  <span>OTE 0.705 (${arenaHeadline.sweetSpot.toFixed(2)})</span>
-                  <span>•</span>
-                  <span className="text-emerald-400">TP: -0.27 / -0.618</span>
-                </div>
-              </div>
-
-              <div className="hidden xl:flex items-center gap-2 bg-[#00adff]/10 border border-[#00adff]/30 rounded-xl px-3 py-1.5 text-xs">
-                <DollarSign className="w-3.5 h-3.5 text-[#00adff]" />
-                <span className="text-[#F3F6FA] font-medium">USD-Only Gate & BE Lock:</span>
-                <span className="font-mono text-[#00E676] font-semibold">ARMED</span>
-              </div>
+              <span className="text-[15px] font-semibold tracking-[-0.015em]">Startify</span>
             </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setSearchOpen(true)}
-                className="sm:hidden p-2 rounded-lg bg-[#0C1017] border border-[#1E2636] text-[#8E9BAE]"
-                aria-label="Search"
-              >
-                <Search className="w-4 h-4" />
-              </button>
-
-              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#0C1017] border border-[#1E2636] text-[11px] text-[#8E9BAE]">
-                <Activity className="w-3.5 h-3.5 text-[#00adff]" />
-                <span>{lastSyncNote}</span>
-              </div>
-
-              <button
-                onClick={() => syncFromBackend(true)}
-                disabled={isSyncing}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#00adff] hover:bg-[#38C4FF] text-[#07090E] font-semibold text-xs transition-all shadow-[0_0_20px_rgba(0,173,255,0.3)] cursor-pointer disabled:opacity-60"
-              >
-                {isSyncing ? (
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <Play className="w-3.5 h-3.5 fill-[#07090E]" />
-                )}
-                <span>{apiConnected ? 'Run MTF Cycle' : 'Sync Arena'}</span>
-              </button>
+            <div className="hidden lg:flex items-center gap-2 text-[13px]">
+              <span className="text-[#8E8E93]">Startify</span>
+              <span className="text-[#636366]">/</span>
+              <span className="text-[#F5F5F7] font-medium">
+                {navItems.find((n) => n.id === activeNav)?.label}
+              </span>
             </div>
           </div>
 
-          <div className="border-t border-[#1E2636]/70 bg-[#0A0E15]/90">
-            <div className="max-w-[1600px] mx-auto px-3.5 sm:px-6 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[#586579] mr-1 shrink-0">
-                Portfolio Filter:
+          <div className="flex items-center gap-2.5">
+            <Badge variant="secondary" className="font-mono-tabular hidden sm:inline-flex">
+              XAUUSD $4,028.90
+            </Badge>
+            <Badge variant="positive" className="font-mono-tabular">
+              USD Macro Clear
+            </Badge>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() =>
+                setActiveNav(activeNav === 'backtest' ? 'overview' : 'backtest')
+              }
+            >
+              <span>
+                {activeNav === 'backtest' ? 'View live arena' : 'Backtest & skills'}
               </span>
-              <button
-                onClick={() => setSelectedAgentId('all')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-medium shrink-0 transition-all cursor-pointer ${
-                  selectedAgentId === 'all'
-                    ? 'bg-[#00adff] text-[#07090E] font-semibold shadow-[0_0_14px_rgba(0,173,255,0.35)]'
-                    : 'bg-[#0C1017] text-[#8E9BAE] hover:text-white border border-[#1E2636]'
-                }`}
-              >
-                All Agents ($1,000 Base)
-              </button>
-              {data.leaderboard.map((acc) => {
-                const active = selectedAgentId === acc.agent_id;
-                const isPos = acc.net_pnl_usd >= 0;
-                return (
-                  <button
-                    key={acc.agent_id}
-                    onClick={() => setSelectedAgentId(acc.agent_id)}
-                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs shrink-0 transition-all cursor-pointer ${
-                      active
-                        ? 'bg-[#00adff]/20 text-white border border-[#00adff] shadow-[0_0_12px_rgba(0,173,255,0.25)]'
-                        : 'bg-[#0C1017] text-[#8E9BAE] hover:text-white border border-[#1E2636]'
-                    }`}
-                  >
-                    <span
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: acc.color }}
-                    />
-                    <span className="font-medium">{acc.display_name}</span>
-                    <span
-                      className={`font-mono text-[10px] ${
-                        isPos ? 'text-[#00E676]' : 'text-[#FF3B5C]'
-                      }`}
-                    >
-                      {isPos ? '+' : ''}
-                      {acc.net_pnl_pct.toFixed(1)}%
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+            </Button>
           </div>
         </header>
 
-        {arenaHeadline.activeSelected && (
-          <div className="bg-gradient-to-r from-[#00adff]/15 via-[#0C1017] to-[#0C1017] border-b border-[#00adff]/30">
-            <div className="max-w-[1600px] mx-auto px-3.5 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
-              <div className="flex items-center gap-2.5">
-                <span
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: arenaHeadline.activeSelected.color }}
-                />
-                <span className="font-bold text-white">
-                  Inspecting: {arenaHeadline.activeSelected.display_name}
-                </span>
-                <span className="text-[#8E9BAE] font-mono">
-                  ({arenaHeadline.activeSelected.provider} • {arenaHeadline.activeSelected.model_name})
-                </span>
-                <span className="hidden sm:inline-block px-2 py-0.5 rounded bg-[#111722] text-[#38C4FF] border border-[#1E2636]">
-                  {arenaHeadline.activeSelected.style_archetype}
-                </span>
+        {/* Page Container */}
+        <main className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 pt-6 space-y-6">
+          {/* ==================== VIEW 1: OVERVIEW ==================== */}
+          {activeNav === 'overview' && (
+            <div className="space-y-6">
+              {/* Page Title & Context */}
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+                <div>
+                  <h1 className="text-[24px] sm:text-[28px] font-semibold tracking-[-0.025em] text-[#F5F5F7] leading-tight">
+                    Autonomous XAUUSD trading arena
+                  </h1>
+                  <p className="text-[13px] text-[#8E8E93] mt-1">
+                    8 latest free AI models competing from $1,000.00 starting equity with Fib OTE (0.705), Break-Even stop protection, and -0.27 / -0.618 partial close
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="default" className="font-mono-tabular">
+                    {totalTradesCount} trades logged
+                  </Badge>
+                  <Badge variant="accent" className="font-mono-tabular">
+                    {backtestCandlesCount.toLocaleString()} warmup bars
+                  </Badge>
+                </div>
               </div>
-              <div className="flex items-center gap-4 font-mono">
-                <span>
-                  Start: <strong className="text-white">$1,000.00</strong>
-                </span>
-                <span>
-                  Current:{' '}
-                  <strong className="text-[#00adff]">
-                    ${arenaHeadline.activeSelected.current_equity.toFixed(2)}
-                  </strong>
-                </span>
-                <span>
-                  Win Rate:{' '}
-                  <strong className="text-[#00E676]">
-                    {arenaHeadline.activeSelected.win_rate.toFixed(1)}%
-                  </strong>
-                </span>
-                <button
-                  onClick={() => setSelectedAgentId('all')}
-                  className="text-[#00adff] hover:underline font-sans font-medium cursor-pointer"
-                >
-                  Show All 11 Accounts
-                </button>
+
+              {/* Split Hero: Left Equity Chart (8 cols) + Right Summary Stack (4 cols) — Inspired by Reference Image 13 */}
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-stretch">
+                <div className="xl:col-span-8">
+                  <EquityCurveChart
+                    dailyStats={arenaData.daily_stats}
+                    leaderboard={arenaData.leaderboard}
+                    selectedAgentId={selectedChartAgentId}
+                    onSelectAgent={setSelectedChartAgentId}
+                  />
+                </div>
+
+                <div className="xl:col-span-4 flex flex-col justify-between gap-4">
+                  {/* Card 1: Current Leader */}
+                  <Card
+                    className="p-5 flex-1 flex flex-col justify-between cursor-pointer hover:bg-[#121215] transition-colors"
+                    onClick={() => setModalAgent(topChampion)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[12px] text-[#8E8E93]">Current leader</span>
+                      <Badge variant="positive" className="font-mono-tabular">
+                        +{topChampion.net_pnl_pct.toFixed(2)}%
+                      </Badge>
+                    </div>
+                    <div className="my-2">
+                      <div className="apple-display text-[#F5F5F7]">
+                        ${topChampion.current_equity.toFixed(2)}
+                      </div>
+                      <div className="text-[13px] text-[#A1A1AA] mt-1 flex items-center gap-2">
+                        <span
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: topChampion.color }}
+                        />
+                        <span>{topChampion.display_name}</span>
+                        <span className="text-[#636366] font-mono-tabular">
+                          ({topChampion.model_name})
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-[12px] text-[#636366] pt-2 border-t border-white/[0.06] font-mono-tabular">
+                      <span>Win rate {topChampion.win_rate.toFixed(1)}%</span>
+                      <span>PF {topChampion.profit_factor.toFixed(2)}</span>
+                    </div>
+                  </Card>
+
+                  {/* Card 2: Multi-AI Consensus Cluster */}
+                  <Card
+                    className="p-5 flex-1 flex flex-col justify-between cursor-pointer hover:bg-[#121215] transition-colors"
+                    onClick={() => setModalAgent(consensusAccount)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[12px] text-[#8E8E93]">
+                        Multi-AI consensus (3+ models align)
+                      </span>
+                      <Badge variant="accent" className="font-mono-tabular">
+                        {consensusAccount.win_rate.toFixed(1)}% WR
+                      </Badge>
+                    </div>
+                    <div className="my-2">
+                      <div className="apple-display text-[#F5F5F7]">
+                        ${consensusAccount.current_equity.toFixed(2)}
+                      </div>
+                      <div className="text-[13px] text-[#30D158] font-mono-tabular mt-1">
+                        +${consensusAccount.net_pnl_usd.toFixed(2)} vs $1,000.00 baseline
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-[12px] text-[#636366] pt-2 border-t border-white/[0.06] font-mono-tabular">
+                      <span>{arenaData.consensus_events.length} cluster signals</span>
+                      <span>PF {consensusAccount.profit_factor.toFixed(2)}</span>
+                    </div>
+                  </Card>
+
+                  {/* Card 3: Pre-Competition Walk-Forward Backtest */}
+                  <Card
+                    className="p-5 flex-1 flex flex-col justify-between cursor-pointer hover:bg-[#121215] transition-colors"
+                    onClick={() => setActiveNav('backtest')}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[12px] text-[#8E8E93]">
+                        Historical backtest & skills.sh
+                      </span>
+                      <ArrowUpRight className="w-4 h-4 text-[#8E8E93]" strokeWidth={1.5} />
+                    </div>
+                    <div className="my-2">
+                      <div className="text-[22px] font-semibold tracking-[-0.025em] font-mono-tabular text-[#F5F5F7]">
+                        2,700 candles • 11 skills
+                      </div>
+                      <div className="text-[13px] text-[#8E8E93] mt-1">
+                        4H, 1H, M15, M5 walk-forward trained
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-[12px] text-[#00adff] pt-2 border-t border-white/[0.06]">
+                      <span>Inspect backtest & skill pack</span>
+                      <span className="font-mono-tabular">65% / 35% split</span>
+                    </div>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Ranked Leaderboard Table (shadcn/ui Table, Clean, Uncluttered) */}
+              <Card className="overflow-hidden">
+                <div className="p-5 sm:p-6 border-b border-white/[0.07] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <h2 className="apple-title text-[#F5F5F7]">Leaderboard standings</h2>
+                    <p className="text-[13px] text-[#8E8E93] mt-0.5">
+                      Select any model row to inspect its executed trades, Break-Even saves, and self-authored playbook
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 bg-[#141417] p-1 rounded-xl border border-white/[0.06] self-start sm:self-auto">
+                    {(
+                      [
+                        { id: 'all', label: 'All (11)' },
+                        { id: 'ai_only', label: '8 AI models' },
+                        { id: 'benchmarks', label: 'Benchmarks' },
+                      ] as const
+                    ).map((tab) => (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() => setAccountFilter(tab.id)}
+                        className={`px-3 py-1 rounded-lg text-[12px] font-medium cursor-pointer active:scale-[0.97] transition-colors ${
+                          accountFilter === tab.id
+                            ? 'bg-[#242429] text-[#F5F5F7]'
+                            : 'text-[#8E8E93] hover:text-[#F5F5F7]'
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-14">Rank</TableHead>
+                      <TableHead>Model & provider</TableHead>
+                      <TableHead>Strategy archetype</TableHead>
+                      <TableHead className="text-right">Current equity</TableHead>
+                      <TableHead className="text-right">Net P&L</TableHead>
+                      <TableHead className="text-right">Win rate</TableHead>
+                      <TableHead className="text-right">Profit factor</TableHead>
+                      <TableHead className="text-right">Expectancy</TableHead>
+                      <TableHead className="text-right">Max DD</TableHead>
+                      <TableHead className="text-right">Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredLeaderboard.map((item) => {
+                      const isPos = item.net_pnl_usd >= 0;
+                      return (
+                        <TableRow
+                          key={item.agent_id}
+                          className="cursor-pointer"
+                          onClick={() => setModalAgent(item)}
+                        >
+                          <TableCell className="font-mono-tabular text-[#8E8E93]">
+                            #{item.rank}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2.5">
+                              <span
+                                className="w-2.5 h-2.5 rounded-full shrink-0"
+                                style={{ backgroundColor: item.color }}
+                              />
+                              <div>
+                                <div className="font-medium text-[#F5F5F7]">
+                                  {item.display_name}
+                                </div>
+                                <div className="text-[11px] font-mono-tabular text-[#8E8E93]">
+                                  {item.model_name}
+                                </div>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-[#A1A1AA]">
+                            {item.style_archetype}
+                          </TableCell>
+                          <TableCell className="text-right font-mono-tabular font-semibold text-[#F5F5F7]">
+                            ${item.current_equity.toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-mono-tabular">
+                            <span className={isPos ? 'text-[#30D158]' : 'text-[#FF453A]'}>
+                              {isPos ? '+' : ''}${item.net_pnl_usd.toFixed(2)} (
+                              {isPos ? '+' : ''}
+                              {item.net_pnl_pct.toFixed(1)}%)
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-right font-mono-tabular">
+                            {item.win_rate.toFixed(1)}%
+                          </TableCell>
+                          <TableCell className="text-right font-mono-tabular text-[#00adff]">
+                            {item.profit_factor.toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-mono-tabular text-[#A1A1AA]">
+                            {item.expectancy_r >= 0 ? '+' : ''}
+                            {item.expectancy_r.toFixed(2)}R
+                          </TableCell>
+                          <TableCell className="text-right font-mono-tabular text-[#8E8E93]">
+                            {item.max_drawdown_pct.toFixed(1)}%
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {item.blowup_count > 0 ? (
+                              <Badge variant="negative">Run #{item.current_run_number}</Badge>
+                            ) : (
+                              <Badge variant="default">Run #1</Badge>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </Card>
+            </div>
+          )}
+
+          {/* ==================== VIEW 2: MARKET TERMINAL ==================== */}
+          {activeNav === 'terminal' && (
+            <div className="space-y-6">
+              <OteCandlestickChart
+                trades={arenaData.trades}
+                selectedAgentId={selectedChartAgentId}
+              />
+
+              {/* USD-Only Macro Economic Calendar & Consensus Signals */}
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
+                <Card className="xl:col-span-7 overflow-hidden">
+                  <div className="p-5 sm:p-6 border-b border-white/[0.07] flex items-center justify-between">
+                    <div>
+                      <h2 className="apple-title text-[#F5F5F7]">
+                        USD high-impact macroeconomic calendar
+                      </h2>
+                      <p className="text-[13px] text-[#8E8E93] mt-0.5">
+                        Strictly filtered to USD releases (FOMC, NFP, US CPI, Core PCE, ISM PMI) with ±30m blackout guard
+                      </p>
+                    </div>
+                    <Badge variant="positive">USD only</Badge>
+                  </div>
+
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Date & time (UTC)</TableHead>
+                        <TableHead>USD release</TableHead>
+                        <TableHead className="text-right">Actual vs forecast</TableHead>
+                        <TableHead className="text-right">60m XAUUSD impact</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {arenaData.news_events.map((ev) => (
+                        <TableRow key={ev.event_id}>
+                          <TableCell className="font-mono-tabular text-[#8E8E93] whitespace-nowrap">
+                            {ev.time.slice(0, 16).replace('T', ' ')}
+                          </TableCell>
+                          <TableCell>
+                            <div className="font-medium text-[#F5F5F7]">{ev.name}</div>
+                            <div className="text-[11px] text-[#8E8E93]">{ev.neutral_summary}</div>
+                          </TableCell>
+                          <TableCell className="text-right font-mono-tabular whitespace-nowrap">
+                            <span className="text-[#F5F5F7]">{ev.actual}</span>{' '}
+                            <span className="text-[#636366]">/ {ev.forecast}</span>
+                          </TableCell>
+                          <TableCell className="text-right font-mono-tabular whitespace-nowrap">
+                            <Badge
+                              variant={ev.gold_60m_move_usd >= 0 ? 'positive' : 'negative'}
+                            >
+                              {ev.gold_60m_move_usd >= 0 ? '+' : ''}$
+                              {ev.gold_60m_move_usd.toFixed(2)}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Card>
+
+                <Card className="xl:col-span-5 p-5 sm:p-6 space-y-4">
+                  <div className="border-b border-white/[0.07] pb-3 flex items-center justify-between">
+                    <div>
+                      <h2 className="apple-title text-[#F5F5F7]">
+                        Multi-AI consensus signals
+                      </h2>
+                      <p className="text-[13px] text-[#8E8E93] mt-0.5">
+                        Triggered when 3 or more models align within the same hour
+                      </p>
+                    </div>
+                    <Badge variant="accent">{arenaData.consensus_events.length} events</Badge>
+                  </div>
+
+                  <div className="space-y-3">
+                    {arenaData.consensus_events.map((ce) => (
+                      <div
+                        key={ce.event_id}
+                        className="rounded-xl bg-[#121215] border border-white/[0.06] p-4 space-y-2"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              variant={ce.direction === 'long' ? 'positive' : 'negative'}
+                            >
+                              {ce.direction === 'long' ? 'Long' : 'Short'} ({ce.agreeing_count}/
+                              {ce.total_active_agents} models)
+                            </Badge>
+                            <span className="text-[12px] font-mono-tabular text-[#8E8E93]">
+                              {ce.time.slice(0, 16).replace('T', ' ')}
+                            </span>
+                          </div>
+                          <span
+                            className={`text-[13px] font-mono-tabular font-medium ${
+                              ce.result_pnl_usd >= 0 ? 'text-[#30D158]' : 'text-[#FF453A]'
+                            }`}
+                          >
+                            {ce.result_pnl_usd >= 0 ? '+' : ''}${ce.result_pnl_usd.toFixed(2)} (
+                            {ce.result_r >= 0 ? '+' : ''}
+                            {ce.result_r.toFixed(2)}R)
+                          </span>
+                        </div>
+                        <div className="text-[12px] font-mono-tabular text-[#A1A1AA]">
+                          Entry {ce.entry_range} • SL {ce.sl_range} • TP {ce.tp_range}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <main className="flex-1 max-w-[1600px] w-full mx-auto px-3.5 sm:px-6 py-5">
-          {activeTab === 'calendar' && (
-            <CalendarAndStatsView
-              data={data}
-              selectedAgentId={selectedAgentId}
-              onSelectAgent={setSelectedAgentId}
-            />
+          {/* ==================== VIEW 3: BACKTEST & SKILLS ==================== */}
+          {activeNav === 'backtest' && <BacktestAndSkillsView data={arenaData} />}
+
+          {/* ==================== VIEW 4: AI MODELS (Reference Image 14 Winrate Ring Grid) ==================== */}
+          {activeNav === 'models' && (
+            <div className="space-y-6">
+              <div>
+                <h1 className="apple-title text-[#F5F5F7]">
+                  Autonomous AI models (November 2026 lineup)
+                </h1>
+                <p className="text-[13px] text-[#8E8E93] mt-0.5">
+                  Each model runs on its own provider with automatic multi-model fallback chains, $1,000.00 equity, and independent playbooks
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {arenaData.leaderboard.slice(0, 9).map((ag) => {
+                  const r = 28;
+                  const c = 2 * Math.PI * r;
+                  const winLen = (ag.win_rate / 100) * c;
+
+                  return (
+                    <Card
+                      key={ag.agent_id}
+                      className="p-5 space-y-4 cursor-pointer hover:bg-[#121215] transition-colors"
+                      onClick={() => setModalAgent(ag)}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-2.5">
+                          <span
+                            className="w-2.5 h-2.5 rounded-full shrink-0"
+                            style={{ backgroundColor: ag.color }}
+                          />
+                          <div>
+                            <div className="text-[15px] font-medium text-[#F5F5F7]">
+                              {ag.display_name}
+                            </div>
+                            <div className="text-[11px] font-mono-tabular text-[#8E8E93]">
+                              {ag.model_name}
+                            </div>
+                          </div>
+                        </div>
+                        <Badge variant="default" className="font-mono-tabular">
+                          Rank #{ag.rank}
+                        </Badge>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-2">
+                        <div>
+                          <div className="text-[12px] text-[#8E8E93]">Current equity</div>
+                          <div className="text-[24px] font-semibold tracking-[-0.025em] font-mono-tabular text-[#F5F5F7] mt-0.5">
+                            ${ag.current_equity.toFixed(2)}
+                          </div>
+                          <div
+                            className={`text-[12px] font-mono-tabular mt-0.5 ${
+                              ag.net_pnl_usd >= 0 ? 'text-[#30D158]' : 'text-[#FF453A]'
+                            }`}
+                          >
+                            {ag.net_pnl_usd >= 0 ? '+' : ''}${ag.net_pnl_usd.toFixed(2)} (
+                            {ag.net_pnl_pct >= 0 ? '+' : ''}
+                            {ag.net_pnl_pct.toFixed(1)}%)
+                          </div>
+                        </div>
+
+                        {/* Donut Winrate Ring (Reference Image 14 Style) */}
+                        <div className="relative w-18 h-18 flex items-center justify-center">
+                          <svg className="w-18 h-18 -rotate-90" viewBox="0 0 72 72">
+                            <circle
+                              cx="36"
+                              cy="36"
+                              r={r}
+                              fill="none"
+                              stroke="#FF453A"
+                              strokeOpacity={0.3}
+                              strokeWidth="6"
+                            />
+                            <circle
+                              cx="36"
+                              cy="36"
+                              r={r}
+                              fill="none"
+                              stroke="#30D158"
+                              strokeWidth="6"
+                              strokeDasharray={`${winLen} ${c}`}
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                          <span className="absolute text-[11px] font-mono-tabular font-medium text-[#F5F5F7]">
+                            {ag.win_rate.toFixed(0)}%
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/[0.06] text-[12px] font-mono-tabular">
+                        <div>
+                          <div className="text-[#636366]">PF</div>
+                          <div className="text-[#F5F5F7]">{ag.profit_factor.toFixed(2)}</div>
+                        </div>
+                        <div>
+                          <div className="text-[#636366]">Trades</div>
+                          <div className="text-[#F5F5F7]">{ag.total_trades}</div>
+                        </div>
+                        <div>
+                          <div className="text-[#636366]">Max DD</div>
+                          <div className="text-[#F5F5F7]">{ag.max_drawdown_pct.toFixed(1)}%</div>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
           )}
-          {activeTab === 'arena' && (
-            <CompareArenaView
-              data={data}
-              onSelectAgentForCalendar={(id) => {
-                setSelectedAgentId(id);
-                setActiveTab('calendar');
-              }}
-            />
-          )}
-          {activeTab === 'macro' && <UsdMacroAndConsensusView data={data} />}
-          {activeTab === 'playbooks' && <PlaybooksAndSystemView data={data} />}
+
+          {/* ==================== VIEW 5: JOURNAL & PLAYBOOKS ==================== */}
+          {activeNav === 'journal' && <PlaybooksAndSystemView data={arenaData} />}
         </main>
       </div>
 
-      {/* MOBILE SLIDE-OVER DRAWER */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex">
-          <div
-            className="fixed inset-0 bg-black/75 backdrop-blur-xs"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-          <div className="relative w-[290px] max-w-[85vw] bg-[#0A0E15] border-r border-[#1E2636] h-full flex flex-col z-10 p-4">
-            <div className="flex items-center justify-between pb-4 border-b border-[#1E2636]">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#00adff] flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-[#07090E] fill-[#07090E]" />
-                </div>
-                <div>
-                  <div className="font-bold text-white text-base">Startify</div>
-                  <div className="text-[10px] text-[#8E9BAE]">XAUUSD Multi-AI Trader v2.5</div>
-                </div>
-              </div>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg bg-[#111722] text-[#8E9BAE]"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="py-4 space-y-1.5 flex-1 overflow-y-auto">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const active = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setActiveTab(item.id);
-                      setMobileMenuOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left ${
-                      active
-                        ? 'bg-[#00adff]/15 text-white border border-[#00adff]/40'
-                        : 'text-[#8E9BAE]'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Icon className="w-4 h-4 text-[#00adff]" />
-                      <div>
-                        <div className="text-xs font-semibold">{item.label}</div>
-                        <div className="text-[10px] text-[#586579]">{item.sublabel}</div>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-3.5 h-3.5 text-[#586579]" />
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* MOBILE BOTTOM NAVIGATION BAR */}
-      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-[#0A0E15]/95 backdrop-blur-md border-t border-[#1E2636] grid grid-cols-4 px-2 py-1.5">
+      {/* Mobile Bottom Translucent Navigation Bar */}
+      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 apple-glass border-t border-white/[0.08] px-2 py-1.5 flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const active = activeTab === item.id;
+          const active = activeNav === item.id;
           return (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`flex flex-col items-center justify-center py-1 rounded-lg transition-colors ${
-                active ? 'text-[#00adff]' : 'text-[#8E9BAE]'
+              type="button"
+              onClick={() => setActiveNav(item.id)}
+              className={`flex flex-col items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-medium cursor-pointer active:scale-[0.95] transition-colors ${
+                active ? 'text-[#00adff]' : 'text-[#8E8E93]'
               }`}
             >
-              <Icon className="w-4 h-4 mb-0.5" />
-              <span className="text-[10px] font-medium">{item.shortLabel}</span>
+              <Icon className="w-4 h-4" strokeWidth={1.5} />
+              <span>{item.label.split(' ')[0]}</span>
             </button>
           );
         })}
       </nav>
 
-      {/* QUICK SEARCH MODAL (CMD+K) */}
-      {searchOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4">
-          <div
-            className="fixed inset-0 bg-black/75 backdrop-blur-xs"
-            onClick={() => setSearchOpen(false)}
-          />
-          <div className="relative w-full max-w-xl bg-[#0C1017] border border-[#1E2636] rounded-2xl shadow-2xl overflow-hidden z-10">
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-[#1E2636]">
-              <Search className="w-4 h-4 text-[#00adff]" />
-              <input
-                type="text"
-                autoFocus
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search AI providers, models, styles, or trade reasoning..."
-                className="w-full bg-transparent text-sm text-white placeholder-[#586579] focus:outline-none"
-              />
-              <button
-                onClick={() => setSearchOpen(false)}
-                className="text-xs text-[#8E9BAE] hover:text-white font-mono px-1.5 py-0.5 rounded bg-[#111722]"
-              >
-                ESC
-              </button>
-            </div>
-
-            <div className="max-h-[65vh] overflow-y-auto p-3 space-y-4">
-              <div>
-                <div className="text-[10px] font-mono uppercase text-[#586579] px-2 mb-1.5">
-                  Competing Accounts ({searchResults.accounts.length})
-                </div>
-                <div className="space-y-1">
-                  {searchResults.accounts.map((acc) => (
-                    <button
-                      key={acc.agent_id}
-                      onClick={() => {
-                        setSelectedAgentId(acc.agent_id);
-                        setSearchOpen(false);
-                      }}
-                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-[#111722] text-left transition-colors"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <span
-                          className="w-2.5 h-2.5 rounded-full"
-                          style={{ backgroundColor: acc.color }}
-                        />
-                        <div>
-                          <div className="text-xs font-semibold text-white">{acc.display_name}</div>
-                          <div className="text-[10px] text-[#8E9BAE]">
-                            {acc.provider} • {acc.model_name} • {acc.style_archetype}
-                          </div>
-                        </div>
-                      </div>
-                      <span className="font-mono text-xs text-[#00adff]">
-                        ${acc.current_equity.toFixed(2)}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <div className="text-[10px] font-mono uppercase text-[#586579] px-2 mb-1.5">
-                  Matching Paper Trades ({searchResults.trades.length})
-                </div>
-                <div className="space-y-1">
-                  {searchResults.trades.map((t) => (
-                    <button
-                      key={t.trade_id}
-                      onClick={() => {
-                        setSelectedAgentId(t.agent_id);
-                        setActiveTab('calendar');
-                        setSearchOpen(false);
-                      }}
-                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-[#111722] text-left transition-colors"
-                    >
-                      <div className="min-w-0 pr-3">
-                        <div className="text-xs font-medium text-white flex items-center gap-2">
-                          <span className="font-mono text-[#00adff]">{t.agent_id}</span>
-                          <span className="uppercase">{t.action}</span>
-                          <span className="text-[10px] text-[#8E9BAE] font-mono">
-                            @{t.entry.toFixed(2)}
-                          </span>
-                        </div>
-                        <div className="text-[11px] text-[#8E9BAE] truncate">{t.reasoning}</div>
-                      </div>
-                      <span
-                        className={`font-mono text-xs shrink-0 ${
-                          t.pnl_usd >= 0 ? 'text-[#00E676]' : 'text-[#FF3B5C]'
-                        }`}
-                      >
-                        {t.pnl_usd >= 0 ? '+' : ''}${t.pnl_usd.toFixed(2)}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="px-4 py-2.5 bg-[#07090E] border-t border-[#1E2636] flex items-center justify-between text-[11px] text-[#8E9BAE]">
-              <span className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#00adff]" />
-                <span>Startify Multi-AI Terminal • $1,000 Initial Equity</span>
-              </span>
-              <span className="font-mono text-[10px]">M5/M15/1H/4H • Fib -0.27 / -0.618</span>
-            </div>
-          </div>
-        </div>
+      {/* Agent Detail Modal */}
+      {modalAgent && (
+        <AgentDetailModal
+          agent={modalAgent}
+          runs={arenaData.account_runs.filter((r) => r.agent_id === modalAgent.agent_id)}
+          trades={arenaData.trades.filter((t) => t.agent_id === modalAgent.agent_id)}
+          shadowTrades={arenaData.shadow_trades.filter(
+            (s) => s.agent_id === modalAgent.agent_id
+          )}
+          playbooks={arenaData.playbooks.filter((p) => p.agent_id === modalAgent.agent_id)}
+          onClose={() => setModalAgent(null)}
+        />
       )}
     </div>
   );
