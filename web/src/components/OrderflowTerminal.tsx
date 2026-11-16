@@ -76,7 +76,7 @@ export interface DeskEvaluation {
   discord_delivery?: { sent: boolean; status?: number; reason?: string };
 }
 
-export const OrderflowTerminal: React.FC = () => {
+export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly = false }) => {
   const [ofState, setOfState] = useState<OrderflowState | null>(null);
   const [desk, setDesk] = useState<DeskEvaluation | null>(null);
   const [liveCandles, setLiveCandles] = useState<ChartCandle[]>([]);
@@ -200,6 +200,29 @@ export const OrderflowTerminal: React.FC = () => {
     await fetchBackendOrderflowAndDesk(true);
     setSendingDiscord(false);
   };
+
+  if (chartOnly) {
+    return (
+      <div className="space-y-4">
+        <TradingChartPro
+          candles={liveCandles}
+          timeframe={timeframe}
+          onTimeframeChange={setTimeframe}
+          ote={chartOte}
+          signal={desk}
+          oiWalls={
+            ofState
+              ? {
+                  bid_wall: ofState.bid_wall,
+                  ask_wall: ofState.ask_wall,
+                }
+              : null
+          }
+          livePrice={ofState?.paxg_price ?? null}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 min-w-0">

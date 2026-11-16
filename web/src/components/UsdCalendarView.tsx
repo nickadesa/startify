@@ -112,7 +112,7 @@ export const UsdCalendarView: React.FC<Props> = ({
       fetch('/api/desk/journal')
         .then((r) => (r.ok ? r.json() : null))
         .then((json) => {
-          if (json && Array.isArray(json.entries) && json.entries.length > 0) {
+          if (json && Array.isArray(json.entries)) {
             setLiveJournal(json.entries);
             try {
               localStorage.setItem('startify_desk_journal_v1', JSON.stringify(json.entries));
@@ -185,6 +185,8 @@ export const UsdCalendarView: React.FC<Props> = ({
     }
 
     for (const j of liveJournal) {
+      // Only record finalized closed trades (WIN / LOSS) into the P&L calendar
+      if (j.status !== 'WIN' && j.status !== 'LOSS') continue;
       const dateStr = (j.timestamp || '').slice(0, 10);
       if (!dateStr) continue;
       const d = ensureDay(dateStr);
@@ -391,7 +393,7 @@ export const UsdCalendarView: React.FC<Props> = ({
             onClick={() => {
               const allDays = calendarWeeks.flatMap((w) =>
                 w.days
-                  .filter((d) => d.day > 0)
+                  .filter((d): d is NonNullable<typeof d> => d !== null && d.day > 0)
                   .map((d) => {
                     const summary = dayMap.get(d.dateStr);
                     return {

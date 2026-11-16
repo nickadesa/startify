@@ -31,7 +31,7 @@ import {
 
 const initialArenaData = arenaSnapshotRaw as unknown as ArenaPayload;
 
-type NavSection = 'overview' | 'orderflow' | 'calendar' | 'archive';
+type NavSection = 'overview' | 'chart' | 'orderflow' | 'calendar' | 'archive';
 
 export function App() {
   const [arenaData, setArenaData] = useState<ArenaPayload>(initialArenaData);
@@ -97,6 +97,7 @@ export function App() {
 
   const navItems: { id: NavSection; label: string; icon: React.FC<any>; count?: string }[] = [
     { id: 'overview', label: 'Desk Overview', icon: LayoutGrid },
+    { id: 'chart', label: 'Chart Terminal', icon: BarChart3, count: 'PRO' },
     { id: 'orderflow', label: 'Live Orderflow', icon: Activity, count: 'LIVE' },
     { id: 'calendar', label: 'USD Calendar', icon: Calendar, count: `${arenaData.news_events.length}` },
     { id: 'archive', label: 'Research & Archive', icon: Layers, count: '8 AI' },
@@ -362,7 +363,7 @@ export function App() {
                   </Card>
                   <Card
                     className="p-5 space-y-1.5 cursor-pointer hover:bg-[#121212] transition-colors"
-                    onClick={() => setActiveNav('orderflow')}
+                    onClick={() => setActiveNav('chart')}
                   >
                     <div className="text-[11px] uppercase tracking-[0.04em] text-[#00adff]">
                       Interactive Terminal
@@ -488,7 +489,14 @@ export function App() {
             </div>
           )}
 
-          {/* ==================== VIEW 2: LIVE ORDERFLOW ==================== */}
+          {/* ==================== VIEW 2: PRO CHART TERMINAL ==================== */}
+          {activeNav === 'chart' && (
+            <div className="space-y-4">
+              <OrderflowTerminal chartOnly />
+            </div>
+          )}
+
+          {/* ==================== VIEW 3: LIVE ORDERFLOW ==================== */}
           {activeNav === 'orderflow' && (
             <div className="space-y-6">
               <OrderflowTerminal />
