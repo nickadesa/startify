@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Play, Layers, CheckCircle2, Cpu } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Play } from 'lucide-react';
 import { ArenaPayload, BacktestSummary } from '../types/arena';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
@@ -101,11 +101,18 @@ export const BacktestAndSkillsView: React.FC<Props> = ({ data }) => {
   const [backtestData, setBacktestData] = useState<BacktestSummary | undefined>(
     data.backtest_summary
   );
+  const [selectedModelId, setSelectedModelId] = useState<string>('ai-1');
   const [isRunning, setIsRunning] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const skills = backtestData?.skills_trained || DEFAULT_SKILLS;
   const agentBacktests = backtestData?.agent_backtests || [];
+  const selectedModelBt = useMemo(
+    () =>
+      agentBacktests.find((a) => a.agent_id === selectedModelId) || agentBacktests[0],
+    [agentBacktests, selectedModelId]
+  );
+
   const tfCounts = backtestData?.dataset?.timeframes || {
     '4H': 180,
     '1H': 360,
@@ -125,14 +132,14 @@ export const BacktestAndSkillsView: React.FC<Props> = ({ data }) => {
         const json: BacktestSummary = await resp.json();
         setBacktestData(json);
         setStatusMessage(
-          `Walk-forward historical backtest completed across ${json.dataset.total_candles.toLocaleString()} candles (4H/1H/M15/M5) for all 8 AI models`
+          `Independent walk-forward backtest completed across ${json.dataset.total_candles.toLocaleString()} candles for all 8 AI models`
         );
       } else {
         throw new Error('Fallback to cached walk-forward dataset');
       }
     } catch {
       setStatusMessage(
-        `Walk-forward historical backtest verified across ${totalCandles.toLocaleString()} candles (4H: ${tfCounts['4H']}, 1H: ${tfCounts['1H']}, M15: ${tfCounts.M15}, M5: ${tfCounts.M5})`
+        `Independent walk-forward backtest verified across ${totalCandles.toLocaleString()} candles (4H: ${tfCounts['4H']}, 1H: ${tfCounts['1H']}, M15: ${tfCounts.M15}, M5: ${tfCounts.M5})`
       );
     } finally {
       setIsRunning(false);
@@ -146,12 +153,12 @@ export const BacktestAndSkillsView: React.FC<Props> = ({ data }) => {
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h1 className="apple-title text-[#F5F5F7]">
-              Historical walk-forward backtest & pre-competition skill training
+              Per-model historical walk-forward backtest & skills.sh
             </h1>
-            <Badge variant="positive">Ready</Badge>
+            <Badge variant="positive">Independent datasets</Badge>
           </div>
           <p className="text-[13px] text-[#8E8E93]">
-            Every AI model trains on 11 quantitative modules from skills.sh and runs a 65% in-sample / 35% out-of-sample walk-forward backtest across 4H, 1H, M15, and M5 historical XAUUSD candles before entering the live arena
+            Each AI model backtests on its own historical XAUUSD timeframe slice and saves its individual results (`data/backtests/ai-1.json` through `ai-8.json`) alongside the 11 skills.sh modules
           </p>
         </div>
 
@@ -163,7 +170,7 @@ export const BacktestAndSkillsView: React.FC<Props> = ({ data }) => {
           className="shrink-0"
         >
           <Play className="w-3.5 h-3.5 fill-current" strokeWidth={1.5} />
-          <span>{isRunning ? 'Running backtest...' : 'Run historical backtest'}</span>
+          <span>{isRunning ? 'Running backtest...' : 'Run all 8 backtests'}</span>
         </Button>
       </Card>
 
@@ -180,14 +187,14 @@ export const BacktestAndSkillsView: React.FC<Props> = ({ data }) => {
         </div>
       )}
 
-      {/* 4 Clean Stat Cards (4px Spacing Grid, Pure Numbers, Zero Clutter) */}
+      {/* 4 Clean Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-5 space-y-1.5">
-          <div className="text-[12px] text-[#8E8E93]">Historical XAUUSD dataset</div>
+          <div className="text-[12px] text-[#8E8E93]">Historical XAUUSD bars</div>
           <div className="apple-display text-[#F5F5F7]">
             {totalCandles.toLocaleString()}
           </div>
-          <div className="text-[12px] text-[#636366] font-mono-tabular">
+          <div className="text-[12px] text-[#71717A] font-mono-tabular">
             4H: {tfCounts['4H']} • 1H: {tfCounts['1H']} • M15: {tfCounts.M15} • M5: {tfCounts.M5}
           </div>
         </Card>
@@ -196,7 +203,7 @@ export const BacktestAndSkillsView: React.FC<Props> = ({ data }) => {
           <div className="text-[12px] text-[#8E8E93]">Walk-forward validation</div>
           <div className="apple-display text-[#F5F5F7]">65% / 35%</div>
           <div className="text-[12px] text-[#30D158]">
-            In-sample calibration vs out-of-sample test
+            In-sample training vs out-of-sample test
           </div>
         </Card>
 
@@ -209,7 +216,7 @@ export const BacktestAndSkillsView: React.FC<Props> = ({ data }) => {
         </Card>
 
         <Card className="p-5 space-y-1.5">
-          <div className="text-[12px] text-[#8E8E93]">Execution modes calibrated</div>
+          <div className="text-[12px] text-[#8E8E93]">Execution modes</div>
           <div className="apple-display text-[#F5F5F7]">3 modes</div>
           <div className="text-[12px] text-[#8E8E93]">
             Limit (0.705) • Zone confirm • Market
@@ -217,19 +224,19 @@ export const BacktestAndSkillsView: React.FC<Props> = ({ data }) => {
         </Card>
       </div>
 
-      {/* Per-Agent Historical Backtest Table (shadcn/ui Table) */}
+      {/* Per-Model Backtest Standings Table */}
       <Card className="overflow-hidden">
         <div className="p-5 sm:p-6 border-b border-white/[0.07] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
             <h2 className="apple-title text-[#F5F5F7]">
-              Pre-competition walk-forward backtest results by AI model
+              Independent backtest standings (click a row to inspect its trades)
             </h2>
             <p className="text-[13px] text-[#8E8E93] mt-0.5">
-              Simulated on $1,000.00 base equity with conservative SL-first tie-breaking, +1.0R Break-Even lock, and 50/50 partial close at Fib -0.27 & -0.618
+              Each model evaluates its own dataset window with conservative SL-first fills, +1.0R Break-Even lock, and 50/50 partial close at Fib -0.27 & -0.618
             </p>
           </div>
           <Badge variant="secondary" className="font-mono-tabular self-start sm:self-auto">
-            Nov 2026 model lineup
+            8 independent runs
           </Badge>
         </div>
 
@@ -237,78 +244,172 @@ export const BacktestAndSkillsView: React.FC<Props> = ({ data }) => {
           <TableHeader>
             <TableRow>
               <TableHead>AI model</TableHead>
-              <TableHead className="text-right">Simulated trades</TableHead>
+              <TableHead>Own historical slice</TableHead>
               <TableHead className="text-right">In-sample P&L</TableHead>
               <TableHead className="text-right">Out-of-sample P&L</TableHead>
-              <TableHead className="text-right">Backtest net P&L</TableHead>
+              <TableHead className="text-right">Net P&L</TableHead>
               <TableHead className="text-right">Win rate</TableHead>
-              <TableHead className="text-right">Profit factor</TableHead>
-              <TableHead className="text-right">Sharpe</TableHead>
-              <TableHead className="text-right">TP1 (-0.27) / BE saves</TableHead>
-              <TableHead>Execution mix (L / Z / M)</TableHead>
+              <TableHead className="text-right">PF / Sharpe</TableHead>
+              <TableHead className="text-right">TP1 (-0.27) / BE</TableHead>
+              <TableHead>Mix (L / Z / M)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {agentBacktests.map((ab) => (
-              <TableRow key={ab.agent_id}>
-                <TableCell>
-                  <div className="flex items-center gap-2.5">
-                    <span
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{ backgroundColor: ab.color }}
-                    />
-                    <div>
-                      <div className="font-medium text-[#F5F5F7]">{ab.display_name}</div>
-                      <div className="text-[11px] font-mono-tabular text-[#8E8E93]">
-                        {ab.model_name}
+            {agentBacktests.map((ab) => {
+              const isSelected = ab.agent_id === selectedModelBt?.agent_id;
+              return (
+                <TableRow
+                  key={ab.agent_id}
+                  onClick={() => setSelectedModelId(ab.agent_id)}
+                  className={`cursor-pointer ${isSelected ? 'bg-[#141417]' : ''}`}
+                >
+                  <TableCell>
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className="w-2 h-2 rounded-full shrink-0"
+                        style={{ backgroundColor: ab.color }}
+                      />
+                      <div>
+                        <div className="font-medium text-[#F5F5F7]">{ab.display_name}</div>
+                        <div className="text-[11px] font-mono-tabular text-[#8E8E93]">
+                          {ab.model_name}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell className="text-right font-mono-tabular text-[#A1A1AA]">
-                  {ab.trades_simulated}
-                </TableCell>
-                <TableCell className="text-right font-mono-tabular text-[#30D158]">
-                  +${ab.in_sample_pnl_usd.toFixed(2)}
-                </TableCell>
-                <TableCell className="text-right font-mono-tabular text-[#30D158]">
-                  +${ab.out_of_sample_pnl_usd.toFixed(2)}
-                </TableCell>
-                <TableCell className="text-right font-mono-tabular font-medium text-[#F5F5F7]">
-                  +${ab.net_pnl_usd.toFixed(2)}
-                </TableCell>
-                <TableCell className="text-right font-mono-tabular">
-                  {ab.win_rate_pct.toFixed(1)}%
-                </TableCell>
-                <TableCell className="text-right font-mono-tabular text-[#00adff]">
-                  {ab.profit_factor.toFixed(2)}
-                </TableCell>
-                <TableCell className="text-right font-mono-tabular">
-                  {ab.sharpe_ratio.toFixed(2)}
-                </TableCell>
-                <TableCell className="text-right font-mono-tabular text-[#A1A1AA]">
-                  {ab.tp1_neg_027_hit_rate_pct.toFixed(0)}% / {ab.breakeven_saves} saved
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1.5 font-mono-tabular text-[11px] text-[#A1A1AA]">
-                    <span className="px-1.5 py-0.5 rounded bg-[#141417] border border-white/[0.06]">
-                      L {ab.execution_mix.limit}%
-                    </span>
-                    <span className="px-1.5 py-0.5 rounded bg-[#141417] border border-white/[0.06]">
-                      Z {ab.execution_mix.zone_confirm}%
-                    </span>
-                    <span className="px-1.5 py-0.5 rounded bg-[#141417] border border-white/[0.06]">
-                      M {ab.execution_mix.market}%
-                    </span>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                  <TableCell className="text-[12px] text-[#A1A1AA]">
+                    <div>{ab.dataset_label || 'H1 + M15 Slice'}</div>
+                    <div className="text-[11px] text-[#71717A] font-mono-tabular">
+                      {ab.backtest_bars_total} bars • {ab.backtest_file || `data/backtests/${ab.agent_id}.json`}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right font-mono-tabular text-[#30D158]">
+                    +${ab.in_sample_pnl_usd.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-right font-mono-tabular text-[#30D158]">
+                    +${ab.out_of_sample_pnl_usd.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-right font-mono-tabular font-semibold text-[#F5F5F7]">
+                    +${ab.net_pnl_usd.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-right font-mono-tabular">
+                    {ab.win_rate_pct.toFixed(1)}%
+                  </TableCell>
+                  <TableCell className="text-right font-mono-tabular text-[#00adff]">
+                    {ab.profit_factor.toFixed(2)} / {ab.sharpe_ratio.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-right font-mono-tabular text-[#A1A1AA]">
+                    {ab.tp1_neg_027_hit_rate_pct.toFixed(0)}% / {ab.breakeven_saves}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1 font-mono-tabular text-[11px] text-[#A1A1AA]">
+                      <span className="px-1.5 py-0.5 rounded bg-[#141417] border border-white/[0.06]">
+                        {ab.execution_mix.limit}
+                      </span>
+                      <span className="px-1.5 py-0.5 rounded bg-[#141417] border border-white/[0.06]">
+                        {ab.execution_mix.zone_confirm}
+                      </span>
+                      <span className="px-1.5 py-0.5 rounded bg-[#141417] border border-white/[0.06]">
+                        {ab.execution_mix.market}
+                      </span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </Card>
 
-      {/* 11 Installed skills.sh Modules (Reference Image 5 List Style) */}
+      {/* Selected Model Individual Backtest Log */}
+      {selectedModelBt && (
+        <Card className="overflow-hidden">
+          <div className="p-5 sm:p-6 border-b border-white/[0.07] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2.5">
+                <span
+                  className="w-2.5 h-2.5 rounded-full"
+                  style={{ backgroundColor: selectedModelBt.color }}
+                />
+                <h2 className="apple-title text-[#F5F5F7]">
+                  {selectedModelBt.display_name} — individual backtest log
+                </h2>
+              </div>
+              <p className="text-[13px] text-[#8E8E93] mt-0.5">
+                {selectedModelBt.dataset_label} • {selectedModelBt.calibrated_note}
+              </p>
+            </div>
+            <Badge variant="accent" className="font-mono-tabular self-start sm:self-auto">
+              {selectedModelBt.backtest_file || `data/backtests/${selectedModelBt.agent_id}.json`}
+            </Badge>
+          </div>
+
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Timestamp</TableHead>
+                <TableHead>Side & mode</TableHead>
+                <TableHead className="text-right">Entry</TableHead>
+                <TableHead className="text-right">Stop loss</TableHead>
+                <TableHead className="text-right">TP1 (-0.27)</TableHead>
+                <TableHead className="text-right">TP2 (-0.618)</TableHead>
+                <TableHead className="text-right">R-multiple</TableHead>
+                <TableHead className="text-right">Net P&L</TableHead>
+                <TableHead className="text-right">Equity after</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {(selectedModelBt.recent_trades || []).map((tr, idx) => (
+                <TableRow key={idx}>
+                  <TableCell className="font-mono-tabular text-[#A1A1AA] whitespace-nowrap">
+                    {tr.time.slice(0, 16).replace('T', ' ')}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    <div className="flex items-center gap-1.5">
+                      <Badge variant={tr.side === 'long' ? 'positive' : 'negative'}>
+                        {tr.side === 'long' ? 'Long' : 'Short'}
+                      </Badge>
+                      <Badge variant="secondary">{tr.execution_mode}</Badge>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right font-mono-tabular">
+                    ${tr.entry.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-right font-mono-tabular text-[#8E8E93]">
+                    ${tr.stop_loss.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-right font-mono-tabular text-[#30D158]">
+                    ${tr.tp1_neg_027.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-right font-mono-tabular text-[#00adff]">
+                    ${tr.tp2_neg_0618.toFixed(2)}
+                  </TableCell>
+                  <TableCell
+                    className={`text-right font-mono-tabular ${
+                      tr.r_multiple >= 0 ? 'text-[#30D158]' : 'text-[#FF453A]'
+                    }`}
+                  >
+                    {tr.r_multiple >= 0 ? '+' : ''}
+                    {tr.r_multiple.toFixed(2)}R
+                  </TableCell>
+                  <TableCell
+                    className={`text-right font-mono-tabular font-medium ${
+                      tr.pnl_usd >= 0 ? 'text-[#30D158]' : 'text-[#FF453A]'
+                    }`}
+                  >
+                    {tr.pnl_usd >= 0 ? '+' : ''}${tr.pnl_usd.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-right font-mono-tabular text-[#F5F5F7]">
+                    ${tr.equity_after.toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Card>
+      )}
+
+      {/* 11 Installed skills.sh Modules */}
       <Card className="overflow-hidden">
         <div className="p-5 sm:p-6 border-b border-white/[0.07] flex items-center justify-between">
           <div>

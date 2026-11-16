@@ -88,7 +88,7 @@ news:
 
 agents:
   - agent_id: "ai-1"
-    display_name: "Alpha-Gemini"
+    display_name: "Gemini 3.8"
     provider: "gemini"
     model_name: "gemini-3.8-flash"
     model_version: "3.8-flash-ga"
@@ -98,7 +98,7 @@ agents:
     active: true
 
   - agent_id: "ai-2"
-    display_name: "Beta-Groq"
+    display_name: "GPT-OSS 120B"
     provider: "groq"
     model_name: "openai/gpt-oss-120b"
     model_version: "gpt-oss-120b"
@@ -108,7 +108,7 @@ agents:
     active: true
 
   - agent_id: "ai-3"
-    display_name: "Gamma-Mistral"
+    display_name: "Mistral 4"
     provider: "mistral"
     model_name: "mistral-small-4"
     model_version: "small-4-119b"
@@ -118,7 +118,7 @@ agents:
     active: true
 
   - agent_id: "ai-4"
-    display_name: "Delta-Router"
+    display_name: "Nemotron Ultra"
     provider: "openrouter"
     model_name: "nvidia/nemotron-3-ultra-550b-a55b:free"
     model_version: "nemotron-3-ultra"
@@ -128,7 +128,7 @@ agents:
     active: true
 
   - agent_id: "ai-5"
-    display_name: "Epsilon-CF"
+    display_name: "Llama 3.3 70B"
     provider: "cloudflare"
     model_name: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
     model_version: "3.3-70b-fp8"
@@ -138,7 +138,7 @@ agents:
     active: true
 
   - agent_id: "ai-6"
-    display_name: "Zeta-Qwen3.8"
+    display_name: "Qwen 3.8"
     provider: "zai"
     model_name: "qwen/qwen3.8-27b"
     model_version: "qwen3.8-27b"
@@ -148,7 +148,7 @@ agents:
     active: true
 
   - agent_id: "ai-7"
-    display_name: "Eta-Nemotron"
+    display_name: "Nemotron 3.5"
     provider: "nvidia"
     model_name: "nvidia/nemotron-3.5-super-vl:free"
     model_version: "nemotron-3.5-super"
@@ -158,7 +158,7 @@ agents:
     active: true
 
   - agent_id: "ai-8"
-    display_name: "Theta-Cohere"
+    display_name: "Command A+"
     provider: "cohere"
     model_name: "command-a-plus-05-2026"
     model_version: "command-a-plus"
@@ -168,7 +168,7 @@ agents:
     active: true
 
   - agent_id: "consensus"
-    display_name: "Consensus-Prime"
+    display_name: "Consensus"
     provider: "system_consensus"
     model_name: "ensemble-3of8-vote"
     model_version: "v2.0"
@@ -178,7 +178,7 @@ agents:
     active: true
 
   - agent_id: "ctrl-ote"
-    display_name: "Control-OTE-Rule"
+    display_name: "Rule OTE"
     provider: "control_rule"
     model_name: "deterministic-ote-0705"
     model_version: "v2.0"
@@ -188,7 +188,7 @@ agents:
     active: true
 
   - agent_id: "ctrl-bnh"
-    display_name: "Control-BuyHold"
+    display_name: "Buy & Hold"
     provider: "control_bnh"
     model_name: "passive-gold-allocation"
     model_version: "v2.0"

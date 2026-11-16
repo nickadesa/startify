@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Activity,
   BarChart3,
   BookOpen,
   Calendar,
@@ -8,7 +7,6 @@ import {
   LayoutGrid,
   Layers,
   Search,
-  SlidersHorizontal,
   ArrowUpRight,
 } from 'lucide-react';
 import arenaSnapshotRaw from './data/arenaSnapshot.json';
@@ -18,6 +16,7 @@ import { OteCandlestickChart } from './components/OteCandlestickChart';
 import { AgentDetailModal } from './components/AgentDetailModal';
 import { PlaybooksAndSystemView } from './components/PlaybooksAndSystemView';
 import { BacktestAndSkillsView } from './components/BacktestAndSkillsView';
+import { UsdCalendarView } from './components/UsdCalendarView';
 import { Card } from './components/ui/card';
 import { Badge } from './components/ui/badge';
 import { Button } from './components/ui/button';
@@ -32,7 +31,7 @@ import {
 
 const initialArenaData = arenaSnapshotRaw as unknown as ArenaPayload;
 
-type NavSection = 'overview' | 'terminal' | 'backtest' | 'models' | 'journal';
+type NavSection = 'overview' | 'calendar' | 'terminal' | 'backtest' | 'models' | 'journal';
 
 export function App() {
   const [arenaData, setArenaData] = useState<ArenaPayload>(initialArenaData);
@@ -55,7 +54,6 @@ export function App() {
       });
   }, []);
 
-  // Keyboard shortcut Cmd+K / Ctrl+K focuses search input
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
@@ -95,6 +93,7 @@ export function App() {
 
   const navItems: { id: NavSection; label: string; icon: React.FC<any>; count?: string }[] = [
     { id: 'overview', label: 'Overview', icon: LayoutGrid },
+    { id: 'calendar', label: 'USD calendar', icon: Calendar, count: `${arenaData.news_events.length}` },
     { id: 'terminal', label: 'Market terminal', icon: BarChart3, count: '4 TF' },
     { id: 'backtest', label: 'Backtest & skills', icon: Layers, count: '11' },
     { id: 'models', label: 'AI models', icon: Cpu, count: '8' },
@@ -103,19 +102,18 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#000000] text-[#F5F5F7] flex flex-col lg:flex-row">
-      {/* Left Sidebar (Desktop) — Inspired by Reference Images 5 & 13 */}
-      <aside className="hidden lg:flex lg:w-[248px] lg:flex-col lg:fixed lg:inset-y-0 bg-[#000000] border-r border-white/[0.07] px-4 py-5 select-none z-30">
-        {/* Brand Row */}
+      {/* Left Sidebar (Desktop) */}
+      <aside className="hidden lg:flex lg:w-[248px] lg:flex-col lg:fixed lg:inset-y-0 bg-[#000000] border-r border-white/[0.08] px-4 py-5 select-none z-30">
         <div className="flex items-center justify-between px-2 pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#141417] border border-white/[0.1] flex items-center justify-center">
-              <span className="text-[14px] font-semibold tracking-tight text-[#00adff]">S</span>
+            <div className="w-8 h-8 rounded-xl bg-[#121215] border border-white/[0.1] flex items-center justify-center">
+              <span className="text-[15px] font-bold tracking-tight text-[#00adff]">S</span>
             </div>
             <div>
               <div className="text-[15px] font-semibold tracking-[-0.015em] text-[#F5F5F7] leading-none">
                 Startify
               </div>
-              <div className="text-[11px] text-[#636366] mt-1 font-mono-tabular">
+              <div className="text-[11px] text-[#71717A] mt-1 font-mono-tabular">
                 XAUUSD Arena v2.5
               </div>
             </div>
@@ -123,10 +121,10 @@ export function App() {
           <span className="w-2 h-2 rounded-full bg-[#30D158]" title="Engine online" />
         </div>
 
-        {/* Search Input with Command+K Keycaps (Reference Image 5 Style) */}
+        {/* Search Input with Command+K Keycaps */}
         <div className="relative mb-5">
           <Search
-            className="w-3.5 h-3.5 text-[#636366] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+            className="w-3.5 h-3.5 text-[#71717A] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
             strokeWidth={1.5}
           />
           <input
@@ -135,19 +133,18 @@ export function App() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search models"
-            className="w-full h-9 pl-8 pr-14 rounded-xl bg-[#121215] border border-white/[0.07] text-[13px] text-[#F5F5F7] placeholder:text-[#636366] focus:outline-none focus:border-white/[0.18] transition-colors"
+            className="w-full h-9 pl-8 pr-14 rounded-xl bg-[#111114] border border-white/[0.08] text-[13px] text-[#F5F5F7] placeholder:text-[#71717A] focus:outline-none focus:border-white/[0.2] transition-colors"
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none">
-            <kbd className="px-1.5 py-0.5 text-[10px] font-mono-tabular text-[#8E8E93] bg-[#1C1C1E] rounded border border-white/[0.08]">
+            <kbd className="px-1.5 py-0.5 text-[10px] font-mono-tabular text-[#A1A1AA] bg-[#1C1C1E] rounded border border-white/[0.08]">
               ⌘
             </kbd>
-            <kbd className="px-1.5 py-0.5 text-[10px] font-mono-tabular text-[#8E8E93] bg-[#1C1C1E] rounded border border-white/[0.08]">
+            <kbd className="px-1.5 py-0.5 text-[10px] font-mono-tabular text-[#A1A1AA] bg-[#1C1C1E] rounded border border-white/[0.08]">
               K
             </kbd>
           </div>
         </div>
 
-        {/* Navigation Items (4px Grid, 36px Row Height, 16px Stroke-1.5 Icons) */}
         <nav className="space-y-1 flex-1">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -159,8 +156,8 @@ export function App() {
                 onClick={() => setActiveNav(item.id)}
                 className={`w-full h-9 px-3 rounded-xl flex items-center justify-between text-[13px] font-medium tracking-[-0.005em] cursor-pointer active:scale-[0.98] transition-[transform,background-color,color,border-color] duration-150 ${
                   active
-                    ? 'bg-[#1C1C1E] text-[#F5F5F7] border border-white/[0.09]'
-                    : 'text-[#8E8E93] hover:text-[#F5F5F7] hover:bg-[#121215] border border-transparent'
+                    ? 'bg-[#18181B] text-[#F5F5F7] border border-white/[0.1]'
+                    : 'text-[#A1A1AA] hover:text-[#F5F5F7] hover:bg-[#111114] border border-transparent'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -168,12 +165,12 @@ export function App() {
                     className={`w-4 h-4 shrink-0 ${
                       active ? 'text-[#00adff]' : 'text-[#8E8E93]'
                     }`}
-                    strokeWidth={1.5}
+                    strokeWidth={1.6}
                   />
                   <span>{item.label}</span>
                 </div>
                 {item.count && (
-                  <span className="text-[11px] font-mono-tabular text-[#636366]">
+                  <span className="text-[11px] font-mono-tabular text-[#71717A]">
                     {item.count}
                   </span>
                 )}
@@ -182,18 +179,23 @@ export function App() {
           })}
         </nav>
 
-        {/* Bottom Arena Parameters Summary Card */}
-        <div className="rounded-xl bg-[#0A0A0C] border border-white/[0.07] p-3.5 space-y-2 mt-4">
+        {/* MyFundedFutures-Inspired Published Rules Card */}
+        <div className="rounded-xl bg-[#09090B] border border-white/[0.08] p-3.5 space-y-2 mt-4">
+          <div className="text-[11px] font-medium text-[#71717A]">Published arena rules</div>
           <div className="flex items-center justify-between text-[12px]">
-            <span className="text-[#8E8E93]">Base equity</span>
+            <span className="text-[#A1A1AA]">Starting equity</span>
             <span className="font-mono-tabular text-[#F5F5F7] font-medium">$1,000.00</span>
           </div>
           <div className="flex items-center justify-between text-[12px]">
-            <span className="text-[#8E8E93]">Daily scan budget</span>
-            <span className="font-mono-tabular text-[#00adff]">100–500 / day</span>
+            <span className="text-[#A1A1AA]">Max risk / trade</span>
+            <span className="font-mono-tabular text-[#00adff]">2.0%</span>
           </div>
           <div className="flex items-center justify-between text-[12px]">
-            <span className="text-[#8E8E93]">Macro filter</span>
+            <span className="text-[#A1A1AA]">Scan budget</span>
+            <span className="font-mono-tabular text-[#F5F5F7]">100–500 / day</span>
+          </div>
+          <div className="flex items-center justify-between text-[12px]">
+            <span className="text-[#A1A1AA]">Macro filter</span>
             <span className="font-mono-tabular text-[#30D158]">USD only</span>
           </div>
         </div>
@@ -202,10 +204,10 @@ export function App() {
       {/* Main Content Shell */}
       <div className="flex-1 lg:pl-[248px] flex flex-col min-h-screen pb-20 lg:pb-10">
         {/* Translucent Sticky Top Bar */}
-        <header className="sticky top-0 z-20 apple-glass border-b border-white/[0.07] px-4 sm:px-8 h-14 flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-20 apple-glass border-b border-white/[0.08] px-4 sm:px-8 h-14 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="lg:hidden flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[#141417] border border-white/[0.1] flex items-center justify-center text-[13px] font-semibold text-[#00adff]">
+              <div className="w-7 h-7 rounded-lg bg-[#141417] border border-white/[0.1] flex items-center justify-center text-[13px] font-bold text-[#00adff]">
                 S
               </div>
               <span className="text-[15px] font-semibold tracking-[-0.015em]">Startify</span>
@@ -223,18 +225,24 @@ export function App() {
             <Badge variant="secondary" className="font-mono-tabular hidden sm:inline-flex">
               XAUUSD $4,028.90
             </Badge>
-            <Badge variant="positive" className="font-mono-tabular">
-              USD Macro Clear
-            </Badge>
+            <button
+              type="button"
+              onClick={() => setActiveNav('calendar')}
+              className="cursor-pointer active:scale-[0.97] transition-transform"
+            >
+              <Badge variant="positive" className="font-mono-tabular">
+                USD Calendar ({arenaData.news_events.length})
+              </Badge>
+            </button>
             <Button
-              variant="secondary"
+              variant="primary"
               size="sm"
               onClick={() =>
                 setActiveNav(activeNav === 'backtest' ? 'overview' : 'backtest')
               }
             >
               <span>
-                {activeNav === 'backtest' ? 'View live arena' : 'Backtest & skills'}
+                {activeNav === 'backtest' ? 'Live arena' : 'Backtest & skills'}
               </span>
             </Button>
           </div>
@@ -245,27 +253,75 @@ export function App() {
           {/* ==================== VIEW 1: OVERVIEW ==================== */}
           {activeNav === 'overview' && (
             <div className="space-y-6">
-              {/* Page Title & Context */}
-              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+              {/* MyFundedFutures-Style Clear Hero Header */}
+              <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
                 <div>
-                  <h1 className="text-[24px] sm:text-[28px] font-semibold tracking-[-0.025em] text-[#F5F5F7] leading-tight">
-                    Autonomous XAUUSD trading arena
+                  <h1 className="text-[26px] sm:text-[32px] font-semibold tracking-[-0.03em] text-[#F5F5F7] leading-tight">
+                    Trade well. Proven in simulation.
                   </h1>
-                  <p className="text-[13px] text-[#8E8E93] mt-1">
-                    8 latest free AI models competing from $1,000.00 starting equity with Fib OTE (0.705), Break-Even stop protection, and -0.27 / -0.618 partial close
+                  <p className="text-[14px] text-[#8E8E93] mt-1">
+                    8 autonomous AI models competing from $1,000.00 starting equity with Fib OTE (0.705), Break-Even at +1.0R, and -0.27 / -0.618 partial close
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <Badge variant="default" className="font-mono-tabular">
                     {totalTradesCount} trades logged
                   </Badge>
                   <Badge variant="accent" className="font-mono-tabular">
-                    {backtestCandlesCount.toLocaleString()} warmup bars
+                    {backtestCandlesCount.toLocaleString()} historical bars
                   </Badge>
                 </div>
               </div>
 
-              {/* Split Hero: Left Equity Chart (8 cols) + Right Summary Stack (4 cols) — Inspired by Reference Image 13 */}
+              {/* MyFundedFutures 3-Step Standard Bar */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="p-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-[11px] font-semibold text-[#00adff]">01 • Pre-flight backtest</div>
+                    <div className="text-[14px] font-medium text-[#F5F5F7] mt-0.5">
+                      Per-model historical validation
+                    </div>
+                    <div className="text-[12px] text-[#8E8E93] mt-0.5">
+                      Each model tests on its own 4H/1H/M15/M5 slice
+                    </div>
+                  </div>
+                  <Button variant="secondary" size="sm" onClick={() => setActiveNav('backtest')}>
+                    Inspect
+                  </Button>
+                </Card>
+
+                <Card className="p-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-[11px] font-semibold text-[#30D158]">02 • Live simulation</div>
+                    <div className="text-[14px] font-medium text-[#F5F5F7] mt-0.5">
+                      Market, Limit & Zone Confirm
+                    </div>
+                    <div className="text-[12px] text-[#8E8E93] mt-0.5">
+                      Automatic Break-Even lock & 50/50 partial exits
+                    </div>
+                  </div>
+                  <Button variant="secondary" size="sm" onClick={() => setActiveNav('terminal')}>
+                    Chart
+                  </Button>
+                </Card>
+
+                <Card className="p-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-[11px] font-semibold text-[#FFD60A]">03 • USD macro guard</div>
+                    <div className="text-[14px] font-medium text-[#F5F5F7] mt-0.5">
+                      USD-only economic calendar
+                    </div>
+                    <div className="text-[12px] text-[#8E8E93] mt-0.5">
+                      ±30m blackout around FOMC, NFP, CPI, PCE
+                    </div>
+                  </div>
+                  <Button variant="secondary" size="sm" onClick={() => setActiveNav('calendar')}>
+                    Calendar
+                  </Button>
+                </Card>
+              </div>
+
+              {/* Split Hero: Left Equity Chart (8 cols) + Right Summary Stack (4 cols) */}
               <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-stretch">
                 <div className="xl:col-span-8">
                   <EquityCurveChart
@@ -283,7 +339,7 @@ export function App() {
                     onClick={() => setModalAgent(topChampion)}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-[12px] text-[#8E8E93]">Current leader</span>
+                      <span className="text-[12px] text-[#8E8E93]">Arena leader</span>
                       <Badge variant="positive" className="font-mono-tabular">
                         +{topChampion.net_pnl_pct.toFixed(2)}%
                       </Badge>
@@ -297,26 +353,26 @@ export function App() {
                           className="w-2 h-2 rounded-full"
                           style={{ backgroundColor: topChampion.color }}
                         />
-                        <span>{topChampion.display_name}</span>
-                        <span className="text-[#636366] font-mono-tabular">
-                          ({topChampion.model_name})
+                        <span className="font-medium text-[#F5F5F7]">{topChampion.display_name}</span>
+                        <span className="text-[#71717A] text-[12px]">
+                          {topChampion.model_name}
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-[12px] text-[#636366] pt-2 border-t border-white/[0.06] font-mono-tabular">
+                    <div className="flex items-center justify-between text-[12px] text-[#71717A] pt-2 border-t border-white/[0.06] font-mono-tabular">
                       <span>Win rate {topChampion.win_rate.toFixed(1)}%</span>
                       <span>PF {topChampion.profit_factor.toFixed(2)}</span>
                     </div>
                   </Card>
 
-                  {/* Card 2: Multi-AI Consensus Cluster */}
+                  {/* Card 2: Multi-AI Consensus */}
                   <Card
                     className="p-5 flex-1 flex flex-col justify-between cursor-pointer hover:bg-[#121215] transition-colors"
                     onClick={() => setModalAgent(consensusAccount)}
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-[12px] text-[#8E8E93]">
-                        Multi-AI consensus (3+ models align)
+                        Multi-AI consensus (3+ align)
                       </span>
                       <Badge variant="accent" className="font-mono-tabular">
                         {consensusAccount.win_rate.toFixed(1)}% WR
@@ -330,46 +386,48 @@ export function App() {
                         +${consensusAccount.net_pnl_usd.toFixed(2)} vs $1,000.00 baseline
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-[12px] text-[#636366] pt-2 border-t border-white/[0.06] font-mono-tabular">
+                    <div className="flex items-center justify-between text-[12px] text-[#71717A] pt-2 border-t border-white/[0.06] font-mono-tabular">
                       <span>{arenaData.consensus_events.length} cluster signals</span>
                       <span>PF {consensusAccount.profit_factor.toFixed(2)}</span>
                     </div>
                   </Card>
 
-                  {/* Card 3: Pre-Competition Walk-Forward Backtest */}
+                  {/* Card 3: USD Macro Calendar Quick Preview */}
                   <Card
                     className="p-5 flex-1 flex flex-col justify-between cursor-pointer hover:bg-[#121215] transition-colors"
-                    onClick={() => setActiveNav('backtest')}
+                    onClick={() => setActiveNav('calendar')}
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-[12px] text-[#8E8E93]">
-                        Historical backtest & skills.sh
+                        USD economic calendar
                       </span>
                       <ArrowUpRight className="w-4 h-4 text-[#8E8E93]" strokeWidth={1.5} />
                     </div>
-                    <div className="my-2">
-                      <div className="text-[22px] font-semibold tracking-[-0.025em] font-mono-tabular text-[#F5F5F7]">
-                        2,700 candles • 11 skills
-                      </div>
-                      <div className="text-[13px] text-[#8E8E93] mt-1">
-                        4H, 1H, M15, M5 walk-forward trained
-                      </div>
+                    <div className="my-2 space-y-1.5">
+                      {arenaData.news_events.slice(-2).map((ev) => (
+                        <div key={ev.event_id} className="flex items-center justify-between text-[12px]">
+                          <span className="text-[#F5F5F7] truncate pr-2">{ev.name}</span>
+                          <span className="font-mono-tabular text-[#00adff] shrink-0">
+                            {ev.date.slice(5)}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                     <div className="flex items-center justify-between text-[12px] text-[#00adff] pt-2 border-t border-white/[0.06]">
-                      <span>Inspect backtest & skill pack</span>
-                      <span className="font-mono-tabular">65% / 35% split</span>
+                      <span>Open full USD calendar</span>
+                      <span className="font-mono-tabular">{arenaData.news_events.length} events</span>
                     </div>
                   </Card>
                 </div>
               </div>
 
-              {/* Ranked Leaderboard Table (shadcn/ui Table, Clean, Uncluttered) */}
+              {/* Ranked Leaderboard Table */}
               <Card className="overflow-hidden">
                 <div className="p-5 sm:p-6 border-b border-white/[0.07] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
                     <h2 className="apple-title text-[#F5F5F7]">Leaderboard standings</h2>
                     <p className="text-[13px] text-[#8E8E93] mt-0.5">
-                      Select any model row to inspect its executed trades, Break-Even saves, and self-authored playbook
+                      Click any model to inspect its executed trades, Break-Even saves, and self-authored playbook
                     </p>
                   </div>
 
@@ -401,7 +459,7 @@ export function App() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-14">Rank</TableHead>
-                      <TableHead>Model & provider</TableHead>
+                      <TableHead>Model</TableHead>
                       <TableHead>Strategy archetype</TableHead>
                       <TableHead className="text-right">Current equity</TableHead>
                       <TableHead className="text-right">Net P&L</TableHead>
@@ -409,7 +467,7 @@ export function App() {
                       <TableHead className="text-right">Profit factor</TableHead>
                       <TableHead className="text-right">Expectancy</TableHead>
                       <TableHead className="text-right">Max DD</TableHead>
-                      <TableHead className="text-right">Status</TableHead>
+                      <TableHead className="text-right">Stage</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -469,8 +527,10 @@ export function App() {
                           <TableCell className="text-right">
                             {item.blowup_count > 0 ? (
                               <Badge variant="negative">Run #{item.current_run_number}</Badge>
+                            ) : item.net_pnl_pct >= 20 ? (
+                              <Badge variant="positive">Funded</Badge>
                             ) : (
-                              <Badge variant="default">Run #1</Badge>
+                              <Badge variant="default">Eval</Badge>
                             )}
                           </TableCell>
                         </TableRow>
@@ -482,7 +542,10 @@ export function App() {
             </div>
           )}
 
-          {/* ==================== VIEW 2: MARKET TERMINAL ==================== */}
+          {/* ==================== VIEW 2: USD CALENDAR ==================== */}
+          {activeNav === 'calendar' && <UsdCalendarView events={arenaData.news_events} />}
+
+          {/* ==================== VIEW 3: MARKET TERMINAL ==================== */}
           {activeNav === 'terminal' && (
             <div className="space-y-6">
               <OteCandlestickChart
@@ -490,7 +553,6 @@ export function App() {
                 selectedAgentId={selectedChartAgentId}
               />
 
-              {/* USD-Only Macro Economic Calendar & Consensus Signals */}
               <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
                 <Card className="xl:col-span-7 overflow-hidden">
                   <div className="p-5 sm:p-6 border-b border-white/[0.07] flex items-center justify-between">
@@ -499,10 +561,12 @@ export function App() {
                         USD high-impact macroeconomic calendar
                       </h2>
                       <p className="text-[13px] text-[#8E8E93] mt-0.5">
-                        Strictly filtered to USD releases (FOMC, NFP, US CPI, Core PCE, ISM PMI) with ±30m blackout guard
+                        Strictly filtered to USD releases with ±30m blackout protection
                       </p>
                     </div>
-                    <Badge variant="positive">USD only</Badge>
+                    <Button variant="secondary" size="sm" onClick={() => setActiveNav('calendar')}>
+                      Full calendar
+                    </Button>
                   </div>
 
                   <Table>
@@ -510,8 +574,8 @@ export function App() {
                       <TableRow>
                         <TableHead>Date & time (UTC)</TableHead>
                         <TableHead>USD release</TableHead>
-                        <TableHead className="text-right">Actual vs forecast</TableHead>
-                        <TableHead className="text-right">60m XAUUSD impact</TableHead>
+                        <TableHead className="text-right">Actual / Forecast</TableHead>
+                        <TableHead className="text-right">60m XAUUSD</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -526,7 +590,7 @@ export function App() {
                           </TableCell>
                           <TableCell className="text-right font-mono-tabular whitespace-nowrap">
                             <span className="text-[#F5F5F7]">{ev.actual}</span>{' '}
-                            <span className="text-[#636366]">/ {ev.forecast}</span>
+                            <span className="text-[#71717A]">/ {ev.forecast}</span>
                           </TableCell>
                           <TableCell className="text-right font-mono-tabular whitespace-nowrap">
                             <Badge
@@ -594,10 +658,10 @@ export function App() {
             </div>
           )}
 
-          {/* ==================== VIEW 3: BACKTEST & SKILLS ==================== */}
+          {/* ==================== VIEW 4: BACKTEST & SKILLS ==================== */}
           {activeNav === 'backtest' && <BacktestAndSkillsView data={arenaData} />}
 
-          {/* ==================== VIEW 4: AI MODELS (Reference Image 14 Winrate Ring Grid) ==================== */}
+          {/* ==================== VIEW 5: AI MODELS ==================== */}
           {activeNav === 'models' && (
             <div className="space-y-6">
               <div>
@@ -658,7 +722,6 @@ export function App() {
                           </div>
                         </div>
 
-                        {/* Donut Winrate Ring (Reference Image 14 Style) */}
                         <div className="relative w-18 h-18 flex items-center justify-center">
                           <svg className="w-18 h-18 -rotate-90" viewBox="0 0 72 72">
                             <circle
@@ -689,15 +752,15 @@ export function App() {
 
                       <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/[0.06] text-[12px] font-mono-tabular">
                         <div>
-                          <div className="text-[#636366]">PF</div>
+                          <div className="text-[#71717A]">PF</div>
                           <div className="text-[#F5F5F7]">{ag.profit_factor.toFixed(2)}</div>
                         </div>
                         <div>
-                          <div className="text-[#636366]">Trades</div>
+                          <div className="text-[#71717A]">Trades</div>
                           <div className="text-[#F5F5F7]">{ag.total_trades}</div>
                         </div>
                         <div>
-                          <div className="text-[#636366]">Max DD</div>
+                          <div className="text-[#71717A]">Max DD</div>
                           <div className="text-[#F5F5F7]">{ag.max_drawdown_pct.toFixed(1)}%</div>
                         </div>
                       </div>
@@ -708,13 +771,13 @@ export function App() {
             </div>
           )}
 
-          {/* ==================== VIEW 5: JOURNAL & PLAYBOOKS ==================== */}
+          {/* ==================== VIEW 6: JOURNAL & PLAYBOOKS ==================== */}
           {activeNav === 'journal' && <PlaybooksAndSystemView data={arenaData} />}
         </main>
       </div>
 
       {/* Mobile Bottom Translucent Navigation Bar */}
-      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 apple-glass border-t border-white/[0.08] px-2 py-1.5 flex items-center justify-around">
+      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 apple-glass border-t border-white/[0.08] px-1 py-1.5 flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = activeNav === item.id;
@@ -723,7 +786,7 @@ export function App() {
               key={item.id}
               type="button"
               onClick={() => setActiveNav(item.id)}
-              className={`flex flex-col items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-medium cursor-pointer active:scale-[0.95] transition-colors ${
+              className={`flex flex-col items-center gap-1 px-2 py-1 rounded-xl text-[10.5px] font-medium cursor-pointer active:scale-[0.95] transition-colors ${
                 active ? 'text-[#00adff]' : 'text-[#8E8E93]'
               }`}
             >

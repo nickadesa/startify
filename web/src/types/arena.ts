@@ -210,12 +210,27 @@ export interface TrainedSkillItem {
   file: string;
 }
 
+export interface BacktestTradeSample {
+  time: string;
+  side: string;
+  execution_mode: string;
+  entry: number;
+  stop_loss: number;
+  tp1_neg_027: number;
+  tp2_neg_0618: number;
+  r_multiple: number;
+  pnl_usd: number;
+  equity_after: number;
+}
+
 export interface AgentBacktestResult {
   agent_id: string;
   display_name: string;
   model_name: string;
   provider: string;
   color: string;
+  dataset_label?: string;
+  backtest_file?: string;
   backtest_bars_total: number;
   trades_simulated: number;
   win_rate_pct: number;
@@ -236,6 +251,7 @@ export interface AgentBacktestResult {
   };
   primary_skills: string[];
   calibrated_note: string;
+  recent_trades?: BacktestTradeSample[];
 }
 
 export interface BacktestSummary {

@@ -1,4 +1,4 @@
-# Control-BuyHold Trading Playbook (v2.5)
+# Buy & Hold Trading Playbook (v2.5)
 - **Model**: `passive-gold-allocation`
 - **Primary Archetype**: Passive XAUUSD Benchmark
 - **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)

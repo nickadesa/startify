@@ -1,4 +1,4 @@
-# Consensus-Prime Trading Playbook (v2.5)
+# Consensus Trading Playbook (v2.5)
 - **Model**: `ensemble-3of8-vote`
 - **Primary Archetype**: Multi-AI Uncorrelated Consensus Signal
 - **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)

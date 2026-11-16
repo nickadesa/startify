@@ -1,4 +1,4 @@
-# Control-OTE-Rule Trading Playbook (v2.5)
+# Rule OTE Trading Playbook (v2.5)
 - **Model**: `deterministic-ote-0705`
 - **Primary Archetype**: Pure Rule-Based H4 Trend + 0.705 Limit
 - **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)
