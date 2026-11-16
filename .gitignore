@@ -1,0 +1,17 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+
+# Environment variables (secrets kept local / set in Vercel Dashboard)
+.env
+.env.local
+
+# Node / Frontend
+web/node_modules/
+web/dist/
+node_modules/
+.DS_Store

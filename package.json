@@ -1,0 +1,12 @@
+{
+  "name": "startify",
+  "version": "2.5.0",
+  "private": true,
+  "description": "Startify — XAUUSD Multi-AI Paper Trader v2.5",
+  "scripts": {
+    "install-web": "npm --prefix web install",
+    "dev": "npm --prefix web run dev",
+    "build": "npm --prefix web install && npm --prefix web run build",
+    "preview": "npm --prefix web run preview"
+  }
+}

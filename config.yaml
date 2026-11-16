@@ -1,0 +1,198 @@
+brand:
+  name: "Startify"
+  tagline: "XAUUSD Multi-AI Quantitative Paper Trading Arena"
+  primary_color: "#00adff"
+  theme: "dark"
+  language: "en"
+
+trading:
+  symbol: "XAUUSD"
+  initial_equity: 1000.0
+  contract_oz: 100
+  min_lot: 0.01
+  sim_min_lot: 0.001
+  lot_step: 0.01
+  max_lot: 1.00
+  leverage: 100
+  sessions:
+    london:
+      start_utc: "07:00"
+      end_utc: "16:00"
+    new_york:
+      start_utc: "12:00"
+      end_utc: "21:00"
+    overlap:
+      start_utc: "12:00"
+      end_utc: "16:00"
+
+paper:
+  base_spread_usd: 0.30
+  news_spread_multiplier: 2.5
+  slippage_usd: 0.08
+  commission_per_lot_usd: 0.0
+  limit_timeout_bars_h1: 8
+  conservative_sl_first: true
+  friday_close_hour_ny: 16
+  friday_report_hour_ny: 17
+  timezone_ny: "America/New_York"
+
+risk_rules:
+  default_risk_pct: 1.0
+  min_risk_pct: 0.5
+  max_risk_pct: 2.0
+  min_rr: 2.0
+  max_open_positions: 2
+  max_trades_per_day: 3
+  max_daily_loss_pct: 3.0
+  max_weekly_loss_pct: 8.0
+  max_margin_usage_pct: 30.0
+  allow_scale_out: true
+  allow_breakeven_after_tp1: true
+  forbid_martingale: true
+  forbid_averaging_down: true
+  news_blackout_minutes_before: 45
+  news_blackout_minutes_after: 45
+
+blowup:
+  min_equity_pct_of_initial: 10.0
+  min_equity_usd: 100.0
+  margin_stopout_level_pct: 50.0
+  auto_restart_with_initial_equity: true
+  preserve_playbook_and_journal: true
+
+triggers:
+  enabled: true
+  ote_proximity_usd: 8.0
+  oi_wall_proximity_usd: 5.0
+  enable_liquidity_sweep_trigger: true
+  enable_session_open_trigger: true
+
+consensus:
+  enabled: true
+  window_bars_h1: 1
+  min_agreeing_agents: 3
+  max_entry_diff_usd: 5.0
+  enable_virtual_account: true
+
+news:
+  currency_filter: "USD"
+  high_impact_events:
+    - "FOMC Rate Decision & Statement"
+    - "Non-Farm Payrolls (NFP)"
+    - "US Consumer Price Index (CPI YoY/MoM)"
+    - "US Core PCE Price Index"
+    - "ISM Manufacturing & Services PMI"
+    - "Fed Chair Powell Speech"
+    - "US GDP (Advance) & Initial Jobless Claims"
+    - "US 10Y Treasury Yield Auction"
+
+agents:
+  - agent_id: "ai-1"
+    display_name: "Alpha-Gemini"
+    provider: "gemini"
+    model_name: "gemini-2.5-flash"
+    model_version: "2026.11"
+    api_key_env: "GEMINI_API_KEY"
+    color: "#00adff"
+    style_archetype: "London OTE Sniper & COT Confluence"
+    active: true
+
+  - agent_id: "ai-2"
+    display_name: "Beta-Groq"
+    provider: "groq"
+    model_name: "llama-3.3-70b-versatile"
+    model_version: "3.3-70b"
+    api_key_env: "GROQ_API_KEY"
+    color: "#10B981"
+    style_archetype: "NY Overlap Liquidity Sweep & OTE"
+    active: true
+
+  - agent_id: "ai-3"
+    display_name: "Gamma-Mistral"
+    provider: "mistral"
+    model_name: "mistral-small-latest"
+    model_version: "25.09"
+    api_key_env: "MISTRAL_API_KEY"
+    color: "#F59E0B"
+    style_archetype: "Institutional OI Wall Rejections"
+    active: true
+
+  - agent_id: "ai-4"
+    display_name: "Delta-Router"
+    provider: "openrouter"
+    model_name: "google/gemma-4-31b-it:free"
+    model_version: "4-31b-free"
+    api_key_env: "OPENROUTER_API_KEY"
+    color: "#38BDF8"
+    style_archetype: "Multi-Timeframe H4/H1 Structure Continuation"
+    active: true
+
+  - agent_id: "ai-5"
+    display_name: "Epsilon-CF"
+    provider: "cloudflare"
+    model_name: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+    model_version: "fp8-fast"
+    api_key_env: "CLOUDFLARE_API_TOKEN"
+    color: "#EC4899"
+    style_archetype: "PAXG OI Delta & Discount OTE Pullback"
+    active: true
+
+  - agent_id: "ai-6"
+    display_name: "Zeta-GLM"
+    provider: "zai"
+    model_name: "glm-4.5-flash"
+    model_version: "4.5-flash"
+    api_key_env: "ZAI_API_KEY"
+    color: "#A855F7"
+    style_archetype: "Asian-London Range Breakout to OTE"
+    active: true
+
+  - agent_id: "ai-7"
+    display_name: "Eta-NVIDIA"
+    provider: "nvidia"
+    model_name: "deepseek-ai/deepseek-r1"
+    model_version: "r1-0528"
+    api_key_env: "NVIDIA_API_KEY"
+    color: "#84CC16"
+    style_archetype: "High-R Macro USD Yield & OTE Asymmetric"
+    active: true
+
+  - agent_id: "ai-8"
+    display_name: "Theta-Cohere"
+    provider: "cohere"
+    model_name: "command-a-03-2025"
+    model_version: "2025.03"
+    api_key_env: "COHERE_API_KEY"
+    color: "#FB923C"
+    style_archetype: "Conservative High-Winrate 0.705 Sweet Spot"
+    active: true
+
+  - agent_id: "consensus"
+    display_name: "Consensus-Prime"
+    provider: "system_consensus"
+    model_name: "ensemble-3of8-vote"
+    model_version: "v2.0"
+    api_key_env: ""
+    color: "#FACC15"
+    style_archetype: "Multi-AI Uncorrelated Consensus Signal"
+    active: true
+
+  - agent_id: "ctrl-ote"
+    display_name: "Control-OTE-Rule"
+    provider: "control_rule"
+    model_name: "deterministic-ote-0705"
+    model_version: "v2.0"
+    api_key_env: ""
+    color: "#94A3B8"
+    style_archetype: "Pure Rule-Based H4 Trend + 0.705 Limit"
+    active: true
+
+  - agent_id: "ctrl-bnh"
+    display_name: "Control-BuyHold"
+    provider: "control_bnh"
+    model_name: "passive-gold-allocation"
+    model_version: "v2.0"
+    api_key_env: ""
+    color: "#64748B"
+    style_archetype: "Passive XAUUSD Benchmark"
+    active: true
