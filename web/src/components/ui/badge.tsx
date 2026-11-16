@@ -14,7 +14,7 @@ export const Badge: React.FC<BadgeProps> = ({
     secondary: 'bg-[#0A0A0A] text-[#A1A1AA] border-white/[0.12]',
     positive: 'bg-[#30D158]/10 text-[#30D158] border-[#30D158]/30',
     negative: 'bg-[#FF453A]/10 text-[#FF453A] border-[#FF453A]/30',
-    accent: 'bg-[#00adff]/10 text-[#00adff] border-[#00adff]/35',
+    accent: 'bg-[#141414] text-[#FFFFFF] border-white/[0.28]',
   };
 
   return (

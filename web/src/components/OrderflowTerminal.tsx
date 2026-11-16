@@ -76,7 +76,10 @@ export interface DeskEvaluation {
   discord_delivery?: { sent: boolean; status?: number; reason?: string };
 }
 
-export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly = false }) => {
+export const OrderflowTerminal: React.FC<{ chartOnly?: boolean; onExitChart?: () => void }> = ({
+  chartOnly = false,
+  onExitChart,
+}) => {
   const [ofState, setOfState] = useState<OrderflowState | null>(null);
   const [desk, setDesk] = useState<DeskEvaluation | null>(null);
   const [liveCandles, setLiveCandles] = useState<ChartCandle[]>([]);
@@ -95,7 +98,7 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
           r.ok ? r.json() : null
         ),
         fetch('/api/snapshot/live').then((r) => (r.ok ? r.json() : null)),
-        fetch(`/api/klines?interval=${tf}&limit=80`).then((r) => (r.ok ? r.json() : null)),
+        fetch(`/api/klines?interval=${tf}&limit=120`).then((r) => (r.ok ? r.json() : null)),
       ]);
       if (ofRes) setOfState(ofRes);
       if (klinesRes?.candles && klinesRes.candles.length > 0) {
@@ -133,7 +136,7 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
     let ws: WebSocket | null = null;
     try {
       ws = new WebSocket(
-        'wss://fstream.binance.com/stream?streams=paxgusdt@aggTrade/paxgusdt@depth10@500ms'
+        'wss://fstream.binance.com/stream?streams=paxgusdt@aggTrade/paxgusdt@kline_1m/paxgusdt@depth20@250ms'
       );
       ws.onopen = () => setWsConnected(true);
       ws.onclose = () => setWsConnected(false);
@@ -161,12 +164,24 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
                   }
                 : prev
             );
-          } else if (msg.stream?.includes('depth10') && msg.data) {
-            const bids = (msg.data.b || []).slice(0, 8).map((x: string[]) => ({
+            // Update forming candle tick-by-tick
+            setLiveCandles((prev) => {
+              if (!prev || prev.length === 0) return prev;
+              const next = [...prev];
+              const last = { ...next[next.length - 1] };
+              last.close = px;
+              if (px > last.high) last.high = px;
+              if (px < last.low) last.low = px;
+              last.volume = (last.volume || 0) + qty;
+              next[next.length - 1] = last;
+              return next;
+            });
+          } else if (msg.stream?.includes('depth20') && msg.data) {
+            const bids = (msg.data.b || []).slice(0, 10).map((x: string[]) => ({
               price: parseFloat(x[0]),
               qty: parseFloat(x[1]),
             }));
-            const asks = (msg.data.a || []).slice(0, 8).map((x: string[]) => ({
+            const asks = (msg.data.a || []).slice(0, 10).map((x: string[]) => ({
               price: parseFloat(x[0]),
               qty: parseFloat(x[1]),
             }));
@@ -219,6 +234,11 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
               : null
           }
           livePrice={ofState?.paxg_price ?? null}
+          wsConnected={wsConnected}
+          netDelta={ofState?.net_delta ?? 0}
+          cvdUsd={ofState?.cvd_usd ?? 0}
+          defaultFullscreen
+          onExitFullscreen={onExitChart}
         />
       </div>
     );
@@ -231,7 +251,7 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
         <div className="space-y-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2.5">
             <Radio
-              className={`w-4 h-4 shrink-0 ${wsConnected ? 'text-[#30D158]' : 'text-[#00adff]'}`}
+              className={`w-4 h-4 shrink-0 ${wsConnected ? 'text-[#30D158]' : 'text-[#A1A1AA]'}`}
               strokeWidth={1.75}
             />
             <h2 className="text-[16px] font-semibold tracking-tight text-white uppercase">
@@ -260,7 +280,7 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
       </Card>
 
       {discordStatus && (
-        <div className="border border-[#00adff]/40 bg-[#0A0A0A] px-4 py-2.5 text-[13px] text-white flex items-center justify-between">
+        <div className="border border-white/25 bg-[#0A0A0A] px-4 py-2.5 text-[13px] text-white flex items-center justify-between">
           <span>{discordStatus}</span>
           <button
             type="button"
@@ -275,8 +295,8 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
       {/* 4 Key Orderflow Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-5 space-y-1">
-          <div className="text-[11px] uppercase tracking-[0.04em] text-[#71717A]">
-            PAXGUSDT Live Tape
+          <div className="text-[12px] font-medium text-[#71717A]">
+            PAXGUSDT live tape
           </div>
           <div className="text-[26px] font-semibold tabular-nums text-white">
             ${(ofState?.paxg_price ?? 4028.9).toFixed(2)}
@@ -287,8 +307,8 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
         </Card>
 
         <Card className="p-5 space-y-1">
-          <div className="text-[11px] uppercase tracking-[0.04em] text-[#71717A]">
-            Footprint Net Delta
+          <div className="text-[12px] font-medium text-[#71717A]">
+            Footprint net delta
           </div>
           <div
             className={`text-[26px] font-semibold tabular-nums ${
@@ -304,8 +324,8 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
         </Card>
 
         <Card className="p-5 space-y-1">
-          <div className="text-[11px] uppercase tracking-[0.04em] text-[#71717A]">
-            Perp Open Interest
+          <div className="text-[12px] font-medium text-[#71717A]">
+            Perp open interest
           </div>
           <div className="text-[26px] font-semibold tabular-nums text-white">
             {(ofState?.open_interest_paxg ?? 0).toLocaleString()}
@@ -316,14 +336,14 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
         </Card>
 
         <Card className="p-5 space-y-1">
-          <div className="text-[11px] uppercase tracking-[0.04em] text-[#71717A]">
-            Team Desk Conviction
+          <div className="text-[12px] font-medium text-[#71717A]">
+            Team desk conviction
           </div>
-          <div className="text-[26px] font-semibold tabular-nums text-[#00adff]">
+          <div className="text-[26px] font-semibold tabular-nums text-white">
             {desk?.conviction_score ?? '--'}/100
           </div>
           <div className="text-[12px] text-[#A1A1AA] uppercase">
-            {desk ? `${desk.direction} • ${desk.execution_mode}` : 'Evaluating...'}
+            {desk ? `${desk.direction} · ${desk.execution_mode}` : 'Evaluating...'}
           </div>
         </Card>
       </div>
@@ -334,11 +354,11 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
         <Card className="xl:col-span-5 p-5 space-y-4">
           <div className="border-b border-white/[0.1] pb-3 flex items-center justify-between">
             <div>
-              <h3 className="text-[14px] font-semibold uppercase tracking-[0.03em] text-white">
+              <h3 className="text-[14px] font-semibold text-white">
                 Orderbook Depth Walls
               </h3>
               <p className="text-[12px] text-[#71717A]">
-                Resting liquidity bids & asks (PAXGUSDT)
+                Resting liquidity bids &amp; asks (PAXGUSDT)
               </p>
             </div>
             <Badge variant="secondary">L2 DEPTH</Badge>
@@ -375,11 +395,11 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
         <Card className="xl:col-span-7 p-5 space-y-4">
           <div className="border-b border-white/[0.1] pb-3 flex items-center justify-between gap-2">
             <div>
-              <h3 className="text-[14px] font-semibold uppercase tracking-[0.03em] text-white">
+              <h3 className="text-[14px] font-semibold text-white">
                 $1,000 Portfolio Desk Signal Plan
               </h3>
               <p className="text-[12px] text-[#71717A]">
-                Coordinated execution with Break-Even lock & -0.27 / -0.618 partial targets
+                Coordinated execution with Break-Even lock &amp; -0.27 / -0.618 partial targets
               </p>
             </div>
             {desk && (
@@ -393,7 +413,7 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
             <div className="space-y-4">
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 tabular-nums">
                 <div className="border border-white/[0.1] p-3 bg-[#000000]">
-                  <div className="text-[10px] uppercase text-[#71717A]">Side</div>
+                  <div className="text-[11px] text-[#71717A]">Side</div>
                   <div
                     className={`text-[15px] font-semibold uppercase mt-0.5 ${
                       desk.direction === 'long' ? 'text-[#30D158]' : 'text-[#FF453A]'
@@ -403,38 +423,38 @@ export const OrderflowTerminal: React.FC<{ chartOnly?: boolean }> = ({ chartOnly
                   </div>
                 </div>
                 <div className="border border-white/[0.1] p-3 bg-[#000000]">
-                  <div className="text-[10px] uppercase text-[#71717A]">Entry</div>
+                  <div className="text-[11px] text-[#71717A]">Entry</div>
                   <div className="text-[15px] font-semibold text-white mt-0.5">
                     ${desk.entry.toFixed(2)}
                   </div>
                 </div>
                 <div className="border border-white/[0.1] p-3 bg-[#000000]">
-                  <div className="text-[10px] uppercase text-[#71717A]">Stop Loss</div>
+                  <div className="text-[11px] text-[#71717A]">Stop Loss</div>
                   <div className="text-[15px] font-semibold text-[#FF453A] mt-0.5">
                     ${desk.stop_loss.toFixed(2)}
                   </div>
                 </div>
                 <div className="border border-white/[0.1] p-3 bg-[#000000]">
-                  <div className="text-[10px] uppercase text-[#71717A]">TP1 (BE)</div>
+                  <div className="text-[11px] text-[#71717A]">TP1 (BE)</div>
                   <div className="text-[15px] font-semibold text-[#30D158] mt-0.5">
                     ${desk.tp1.toFixed(2)}
                   </div>
                 </div>
                 <div className="border border-white/[0.1] p-3 bg-[#000000]">
-                  <div className="text-[10px] uppercase text-[#71717A]">TP2 (-0.27)</div>
-                  <div className="text-[15px] font-semibold text-[#00adff] mt-0.5">
+                  <div className="text-[11px] text-[#71717A]">TP2 (-0.27)</div>
+                  <div className="text-[15px] font-semibold text-white mt-0.5">
                     ${desk.tp2.toFixed(2)}
                   </div>
                 </div>
                 <div className="border border-white/[0.1] p-3 bg-[#000000]">
-                  <div className="text-[10px] uppercase text-[#71717A]">Lot / Risk</div>
+                  <div className="text-[11px] text-[#71717A]">Lot / Risk</div>
                   <div className="text-[15px] font-semibold text-white mt-0.5">
                     {desk.lot} ({desk.risk_pct}%)
                   </div>
                 </div>
               </div>
 
-              <div className="text-[13px] text-[#A1A1AA] border-l-2 border-[#00adff] pl-3">
+              <div className="text-[13px] text-[#A1A1AA] border-l-2 border-white/35 pl-3">
                 {desk.rationale}
               </div>
             </div>

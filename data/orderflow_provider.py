@@ -19,11 +19,28 @@ class OrderflowProvider:
             return json.loads(resp.read().decode("utf-8"))
 
     def get_live_klines(self, interval: str = "15m", limit: int = 80) -> List[Dict[str, Any]]:
-        iv_map = {"M5": "5m", "M15": "15m", "1H": "1h", "H1": "1h", "4H": "4h", "H4": "4h"}
-        iv = iv_map.get(interval.upper(), interval.lower())
+        iv_upper = interval.upper()
+        is_m45 = iv_upper == "M45" or iv_upper == "45M"
+        iv_map = {
+            "M1": "1m", "1M": "1m",
+            "M5": "5m", "5M": "5m",
+            "M15": "15m", "15M": "15m",
+            "M45": "15m", "45M": "15m",
+            "1H": "1h", "H1": "1h",
+            "4H": "4h", "H4": "4h",
+            "1D": "1d", "D1": "1d",
+            "1W": "1w", "W1": "1w",
+            "1MO": "1M", "1MONTH": "1M",
+        }
+        # Note: '1M' in our UI means 1 Month; distinguish 'M1' (1 min) vs '1M' (1 Month)
+        if iv_upper == "1M":
+            iv = "1M"
+        else:
+            iv = iv_map.get(iv_upper, interval.lower())
+        fetch_limit = min(limit * 3, 450) if is_m45 else limit
         try:
             raw = self._get_json(
-                f"https://fapi.binance.com/fapi/v1/klines?symbol=PAXGUSDT&interval={iv}&limit={limit}"
+                f"https://fapi.binance.com/fapi/v1/klines?symbol=PAXGUSDT&interval={iv}&limit={fetch_limit}"
             )
             out: List[Dict[str, Any]] = []
             for row in raw:
@@ -43,6 +60,22 @@ class OrderflowProvider:
                     "volume": round(vol, 2),
                     "delta": round(delta, 2),
                 })
+            if is_m45 and out:
+                agg: List[Dict[str, Any]] = []
+                for i in range(0, len(out), 3):
+                    chunk = out[i : i + 3]
+                    if not chunk:
+                        continue
+                    agg.append({
+                        "time": chunk[0]["time"],
+                        "open": chunk[0]["open"],
+                        "high": max(x["high"] for x in chunk),
+                        "low": min(x["low"] for x in chunk),
+                        "close": chunk[-1]["close"],
+                        "volume": round(sum(x["volume"] for x in chunk), 2),
+                        "delta": round(sum(x["delta"] for x in chunk), 2),
+                    })
+                return agg[-limit:]
             if out:
                 return out
         except Exception:

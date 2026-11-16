@@ -187,11 +187,11 @@ export function App() {
           </div>
           <div className="flex items-center justify-between text-[12px]">
             <span className="text-[#A1A1AA]">Risk / Trade</span>
-            <span className="tabular-nums text-[#00adff]">0.50%</span>
+            <span className="tabular-nums text-white font-medium">0.50%</span>
           </div>
           <div className="flex items-center justify-between text-[12px]">
             <span className="text-[#A1A1AA]">Discord Alerts</span>
-            <span className="text-[#30D158] font-medium">ACTIVE</span>
+            <span className="text-white font-medium">Active</span>
           </div>
           <div className="flex items-center justify-between text-[12px]">
             <span className="text-[#A1A1AA]">Vercel Cron</span>
@@ -473,7 +473,7 @@ export function App() {
                           <TableCell className="text-right tabular-nums">
                             {item.win_rate.toFixed(1)}%
                           </TableCell>
-                          <TableCell className="text-right tabular-nums text-[#00adff]">
+                          <TableCell className="text-right tabular-nums text-white font-medium">
                             {item.profit_factor.toFixed(2)}
                           </TableCell>
                           <TableCell className="text-right tabular-nums text-[#71717A]">
@@ -492,7 +492,7 @@ export function App() {
           {/* ==================== VIEW 2: PRO CHART TERMINAL ==================== */}
           {activeNav === 'chart' && (
             <div className="space-y-4">
-              <OrderflowTerminal chartOnly />
+              <OrderflowTerminal chartOnly onExitChart={() => setActiveNav('overview')} />
             </div>
           )}
 
@@ -533,7 +533,7 @@ export function App() {
               type="button"
               onClick={() => setActiveNav(item.id)}
               className={`flex flex-col items-center gap-1 px-2 py-1 text-[10.5px] font-medium cursor-pointer ${
-                active ? 'text-[#00adff]' : 'text-[#8E8E93]'
+                active ? 'text-white' : 'text-[#71717A]'
               }`}
             >
               <Icon className="w-4 h-4" strokeWidth={1.5} />

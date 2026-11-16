@@ -20,6 +20,19 @@ class TestDeskAndOrderflow(unittest.TestCase):
         self.assertGreater(data["bid_wall"]["qty"], 0)
         self.assertGreater(data["ask_wall"]["qty"], 0)
 
+    def test_m45_kline_aggregation(self):
+        provider = OrderflowProvider()
+        fake_raw = [
+            [1700000000000 + i * 900000, "4000", str(4005 + i), str(3995 - i), str(4002 + i), "10.0", 0, "0", 0, "6.0"]
+            for i in range(6)
+        ]
+        with patch.object(provider, "_get_json", return_value=fake_raw) as mock_get:
+            bars = provider.get_live_klines(interval="M45", limit=10)
+        self.assertIn("interval=15m", mock_get.call_args[0][0])
+        self.assertEqual(len(bars), 2)
+        self.assertEqual(bars[0]["high"], 4007.0)
+        self.assertEqual(bars[0]["volume"], 30.0)
+
     def test_specialized_desk_8_roles_and_blackout_gate(self):
         self.assertEqual(len(DESK_ROLES), 8)
         self.assertGreaterEqual(len(ALTERNATIVE_FREE_MODELS), 4)
