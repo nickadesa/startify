@@ -381,7 +381,7 @@ export const VestChart: React.FC<VestChartProps> = ({
           : []
       );
     }
-  }, [normalizedCandles, showVol, showEma20, showEma50, showRsi]);
+  }, [normalizedCandles, showVol, showEma20, showEma50, showRsi, theme, styleCfg]);
 
   // Update interactive Position Lines & Shared Team Drawings
   useEffect(() => {
