@@ -10,7 +10,7 @@
     --text-primary: #FFFFFF;
     --text-secondary: #A1A1AA;
     --text-muted: #71717A;
-    --accent-primary: #00adff;
+    --accent-primary: #FFFFFF;
     --semantic-green: #30D158;
     --semantic-red: #FF453A;
   }
@@ -19,21 +19,23 @@
   body {
     background-color: #000000;
     color: #FFFFFF;
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14.5px;
     font-optical-sizing: auto;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    letter-spacing: -0.01em;
-    line-height: 1.5;
+    letter-spacing: -0.011em;
+    line-height: 1.45;
     overflow-x: hidden;
   }
 }
 
 .font-mono-tabular,
 .tabular-nums {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1;
+  font-feature-settings: "tnum" 1, "cv02", "cv03", "cv04", "cv11";
 }
 
 .apple-display {
@@ -70,3 +72,56 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #404040;
 }
+
+/* Vest-style Architectural Light Theme (0px Lamborghini Sharp Corners) */
+html[data-theme="light"],
+html[data-theme="light"] body {
+  background-color: #F4F4F5 !important;
+  color: #141414 !important;
+  color-scheme: light;
+}
+
+html[data-theme="light"] .bg-\[\#000000\] {
+  background-color: #F4F4F5 !important;
+}
+html[data-theme="light"] .bg-\[\#050505\],
+html[data-theme="light"] .bg-\[\#0A0A0A\],
+html[data-theme="light"] .bg-\[\#0B0B0D\] {
+  background-color: #FFFFFF !important;
+}
+html[data-theme="light"] .bg-\[\#141414\],
+html[data-theme="light"] .bg-\[\#141416\] {
+  background-color: #EBEBEF !important;
+}
+html[data-theme="light"] .text-white,
+html[data-theme="light"] .text-\[\#FFFFFF\] {
+  color: #141414 !important;
+}
+html[data-theme="light"] .text-\[\#D4D4D8\] {
+  color: #27272A !important;
+}
+html[data-theme="light"] .text-\[\#A1A1AA\] {
+  color: #52525B !important;
+}
+html[data-theme="light"] .text-\[\#71717A\] {
+  color: #71717A !important;
+}
+html[data-theme="light"] .bg-white {
+  background-color: #141414 !important;
+}
+html[data-theme="light"] .text-black {
+  color: #FFFFFF !important;
+}
+html[data-theme="light"] .border-white\/\[0\.12\],
+html[data-theme="light"] .border-white\/\[0\.1\],
+html[data-theme="light"] .border-white\/\[0\.08\],
+html[data-theme="light"] .border-white\/\[0\.14\],
+html[data-theme="light"] .border-white\/\[0\.2\],
+html[data-theme="light"] .border-white\/\[0\.22\],
+html[data-theme="light"] .border-white\/\[0\.25\] {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+html[data-theme="light"] .apple-glass {
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+

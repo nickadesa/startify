@@ -494,7 +494,10 @@ async def serve_spa_or_rewritten_route(request: Request, full_path: str = ""):
         if api_subpath == "klines":
             iv = request.query_params.get("interval", "M15")
             lim = int(request.query_params.get("limit", "80"))
-            return JSONResponse(get_live_klines_endpoint(interval=iv, limit=lim))
+            sym = request.query_params.get("symbol", "XAUUSD")
+            return JSONResponse(get_live_klines_endpoint(interval=iv, limit=lim, symbol=sym))
+        if api_subpath == "markets/overview":
+            return JSONResponse(get_markets_overview_endpoint())
         if api_subpath == "desk/evaluate":
             send_d = request.query_params.get("send_discord", "false").lower() == "true"
             return JSONResponse(evaluate_team_desk(send_discord=send_d))

@@ -3,9 +3,14 @@ import {
   Activity,
   BarChart3,
   Calendar,
+  Globe,
   Layers,
   LayoutGrid,
+  Moon,
   Search,
+  Settings,
+  Sun,
+  X,
   ArrowUpRight,
 } from 'lucide-react';
 import arenaSnapshotRaw from './data/arenaSnapshot.json';
@@ -17,6 +22,8 @@ import { PlaybooksAndSystemView } from './components/PlaybooksAndSystemView';
 import { BacktestAndSkillsView } from './components/BacktestAndSkillsView';
 import { UsdCalendarView } from './components/UsdCalendarView';
 import { OrderflowTerminal } from './components/OrderflowTerminal';
+import { MarketOverviewItem, MarketsWatchlistView } from './components/MarketsWatchlistView';
+import { AssetIcon } from './components/AssetIcon';
 import { Card } from './components/ui/card';
 import { Badge } from './components/ui/badge';
 import { Button } from './components/ui/button';
@@ -31,7 +38,7 @@ import {
 
 const initialArenaData = arenaSnapshotRaw as unknown as ArenaPayload;
 
-type NavSection = 'overview' | 'chart' | 'orderflow' | 'calendar' | 'archive';
+type NavSection = 'overview' | 'markets' | 'chart' | 'orderflow' | 'calendar' | 'archive';
 
 export function App() {
   const [arenaData, setArenaData] = useState<ArenaPayload>(initialArenaData);
@@ -42,8 +49,39 @@ export function App() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [accountFilter, setAccountFilter] = useState<'all' | 'ai_only' | 'benchmarks'>('all');
 
+  // Vest-inspired Global Preferences
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    try {
+      return (localStorage.getItem('startify_theme') as 'dark' | 'light') || 'dark';
+    } catch {
+      return 'dark';
+    }
+  });
+  const [streamerMode, setStreamerMode] = useState<boolean>(false);
+  const [showTickerBar, setShowTickerBar] = useState<boolean>(true);
+  const [showGlobalSettings, setShowGlobalSettings] = useState<boolean>(false);
+  const [settingsTab, setSettingsTab] = useState<'general' | 'trading' | 'chart' | 'notifications'>('general');
+  const [activeSymbol, setActiveSymbol] = useState<string>('XAUUSD');
+  const [marketsList, setMarketsList] = useState<MarketOverviewItem[]>([]);
+
   useEffect(() => {
-    const fetchArena = () => {
+    document.documentElement.setAttribute('data-theme', theme);
+    try {
+      localStorage.setItem('startify_theme', theme);
+    } catch {}
+  }, [theme]);
+
+  useEffect(() => {
+    // Console Self-XSS Security Warning
+    console.log('%cWarning!', 'color:#FF453A; font-size:36px; font-weight:bold;');
+    console.log(
+      '%cDo not paste unknown code into the developer console. Startify Quant Desk runs locally in your browser.',
+      'font-size:14px;'
+    );
+  }, []);
+
+  useEffect(() => {
+    const fetchArenaAndMarkets = () => {
       fetch('/api/arena')
         .then((r) => (r.ok ? r.json() : null))
         .then((json) => {
@@ -52,9 +90,17 @@ export function App() {
           }
         })
         .catch(() => {});
+      fetch('/api/markets/overview')
+        .then((r) => (r.ok ? r.json() : null))
+        .then((json) => {
+          if (json?.markets && Array.isArray(json.markets)) {
+            setMarketsList(json.markets);
+          }
+        })
+        .catch(() => {});
     };
-    fetchArena();
-    const timer = setInterval(fetchArena, 30000);
+    fetchArenaAndMarkets();
+    const timer = setInterval(fetchArenaAndMarkets, 30000);
     return () => clearInterval(timer);
   }, []);
 
@@ -97,6 +143,7 @@ export function App() {
 
   const navItems: { id: NavSection; label: string; icon: React.FC<any>; count?: string }[] = [
     { id: 'overview', label: 'Desk Overview', icon: LayoutGrid },
+    { id: 'markets', label: 'Markets', icon: Globe, count: `${marketsList.length || 10}` },
     { id: 'chart', label: 'Chart Terminal', icon: BarChart3, count: 'PRO' },
     { id: 'orderflow', label: 'Live Orderflow', icon: Activity, count: 'LIVE' },
     { id: 'calendar', label: 'USD Calendar', icon: Calendar, count: `${arenaData.news_events.length}` },
@@ -218,8 +265,9 @@ export function App() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            <Badge variant="secondary" className="hidden sm:inline-flex tabular-nums">
-              XAUUSD SPOT
+            <Badge variant="secondary" className="hidden sm:inline-flex tabular-nums gap-1.5">
+              <AssetIcon symbol={activeSymbol} size={15} />
+              <span>{activeSymbol}</span>
             </Badge>
             <Button
               variant="secondary"
@@ -229,6 +277,22 @@ export function App() {
               <BarChart3 className="w-3.5 h-3.5" />
               <span>Live Orderflow</span>
             </Button>
+            <button
+              type="button"
+              onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+              className="h-8 w-8 border border-white/[0.12] bg-[#0A0A0A] flex items-center justify-center text-[#A1A1AA] hover:text-white cursor-pointer"
+              title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+            >
+              {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowGlobalSettings(true)}
+              className="h-8 w-8 border border-white/[0.12] bg-[#0A0A0A] flex items-center justify-center text-[#A1A1AA] hover:text-white cursor-pointer"
+              title="Settings & Streamer Mode"
+            >
+              <Settings className="w-3.5 h-3.5" />
+            </button>
           </div>
         </header>
 
@@ -489,21 +553,45 @@ export function App() {
             </div>
           )}
 
-          {/* ==================== VIEW 2: PRO CHART TERMINAL ==================== */}
+          {/* ==================== VIEW 2: MARKETS WATCHLIST ==================== */}
+          {activeNav === 'markets' && (
+            <MarketsWatchlistView
+              markets={marketsList}
+              streamerMode={streamerMode}
+              onSelectMarket={(sym) => {
+                setActiveSymbol(sym);
+                setActiveNav('orderflow');
+              }}
+            />
+          )}
+
+          {/* ==================== VIEW 3: PRO CHART TERMINAL ==================== */}
           {activeNav === 'chart' && (
             <div className="space-y-4">
-              <OrderflowTerminal chartOnly onExitChart={() => setActiveNav('overview')} />
+              <OrderflowTerminal
+                chartOnly
+                activeSymbol={activeSymbol}
+                onSymbolChange={setActiveSymbol}
+                markets={marketsList}
+                streamerMode={streamerMode}
+                onExitChart={() => setActiveNav('overview')}
+              />
             </div>
           )}
 
-          {/* ==================== VIEW 3: LIVE ORDERFLOW ==================== */}
+          {/* ==================== VIEW 4: LIVE ORDERFLOW ==================== */}
           {activeNav === 'orderflow' && (
             <div className="space-y-6">
-              <OrderflowTerminal />
+              <OrderflowTerminal
+                activeSymbol={activeSymbol}
+                onSymbolChange={setActiveSymbol}
+                markets={marketsList}
+                streamerMode={streamerMode}
+              />
             </div>
           )}
 
-          {/* ==================== VIEW 3: USD CALENDAR ==================== */}
+          {/* ==================== VIEW 5: USD CALENDAR ==================== */}
           {activeNav === 'calendar' && (
             <UsdCalendarView
               events={arenaData.news_events}
@@ -512,7 +600,7 @@ export function App() {
             />
           )}
 
-          {/* ==================== VIEW 4: RESEARCH & ARCHIVE ==================== */}
+          {/* ==================== VIEW 6: RESEARCH & ARCHIVE ==================== */}
           {activeNav === 'archive' && (
             <div className="space-y-8">
               <BacktestAndSkillsView data={arenaData} />
@@ -521,6 +609,49 @@ export function App() {
           )}
         </main>
       </div>
+
+      {/* Vest-Style Bottom Live Ticker Bar (Desktop) */}
+      {showTickerBar && (
+        <div className="hidden lg:flex fixed bottom-0 left-[244px] right-0 z-20 h-8 bg-[#050505] border-t border-white/[0.12] px-4 items-center gap-5 overflow-x-auto text-[11.5px] tabular-nums">
+          <div className="flex items-center gap-1.5 shrink-0 pr-3 border-r border-white/[0.12]">
+            <span className="w-2 h-2 bg-[#30D158]" />
+            <span className="text-[#A1A1AA] font-medium">Desk Online</span>
+          </div>
+          {(marketsList.length > 0
+            ? marketsList
+            : [
+                { symbol: 'XAUUSD', price: 3874.5, change_24h_pct: -0.76 },
+                { symbol: 'NAS100', price: 21704.25, change_24h_pct: -1.85 },
+                { symbol: 'SPX500', price: 6046.38, change_24h_pct: -0.85 },
+                { symbol: 'BTCUSDT', price: 91354.0, change_24h_pct: -1.45 },
+                { symbol: 'ETHUSDT', price: 3104.16, change_24h_pct: -1.71 },
+                { symbol: 'SOLUSDT', price: 211.24, change_24h_pct: -2.06 },
+                { symbol: 'EURUSD', price: 1.0542, change_24h_pct: -0.16 },
+                { symbol: 'DXY', price: 106.68, change_24h_pct: 0.34 },
+              ]
+          ).map((m) => (
+            <button
+              key={m.symbol}
+              type="button"
+              onClick={() => {
+                setActiveSymbol(m.symbol);
+                setActiveNav('orderflow');
+              }}
+              className="flex items-center gap-1.5 shrink-0 hover:opacity-80 cursor-pointer"
+            >
+              <AssetIcon symbol={m.symbol} size={15} />
+              <span className="font-semibold text-white">{m.symbol}</span>
+              <span className="text-[#A1A1AA]">
+                {streamerMode ? '$****' : `$${m.price.toLocaleString()}`}
+              </span>
+              <span className={m.change_24h_pct >= 0 ? 'text-[#30D158]' : 'text-[#FF453A]'}>
+                {m.change_24h_pct >= 0 ? '+' : ''}
+                {m.change_24h_pct.toFixed(2)}%
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Mobile Bottom Navigation */}
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 apple-glass border-t border-white/[0.12] px-1 py-1.5 flex items-center justify-around">
@@ -542,6 +673,143 @@ export function App() {
           );
         })}
       </nav>
+
+      {/* Vest-Style Global Settings Modal */}
+      {showGlobalSettings && (
+        <div className="fixed inset-0 z-[9995] bg-black/75 flex items-center justify-center p-4">
+          <div className="w-full max-w-xl bg-[#0B0B0D] border border-white/[0.2] p-5 space-y-4">
+            <div className="flex items-center justify-between border-b border-white/[0.12] pb-3">
+              <div>
+                <h3 className="text-[16px] font-semibold text-white">Settings</h3>
+                <p className="text-[12px] text-[#71717A]">Manage your Startify desk preferences</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowGlobalSettings(false)}
+                className="text-[#A1A1AA] hover:text-white cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+              <div className="sm:col-span-4 space-y-1 border-r border-white/[0.1] pr-3">
+                {(['general', 'trading', 'chart', 'notifications'] as const).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setSettingsTab(t)}
+                    className={`w-full text-left px-3 py-2 text-[12.5px] font-medium capitalize cursor-pointer ${
+                      settingsTab === t
+                        ? 'bg-[#141416] text-white border border-white/[0.15]'
+                        : 'text-[#A1A1AA] hover:text-white'
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+
+              <div className="sm:col-span-8 space-y-4 text-[13px]">
+                {settingsTab === 'general' && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium text-white">Appearance Theme</div>
+                        <div className="text-[11.5px] text-[#71717A]">
+                          Switch between Pure Black &amp; Crisp White
+                        </div>
+                      </div>
+                      <div className="flex border border-white/[0.15]">
+                        {(['dark', 'light'] as const).map((m) => (
+                          <button
+                            key={m}
+                            type="button"
+                            onClick={() => setTheme(m)}
+                            className={`px-3 py-1 text-[11.5px] capitalize cursor-pointer ${
+                              theme === m ? 'bg-white text-black font-semibold' : 'text-[#A1A1AA]'
+                            }`}
+                          >
+                            {m}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <label className="flex items-center justify-between cursor-pointer">
+                      <div>
+                        <div className="font-medium text-white">Streamer Mode</div>
+                        <div className="text-[11.5px] text-[#71717A]">
+                          Hide portfolio equity &amp; PnL amounts behind $****
+                        </div>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={streamerMode}
+                        onChange={(e) => setStreamerMode(e.target.checked)}
+                      />
+                    </label>
+
+                    <label className="flex items-center justify-between cursor-pointer">
+                      <div>
+                        <div className="font-medium text-white">Bottom Ticker Bar</div>
+                        <div className="text-[11.5px] text-[#71717A]">
+                          Show live multi-asset ticker strip at bottom
+                        </div>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={showTickerBar}
+                        onChange={(e) => setShowTickerBar(e.target.checked)}
+                      />
+                    </label>
+                  </>
+                )}
+
+                {settingsTab === 'trading' && (
+                  <div className="space-y-3 text-[12.5px] text-[#A1A1AA]">
+                    <div className="flex justify-between">
+                      <span>Portfolio Baseline</span>
+                      <span className="text-white font-semibold">$1,000.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Risk Per Trade</span>
+                      <span className="text-white font-semibold">0.50% ($5.00)</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Break-Even Lock</span>
+                      <span className="text-[#30D158] font-medium">Auto at TP1</span>
+                    </div>
+                  </div>
+                )}
+
+                {settingsTab === 'chart' && (
+                  <div className="text-[12.5px] text-[#A1A1AA] space-y-2">
+                    <p>
+                      Open <strong className="text-white">Chart Terminal</strong> or{' '}
+                      <strong className="text-white">Live Orderflow</strong> and click the{' '}
+                      <strong className="text-white">⚙ Settings</strong> icon inside the chart toolbar to customize Bull/Bear Body, Border, Wick colors, Grid, and Countdown timer.
+                    </p>
+                  </div>
+                )}
+
+                {settingsTab === 'notifications' && (
+                  <div className="text-[12.5px] text-[#A1A1AA] space-y-2">
+                    <div className="flex justify-between">
+                      <span>Discord Webhook</span>
+                      <span className="text-[#30D158] font-medium">Connected</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Cron Schedule</span>
+                      <span className="text-white">15m (GitHub Actions) + Daily (Vercel)</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Agent Detail Modal */}
       {modalAgent && (

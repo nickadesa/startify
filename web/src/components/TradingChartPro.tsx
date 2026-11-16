@@ -25,6 +25,7 @@ import {
   ZoomIn,
   ZoomOut,
 } from 'lucide-react';
+import { AssetIcon } from './AssetIcon';
 
 export interface ChartCandle {
   time: string;
@@ -166,6 +167,7 @@ const TF_SECONDS: Record<string, number> = {
 
 interface TradingChartProProps {
   candles: ChartCandle[];
+  symbol?: string;
   timeframe: string;
   onTimeframeChange?: (tf: string) => void;
   ote?: ChartOteOverlay | null;
@@ -241,6 +243,7 @@ function distToSegment(px: number, py: number, x1: number, y1: number, x2: numbe
 
 export const TradingChartPro: React.FC<TradingChartProProps> = ({
   candles,
+  symbol = 'XAUUSD',
   timeframe,
   onTimeframeChange,
   ote,
@@ -1177,13 +1180,14 @@ export const TradingChartPro: React.FC<TradingChartProProps> = ({
           ? `  Δ ${activeBar.delta >= 0 ? '+' : ''}${activeBar.delta.toFixed(1)}`
           : '';
       ctx.fillText(
-        `XAUUSD · ${timeframe}   O ${activeBar.open.toFixed(2)}  H ${activeBar.high.toFixed(2)}  L ${activeBar.low.toFixed(2)}  C ${activeBar.close.toFixed(2)}${deltaStr}`,
+        `${symbol} · ${timeframe}   O ${activeBar.open.toFixed(2)}  H ${activeBar.high.toFixed(2)}  L ${activeBar.low.toFixed(2)}  C ${activeBar.close.toFixed(2)}${deltaStr}`,
         L.padL + 6,
         21
       );
     }
   }, [
     safeCandles,
+    symbol,
     timeframe,
     settings,
     activeIndicators,
@@ -1522,7 +1526,8 @@ export const TradingChartPro: React.FC<TradingChartProProps> = ({
         <div className="flex flex-wrap items-center gap-1.5 relative">
           {/* Symbol + Live WS Status */}
           <div className="flex items-center gap-2 pr-2 border-r border-white/[0.12]">
-            <span className="text-[12px] font-semibold text-white tracking-tight">XAUUSD</span>
+            <AssetIcon symbol={symbol} size={18} />
+            <span className="text-[12px] font-semibold text-white tracking-tight">{symbol}</span>
             <span
               className={`inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 border ${
                 wsConnected
