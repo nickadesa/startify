@@ -41,9 +41,17 @@ class AITraderAgent:
 
     def _resolve_credentials(self) -> tuple[str, str, str]:
         """
-        Resolves (provider, model_name, api_key).
-        Automatically routes Z.ai GLM (which requires a CN phone number) or missing Mistral/NVIDIA keys
-        through the user's configured OpenRouter (:free) or Groq API keys so all 8 AI agents work out of the box.
+        Resolves (provider, model_name, api_key) with strict Quota Isolation:
+        - Each agent uses its own distinct AI model & separate rate-limit bucket so agents never steal quota from one another.
+        - On Groq & Cloudflare Workers AI, rate limits are tracked PER MODEL ID:
+          * ai-2 uses Groq `llama-3.3-70b-versatile` (1,000 req/day bucket A)
+          * ai-6 uses Groq `qwen-qwq-32b` (1,000 req/day bucket B — replaces CN-phone Z.ai)
+          * ai-7 uses Groq `deepseek-r1-distill-llama-70b` (1,000 req/day bucket C) if NVIDIA key is omitted
+          * ai-3 uses Cloudflare `@cf/mistral/mistral-7b-instruct-v0.2` if Mistral key is omitted
+          * ai-4 uses OpenRouter `meta-llama/llama-3.3-70b-instruct:free`
+          * ai-5 uses Cloudflare `@cf/meta/llama-3.1-8b-instruct`
+          * ai-1 uses Google Gemini `gemini-2.5-flash`
+          * ai-8 uses Cohere `command-r-08-2024`
         """
         primary_key = os.environ.get(self.api_key_env, "").strip() if self.api_key_env else ""
         if self.provider == "cloudflare" and not primary_key:
@@ -52,27 +60,28 @@ class AITraderAgent:
         if primary_key:
             return self.provider, self.model_name, primary_key
 
-        # Smart no-CN-phone fallback for ai-6 (Zeta-GLM -> OpenRouter GLM-4.5-Air:free or Groq Qwen)
-        openrouter_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
         groq_key = os.environ.get("GROQ_API_KEY", "").strip()
+        cf_key = os.environ.get("CF_API_TOKEN", "").strip() or os.environ.get("CLOUDFLARE_API_TOKEN", "").strip()
+        openrouter_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
 
+        # Isolated per-model buckets so no two agents share the same model quota
         if self.provider == "zai":
-            if openrouter_key:
-                return "openrouter", "z-ai/glm-4.5-air:free", openrouter_key
             if groq_key:
                 return "groq", "qwen-qwq-32b", groq_key
+            if openrouter_key:
+                return "openrouter", "z-ai/glm-4.5-air:free", openrouter_key
 
         if self.provider == "nvidia":
-            if openrouter_key:
-                return "openrouter", "deepseek/deepseek-r1:free", openrouter_key
             if groq_key:
                 return "groq", "deepseek-r1-distill-llama-70b", groq_key
+            if openrouter_key:
+                return "openrouter", "deepseek/deepseek-r1:free", openrouter_key
 
         if self.provider == "mistral":
+            if cf_key:
+                return "cloudflare", "@cf/mistral/mistral-7b-instruct-v0.2", cf_key
             if openrouter_key:
                 return "openrouter", "mistralai/mistral-small-3.1-24b-instruct:free", openrouter_key
-            if groq_key:
-                return "groq", "llama-3.1-8b-instant", groq_key
 
         return self.provider, self.model_name, ""
 
