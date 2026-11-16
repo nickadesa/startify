@@ -1,12 +1,12 @@
 {
   "generated_at": "2026-09-30T20:00:00Z",
-  "source": "Dukascopy Historical XAUUSD CSV + M15/M5",
+  "source": "Uploaded Historical XAUUSD (2010-2026: XAUUSD240/60/15/5.csv)",
   "symbol": "XAUUSD",
   "counts": {
-    "H4": 360,
-    "H1": 1200,
-    "M15": 720,
-    "M5": 1440,
-    "total_bars": 3720
+    "H4": 26859,
+    "H1": 100000,
+    "M15": 100000,
+    "M5": 100000,
+    "total_bars": 326859
   }
 }

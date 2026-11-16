@@ -101,6 +101,39 @@ class HistoricalBacktestTrainer:
         self.provider = PriceProvider("XAUUSD")
         self.engine = PaperTradingEngine(base_spread=0.20, slippage=0.08)
 
+    def _load_uploaded_tsv_if_available(self, filename: str, max_bars: int = 15000) -> tuple[List[Dict[str, Any]], int]:
+        csv_path = self.base_dir / filename
+        if not csv_path.exists():
+            return [], 0
+        rows: List[Dict[str, Any]] = []
+        try:
+            with open(csv_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    parts = line.split("\t") if "\t" in line else line.split(",")
+                    if len(parts) < 5:
+                        continue
+                    # Skip header if present
+                    if parts[0].lower() in ("time", "datetime", "date"):
+                        continue
+                    dt = parts[0].strip().replace(" ", "T")
+                    if not dt.endswith("Z"):
+                        dt += ":00Z" if len(dt) == 16 else "Z"
+                    rows.append({
+                        "time": dt,
+                        "open": round(float(parts[1]), 2),
+                        "high": round(float(parts[2]), 2),
+                        "low": round(float(parts[3]), 2),
+                        "close": round(float(parts[4]), 2),
+                        "volume": float(parts[5]) if len(parts) > 5 and parts[5] else 1000.0,
+                    })
+            total_count = len(rows)
+            return rows[-max_bars:], total_count
+        except Exception:
+            return [], 0
+
     def _load_dukascopy_csv_if_available(self, filename: str, max_bars: int = 5000) -> List[Dict[str, Any]]:
         csv_path = self.base_dir / "data" / filename
         if not csv_path.exists():
@@ -125,14 +158,30 @@ class HistoricalBacktestTrainer:
     def run_all_agents_backtest(
         self, agents_cfg: List[Dict[str, Any]], as_of_time: str = "2026-09-30T20:00:00Z"
     ) -> Dict[str, Any]:
-        duka_h1 = self._load_dukascopy_csv_if_available("XAUUSD_h1_bid.csv", max_bars=1200)
-        duka_h4 = self._load_dukascopy_csv_if_available("XAUUSD_h4_bid.csv", max_bars=360)
+        up_h4, total_h4 = self._load_uploaded_tsv_if_available("XAUUSD240.csv", max_bars=12000)
+        up_h1, total_h1 = self._load_uploaded_tsv_if_available("XAUUSD60.csv", max_bars=15000)
+        up_m15, total_m15 = self._load_uploaded_tsv_if_available("XAUUSD15.csv", max_bars=15000)
+        up_m5, total_m5 = self._load_uploaded_tsv_if_available("XAUUSD5.csv", max_bars=15000)
+
+        duka_h1 = up_h1 or self._load_dukascopy_csv_if_available("XAUUSD_h1_bid.csv", max_bars=5000)
+        duka_h4 = up_h4 or self._load_dukascopy_csv_if_available("XAUUSD_h4_bid.csv", max_bars=5000)
 
         h4 = duka_h4 if len(duka_h4) >= 120 else self.provider.get_closed_candles("H4", as_of_time=as_of_time, limit=180)
         h1 = duka_h1 if len(duka_h1) >= 240 else self.provider.get_closed_candles("H1", as_of_time=as_of_time, limit=360)
-        m15 = self.provider.get_closed_candles("M15", as_of_time=as_of_time, limit=720)
-        m5 = self.provider.get_closed_candles("M5", as_of_time=as_of_time, limit=1440)
-        data_source = "Dukascopy Historical XAUUSD CSV + M15/M5" if duka_h1 else "Synchronized 4H/1H/M15/M5 Historical XAUUSD"
+        m15 = up_m15 if len(up_m15) >= 240 else self.provider.get_closed_candles("M15", as_of_time=as_of_time, limit=720)
+        m5 = up_m5 if len(up_m5) >= 240 else self.provider.get_closed_candles("M5", as_of_time=as_of_time, limit=1440)
+
+        if up_h1:
+            data_source = "Uploaded Historical XAUUSD (2010-2026: XAUUSD240/60/15/5.csv)"
+        elif duka_h1:
+            data_source = "Dukascopy / TwelveData Historical XAUUSD CSV + M15/M5"
+        else:
+            data_source = "Synchronized 4H/1H/M15/M5 Historical XAUUSD"
+
+        counts_h4 = total_h4 or len(h4)
+        counts_h1 = total_h1 or len(h1)
+        counts_m15 = total_m15 or len(m15)
+        counts_m5 = total_m5 or len(m5)
 
         # Save historical dataset snapshot
         hist_file = self.base_dir / "data" / "historical_xauusd_mtf.json"
@@ -143,11 +192,11 @@ class HistoricalBacktestTrainer:
                 "source": data_source,
                 "symbol": "XAUUSD",
                 "counts": {
-                    "H4": len(h4),
-                    "H1": len(h1),
-                    "M15": len(m15),
-                    "M5": len(m5),
-                    "total_bars": len(h4) + len(h1) + len(m15) + len(m5),
+                    "H4": counts_h4,
+                    "H1": counts_h1,
+                    "M15": counts_m15,
+                    "M5": counts_m5,
+                    "total_bars": counts_h4 + counts_h1 + counts_m15 + counts_m5,
                 },
             }, indent=2),
             encoding="utf-8",
@@ -406,12 +455,12 @@ class HistoricalBacktestTrainer:
             "dataset": {
                 "symbol": "XAUUSD",
                 "timeframes": {
-                    "4H": len(h4),
-                    "1H": len(h1),
-                    "M15": len(m15),
-                    "M5": len(m5),
+                    "4H": counts_h4,
+                    "1H": counts_h1,
+                    "M15": counts_m15,
+                    "M5": counts_m5,
                 },
-                "total_candles": len(h4) + len(h1) + len(m15) + len(m5),
+                "total_candles": counts_h4 + counts_h1 + counts_m15 + counts_m5,
                 "walk_forward_split": "65% In-Sample Training / 35% Out-of-Sample Validation",
             },
             "skills_trained": SKILLS_CATALOG,
