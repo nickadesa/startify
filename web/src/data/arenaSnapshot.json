@@ -43063,7 +43063,7 @@
   ],
   "playbooks": [
     {
-      "id": 181,
+      "id": 201,
       "agent_id": "ai-1",
       "version": "v1",
       "content_md": "# Gemini 3.8 Trading Playbook (v2.5)\n- **Model**: `gemini-3.8-flash`\n- **Primary Archetype**: London OTE Sniper & COT Confluence\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43075,7 +43075,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 182,
+      "id": 202,
       "agent_id": "ai-1",
       "version": "v3",
       "content_md": "# Gemini 3.8 Trading Playbook (v2.5)\n- **Model**: `gemini-3.8-flash`\n- **Primary Archetype**: London OTE Sniper & COT Confluence\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43087,7 +43087,7 @@
       "pf_after": 4.56
     },
     {
-      "id": 183,
+      "id": 203,
       "agent_id": "ai-2",
       "version": "v1",
       "content_md": "# GPT-OSS 120B Trading Playbook (v2.5)\n- **Model**: `openai/gpt-oss-120b`\n- **Primary Archetype**: NY Overlap Liquidity Sweep & OTE\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43099,7 +43099,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 184,
+      "id": 204,
       "agent_id": "ai-2",
       "version": "v3",
       "content_md": "# GPT-OSS 120B Trading Playbook (v2.5)\n- **Model**: `openai/gpt-oss-120b`\n- **Primary Archetype**: NY Overlap Liquidity Sweep & OTE\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43111,7 +43111,7 @@
       "pf_after": 4.17
     },
     {
-      "id": 185,
+      "id": 205,
       "agent_id": "ai-3",
       "version": "v1",
       "content_md": "# Mistral 4 Trading Playbook (v2.5)\n- **Model**: `mistral-small-4`\n- **Primary Archetype**: Institutional OI Wall Rejections\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43123,7 +43123,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 186,
+      "id": 206,
       "agent_id": "ai-3",
       "version": "v2",
       "content_md": "# Mistral 4 Trading Playbook (v2.5)\n- **Model**: `mistral-small-4`\n- **Primary Archetype**: Institutional OI Wall Rejections\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43135,7 +43135,7 @@
       "pf_after": 3.22
     },
     {
-      "id": 187,
+      "id": 207,
       "agent_id": "ai-4",
       "version": "v1",
       "content_md": "# Nemotron Ultra Trading Playbook (v2.5)\n- **Model**: `nvidia/nemotron-3-ultra-550b-a55b:free`\n- **Primary Archetype**: Multi-Timeframe 4H/1H/M15/M5 Structure\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43147,7 +43147,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 188,
+      "id": 208,
       "agent_id": "ai-4",
       "version": "v2",
       "content_md": "# Nemotron Ultra Trading Playbook (v2.5)\n- **Model**: `nvidia/nemotron-3-ultra-550b-a55b:free`\n- **Primary Archetype**: Multi-Timeframe 4H/1H/M15/M5 Structure\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43159,7 +43159,7 @@
       "pf_after": 3.04
     },
     {
-      "id": 189,
+      "id": 209,
       "agent_id": "ai-5",
       "version": "v1",
       "content_md": "# Llama 3.3 70B Trading Playbook (v2.5)\n- **Model**: `@cf/meta/llama-3.3-70b-instruct-fp8-fast`\n- **Primary Archetype**: PAXG OI Delta & Discount OTE Pullback\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43171,7 +43171,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 190,
+      "id": 210,
       "agent_id": "ai-5",
       "version": "v2",
       "content_md": "# Llama 3.3 70B Trading Playbook (v2.5)\n- **Model**: `@cf/meta/llama-3.3-70b-instruct-fp8-fast`\n- **Primary Archetype**: PAXG OI Delta & Discount OTE Pullback\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43183,7 +43183,7 @@
       "pf_after": 2.78
     },
     {
-      "id": 191,
+      "id": 211,
       "agent_id": "ai-6",
       "version": "v1",
       "content_md": "# Qwen 3.8 Trading Playbook (v2.5)\n- **Model**: `qwen/qwen3.8-27b`\n- **Primary Archetype**: Asian-London Range Breakout to OTE\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43195,7 +43195,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 192,
+      "id": 212,
       "agent_id": "ai-6",
       "version": "v3",
       "content_md": "# Qwen 3.8 Trading Playbook (v2.5)\n- **Model**: `qwen/qwen3.8-27b`\n- **Primary Archetype**: Asian-London Range Breakout to OTE\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43207,7 +43207,7 @@
       "pf_after": 2.64
     },
     {
-      "id": 193,
+      "id": 213,
       "agent_id": "ai-7",
       "version": "v1",
       "content_md": "# Nemotron 3.5 Trading Playbook (v2.5)\n- **Model**: `nvidia/nemotron-3.5-super-vl:free`\n- **Primary Archetype**: High-R Macro USD Yield & OTE Asymmetric\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43219,7 +43219,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 194,
+      "id": 214,
       "agent_id": "ai-7",
       "version": "v2",
       "content_md": "# Nemotron 3.5 Trading Playbook (v2.5)\n- **Model**: `nvidia/nemotron-3.5-super-vl:free`\n- **Primary Archetype**: High-R Macro USD Yield & OTE Asymmetric\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43231,7 +43231,7 @@
       "pf_after": 4.71
     },
     {
-      "id": 195,
+      "id": 215,
       "agent_id": "ai-8",
       "version": "v1",
       "content_md": "# Command A+ Trading Playbook (v2.5)\n- **Model**: `command-a-plus-05-2026`\n- **Primary Archetype**: Conservative High-Winrate 0.705 Sweet Spot\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43243,7 +43243,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 196,
+      "id": 216,
       "agent_id": "ai-8",
       "version": "v2",
       "content_md": "# Command A+ Trading Playbook (v2.5)\n- **Model**: `command-a-plus-05-2026`\n- **Primary Archetype**: Conservative High-Winrate 0.705 Sweet Spot\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43255,7 +43255,7 @@
       "pf_after": 4.14
     },
     {
-      "id": 197,
+      "id": 217,
       "agent_id": "consensus",
       "version": "v1",
       "content_md": "# Consensus Trading Playbook (v2.5)\n- **Model**: `ensemble-3of8-vote`\n- **Primary Archetype**: Multi-AI Uncorrelated Consensus Signal\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43267,7 +43267,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 198,
+      "id": 218,
       "agent_id": "consensus",
       "version": "v2",
       "content_md": "# Consensus Trading Playbook (v2.5)\n- **Model**: `ensemble-3of8-vote`\n- **Primary Archetype**: Multi-AI Uncorrelated Consensus Signal\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n\n\n## Revision Note\n- Added 0.25x ATR stop buffer below 0.79 OTE and strict Rank #1 OI wall filter.",
@@ -43279,7 +43279,7 @@
       "pf_after": 5.88
     },
     {
-      "id": 199,
+      "id": 219,
       "agent_id": "ctrl-ote",
       "version": "v1",
       "content_md": "# Rule OTE Trading Playbook (v2.5)\n- **Model**: `deterministic-ote-0705`\n- **Primary Archetype**: Pure Rule-Based H4 Trend + 0.705 Limit\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43291,7 +43291,7 @@
       "pf_after": 1.52
     },
     {
-      "id": 200,
+      "id": 220,
       "agent_id": "ctrl-bnh",
       "version": "v1",
       "content_md": "# Buy & Hold Trading Playbook (v2.5)\n- **Model**: `passive-gold-allocation`\n- **Primary Archetype**: Passive XAUUSD Benchmark\n- **Base Account Equity**: $1,000.00 (Immutable Risk Rules Enforced)\n- **Pre-Competition Training**: Walk-Forward Historical Backtest (2,700+ candles across 4H, 1H, M15, M5) + 11 Skills.sh Modules\n\n## 1. Multi-Timeframe Structure & Fibonacci OTE Edge\n- **4H & 1H**: Identify primary institutional impulse leg and CFTC COT Managed Money directional bias.\n- **M15**: Map Fibonacci OTE retracement zone (`0.618` to `0.786`, targeting the `0.705` sweet spot) and GLD/PAXG Open Interest strike walls.\n- **M5**: Confirm displacement / CHoCH trigger before committing capital.\n\n## 2. Autonomous Execution Modes (`market` | `limit` | `zone_confirm`)\n- **`limit`**: Stage Buy Limit / Sell Limit directly at Fib `0.705` or `0.618` when HTF structure and OI wall converge.\n- **`zone_confirm`**: Wait without a resting limit order until price enters the `0.618\u20130.786` zone and prints an M5 rejection candle.\n- **`market`**: Execute immediately when price is already inside the OTE zone with an active M5 BOS/CHoCH displacement.\n\n## 3. Break-Even Lock & Partial Close (`-0.27` & `-0.618`)\n- **Break-Even Protection**: Automatically shift SL to Entry + $0.50 once price reaches `+1.0R` or `Fib 0.0`.\n- **Multi-Lot Partial Close**: Close `50%` lot at `TP1 (Fib -0.27)` and hold the remaining `50%` runner to `TP2 (Fib -0.618)`.\n- **USD-Only Macro Filter**: Stand down 30 minutes before and after high-impact USD events (`FOMC`, `NFP`, `US CPI`, `Core PCE`, `ISM PMI`).\n",
@@ -43652,7 +43652,7 @@
   ],
   "health_logs": [
     {
-      "log_id": 40,
+      "log_id": 44,
       "time": "2026-11-13T18:15:00Z",
       "component": "news_blackout",
       "severity": "warning",
@@ -43660,7 +43660,7 @@
       "details_json": "{}"
     },
     {
-      "log_id": 39,
+      "log_id": 43,
       "time": "2026-11-14T16:00:00Z",
       "component": "friday_flatten",
       "severity": "info",
@@ -43668,7 +43668,7 @@
       "details_json": "{}"
     },
     {
-      "log_id": 38,
+      "log_id": 42,
       "time": "2026-11-15T13:00:00Z",
       "component": "trigger_engine",
       "severity": "info",
@@ -43676,7 +43676,7 @@
       "details_json": "{}"
     },
     {
-      "log_id": 37,
+      "log_id": 41,
       "time": "2026-11-15T12:00:00Z",
       "component": "data_quality",
       "severity": "info",

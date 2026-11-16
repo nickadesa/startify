@@ -97,14 +97,34 @@ class PriceProvider:
         minutes = TIMEFRAME_MINUTES.get(tf_norm, 60)
         cutoff = parse_iso_utc(as_of_time) if as_of_time else datetime.now(timezone.utc)
 
+        root_dir = Path(__file__).resolve().parent.parent
+        tf_file_map = {
+            "H4": ("XAUUSD240.csv", "data/XAUUSD_h4_bid.csv"),
+            "4H": ("XAUUSD240.csv", "data/XAUUSD_h4_bid.csv"),
+            "H1": ("XAUUSD60.csv", "data/XAUUSD_h1_bid.csv"),
+            "1H": ("XAUUSD60.csv", "data/XAUUSD_h1_bid.csv"),
+            "M15": ("XAUUSD15.csv", "data/XAUUSD_m15_bid.csv"),
+            "15M": ("XAUUSD15.csv", "data/XAUUSD_m15_bid.csv"),
+            "M5": ("XAUUSD5.csv", "data/XAUUSD_m5_bid.csv"),
+            "5M": ("XAUUSD5.csv", "data/XAUUSD_m5_bid.csv"),
+        }
+
         if csv_path and Path(csv_path).exists():
-            raw = self._load_csv(csv_path)
+            raw = self._load_csv(csv_path, tail_limit=max(limit * 4, 2000))
         elif use_live_api and os.environ.get("TWELVEDATA_API_KEY"):
             raw = self._fetch_twelvedata(tf_norm, limit * 2)
         elif use_live_api and os.environ.get("OANDA_API_KEY"):
             raw = self._fetch_oanda(tf_norm, limit * 2)
         else:
-            raw = self._generate_realistic_xauusd_series(tf_norm, cutoff, limit + 25)
+            raw = []
+            for rel_candidate in tf_file_map.get(tf_norm, ()):
+                cand_path = root_dir / rel_candidate
+                if cand_path.exists():
+                    raw = self._load_csv(str(cand_path), tail_limit=max(limit * 4, 2000))
+                    if raw:
+                        break
+            if not raw:
+                raw = self._generate_realistic_xauusd_series(tf_norm, cutoff, limit + 25)
 
         bar_delta = timedelta(minutes=minutes)
         closed = [
@@ -233,19 +253,32 @@ class PriceProvider:
             "recommended_partial_split": "50% Partial Close at Fib -0.27 + Move SL to Break-Even ('กันหน้าทุน') + 50% Runner to Fib -0.618",
         }
 
-    def _load_csv(self, csv_path: str) -> List[Dict[str, Any]]:
+    def _load_csv(self, csv_path: str, tail_limit: int = 5000) -> List[Dict[str, Any]]:
+        cache_key = f"csv_{csv_path}_{tail_limit}"
+        if cache_key in self._cache:
+            return self._cache[cache_key]
         bars: List[Dict[str, Any]] = []
         with open(csv_path, "r", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                bars.append({
-                    "time": row["time"],
-                    "open": round(float(row["open"]), 2),
-                    "high": round(float(row["high"]), 2),
-                    "low": round(float(row["low"]), 2),
-                    "close": round(float(row["close"]), 2),
-                    "volume": float(row.get("volume", 1000.0)),
-                })
+            lines = f.read().splitlines()
+        for line in lines[-tail_limit:]:
+            line = line.strip()
+            if not line:
+                continue
+            parts = line.split("\t") if "\t" in line else line.split(",")
+            if len(parts) < 5 or parts[0].lower() in ("time", "datetime", "date"):
+                continue
+            dt = parts[0].strip().replace(" ", "T")
+            if not dt.endswith("Z"):
+                dt += ":00Z" if len(dt) == 16 else "Z"
+            bars.append({
+                "time": dt,
+                "open": round(float(parts[1]), 2),
+                "high": round(float(parts[2]), 2),
+                "low": round(float(parts[3]), 2),
+                "close": round(float(parts[4]), 2),
+                "volume": float(parts[5]) if len(parts) > 5 and parts[5] else 1000.0,
+            })
+        self._cache[cache_key] = bars
         return bars
 
     def _fetch_twelvedata(self, timeframe: str, outputsize: int) -> List[Dict[str, Any]]:
