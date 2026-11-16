@@ -582,3 +582,15 @@ async def serve_spa_or_vercel_rewrite(
         return JSONResponse({"error": f"Unknown API route: {api_path}"}, status_code=404)
 
     return HTMLResponse(get_inlined_spa_html())
+
+
+@app.api_route("/{full_path:path}", methods=["GET", "POST", "PATCH", "DELETE"])
+async def serve_spa_catchall(
+    full_path: str,
+    request: Request,
+    __api: Optional[str] = Query(default=None),
+    __asset: Optional[str] = Query(default=None),
+    authorization: Optional[str] = Header(default=None),
+):
+    return await serve_spa_or_vercel_rewrite(request=request, __api=__api, __asset=__asset, authorization=authorization)
+
