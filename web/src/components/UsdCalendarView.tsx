@@ -93,6 +93,40 @@ export const UsdCalendarView: React.FC<Props> = ({
   const [showRValue, setShowRValue] = useState<boolean>(false);
   const [startFromMonday, setStartFromMonday] = useState<boolean>(false);
   const [hideWeekends, setHideWeekends] = useState<boolean>(false);
+  const [liveJournal, setLiveJournal] = useState<ShareTradeData[]>(() => {
+    try {
+      const saved = localStorage.getItem('startify_desk_journal_v1');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [shareModal, setShareModal] = useState<{
+    mode: 'trade' | 'calendar';
+    trade?: ShareTradeData | null;
+    calendar?: ShareCalendarData | null;
+  } | null>(null);
+
+  useEffect(() => {
+    const syncJournal = () => {
+      fetch('/api/desk/journal')
+        .then((r) => (r.ok ? r.json() : null))
+        .then((json) => {
+          if (json && Array.isArray(json.entries) && json.entries.length > 0) {
+            setLiveJournal(json.entries);
+            try {
+              localStorage.setItem('startify_desk_journal_v1', JSON.stringify(json.entries));
+            } catch {
+              // ignore quota errors
+            }
+          }
+        })
+        .catch(() => {});
+    };
+    syncJournal();
+    const timer = setInterval(syncJournal, 30000);
+    return () => clearInterval(timer);
+  }, []);
 
   const aiAgents = useMemo(
     () =>
@@ -326,17 +360,20 @@ export const UsdCalendarView: React.FC<Props> = ({
             ±30m blackout guard
           </Badge>
           <Button
-            variant="default"
+            variant="primary"
             size="sm"
             onClick={() => {
               const allDays = calendarWeeks.flatMap((w) =>
                 w.days
-                  .filter((d) => d.inMonth)
-                  .map((d) => ({
-                    day: d.dayNum,
-                    pnl: d.summary?.pnlUsd || 0,
-                    trades: d.summary?.tradesCount || 0,
-                  }))
+                  .filter((d) => d.day > 0)
+                  .map((d) => {
+                    const summary = dayMap.get(d.dateStr);
+                    return {
+                      day: d.day,
+                      pnl: summary?.pnlUsd || 0,
+                      trades: summary?.tradesCount || 0,
+                    };
+                  })
               );
               const totalT = allDays.reduce((a, b) => a + b.trades, 0);
               const totalW = calendarWeeks.reduce((a, w) => a + w.wins, 0);
