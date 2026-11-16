@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from './ui/table';
+import { ChartCandle, ChartOteOverlay, TradingChartPro } from './TradingChartPro';
 
 interface DepthLevel {
   price: number;
@@ -37,6 +38,8 @@ interface OrderflowState {
   delta_bias: string;
   open_interest_paxg: number;
   funding_rate_pct: number;
+  bid_wall?: DepthLevel;
+  ask_wall?: DepthLevel;
   orderbook_bids: DepthLevel[];
   orderbook_asks: DepthLevel[];
   footprint_buckets: FootprintBucket[];
@@ -76,6 +79,9 @@ export interface DeskEvaluation {
 export const OrderflowTerminal: React.FC = () => {
   const [ofState, setOfState] = useState<OrderflowState | null>(null);
   const [desk, setDesk] = useState<DeskEvaluation | null>(null);
+  const [liveCandles, setLiveCandles] = useState<ChartCandle[]>([]);
+  const [chartOte, setChartOte] = useState<ChartOteOverlay | null>(null);
+  const [timeframe, setTimeframe] = useState<string>('M15');
   const [wsConnected, setWsConnected] = useState(false);
   const [sendingDiscord, setSendingDiscord] = useState(false);
   const [discordStatus, setDiscordStatus] = useState<string | null>(null);
@@ -83,19 +89,26 @@ export const OrderflowTerminal: React.FC = () => {
 
   const fetchBackendOrderflowAndDesk = async (sendDiscord = false) => {
     try {
-      const [ofRes, deskRes] = await Promise.all([
+      const [ofRes, deskRes, snapRes] = await Promise.all([
         fetch('/api/orderflow/live').then((r) => (r.ok ? r.json() : null)),
         fetch(`/api/desk/evaluate?send_discord=${sendDiscord}`).then((r) =>
           r.ok ? r.json() : null
         ),
+        fetch('/api/snapshot/live').then((r) => (r.ok ? r.json() : null)),
       ]);
       if (ofRes) setOfState(ofRes);
+      if (snapRes?.recent_candles_h1) {
+        setLiveCandles(snapRes.recent_candles_h1);
+      }
+      if (snapRes?.snapshot?.ote) {
+        setChartOte(snapRes.snapshot.ote);
+      }
       if (deskRes) {
         setDesk(deskRes);
         if (sendDiscord && deskRes.discord_delivery) {
           setDiscordStatus(
             deskRes.discord_delivery.sent
-              ? 'Signal sent to Discord webhook'
+              ? 'Signal + Chart PNG sent to Discord webhook'
               : `Discord skipped: ${deskRes.discord_delivery.reason || 'not approved'}`
           );
         }
@@ -413,6 +426,7 @@ export const OrderflowTerminal: React.FC = () => {
           <Badge variant="accent">8 SPECIALISTS</Badge>
         </div>
 
+        <div className="overflow-x-auto w-full">
         <Table>
           <TableHeader>
             <TableRow>
@@ -432,7 +446,7 @@ export const OrderflowTerminal: React.FC = () => {
                 <TableCell className="text-[#A1A1AA] whitespace-nowrap">
                   {v.role_title}
                 </TableCell>
-                <TableCell>
+                <TableCell className="whitespace-nowrap">
                   <Badge
                     variant={
                       v.vote === 'long' || v.vote === 'approved' || v.vote === 'clear'
@@ -447,7 +461,7 @@ export const OrderflowTerminal: React.FC = () => {
                     <span className="uppercase">{v.vote}</span>
                   </Badge>
                 </TableCell>
-                <TableCell className="text-right tabular-nums text-white">
+                <TableCell className="text-right tabular-nums text-white whitespace-nowrap">
                   {v.confidence}%
                 </TableCell>
                 <TableCell className="text-[#A1A1AA] max-w-[360px] truncate">
@@ -457,6 +471,7 @@ export const OrderflowTerminal: React.FC = () => {
             ))}
           </TableBody>
         </Table>
+        </div>
       </Card>
     </div>
   );

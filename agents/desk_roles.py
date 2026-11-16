@@ -157,14 +157,18 @@ class SpecializedDeskCoordinator:
         v8 = "approved" if approved else "hold"
         votes.append({**DESK_ROLES[7], "vote": v8, "confidence": 92 if approved else 80, "note": f"$1,000 risk {risk_pct}% (${risk_usd:.2f}) -> {lot:.2f} lot"})
 
+        aligned_count = sum(1 for v in votes if v["vote"] in (direction, "clear", "approved"))
+
         return {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "portfolio_equity": round(portfolio_equity, 2),
             "approved": approved,
             "conviction_score": score,
+            "aligned_count": aligned_count,
+            "total_specialists": len(votes),
             "direction": direction,
             "execution_mode": "limit" if not in_ote else "zone_confirm",
-            "setup_label": "8-AI Desk OTE + Orderflow + FVG",
+            "setup_label": "Fib OTE 0.705 + Orderflow + FVG",
             "entry": entry_px,
             "stop_loss": sl_px,
             "tp1": tp1,
@@ -172,10 +176,39 @@ class SpecializedDeskCoordinator:
             "tp3": tp3,
             "lot": lot,
             "risk_pct": risk_pct,
+            "risk_usd": round(risk_usd, 2),
             "rationale": (
-                f"Desk Conviction {score}/100 ({direction.upper()}). "
-                f"Structure OTE ${entry_px:.2f}, PAXG CVD {orderflow.get('net_delta', 0):+.2f}, "
-                f"SL ${sl_px:.2f}, TP1 ${tp1:.2f} (BE lock), TP2 ${tp2:.2f} (-0.27), TP3 ${tp3:.2f} (-0.618)."
+                f"OTE ${entry_px:.2f} | PAXG CVD {orderflow.get('net_delta', 0):+.1f} | "
+                f"Bid ${bid_wall:.1f} / Ask ${ask_wall:.1f}"
             ),
             "specialist_votes": votes,
         }
+
+
+ALTERNATIVE_FREE_MODELS: List[Dict[str, str]] = [
+    {
+        "model_id": "deepseek/deepseek-r1:free",
+        "provider": "OpenRouter",
+        "recommended_role": "RISK_GATEKEEPER",
+        "strength": "Quantitative math & strict SL/TP risk validation",
+    },
+    {
+        "model_id": "qwen/qwen3-235b-a22b:free",
+        "provider": "OpenRouter",
+        "recommended_role": "STRUCTURE_OTE_LEAD",
+        "strength": "Multi-timeframe market structure & structured JSON",
+    },
+    {
+        "model_id": "google/gemma-3-27b-it:free",
+        "provider": "Google AI / OpenRouter",
+        "recommended_role": "USD_MACRO_GUARD",
+        "strength": "Fast USD macro event & DXY/US10Y sentiment",
+    },
+    {
+        "model_id": "qwen-qwq-32b",
+        "provider": "Groq",
+        "recommended_role": "M15_SCALPER",
+        "strength": "Sub-second low-latency execution confirmation",
+    },
+]
+

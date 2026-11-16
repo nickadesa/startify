@@ -1,6 +1,7 @@
 import json
 import os
 import urllib.request
+import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
@@ -9,8 +10,8 @@ from data.price_provider import load_dotenv_if_present
 
 class DiscordNotifier:
     """
-    Sends rich Discord Embed alerts for Startify XAUUSD Desk signals,
-    Break-Even ("กันหน้าทุน") updates, partial closes, and USD macro blackouts.
+    Sends compact, high-hierarchy Discord Embed alerts with optional PNG chart attachments
+    for Startify XAUUSD Desk signals, Break-Even locks, and USD macro alerts.
     """
 
     def __init__(self, webhook_url: Optional[str] = None):
@@ -26,71 +27,120 @@ class DiscordNotifier:
         description: str,
         color: int = 0x00ADFF,
         fields: Optional[List[Dict[str, Any]]] = None,
-        footer: str = "Startify XAUUSD 8-AI Desk • $1,000 Portfolio",
+        footer: str = "Startify Quant Desk • $1,000 Portfolio",
+        image_bytes: Optional[bytes] = None,
+        image_filename: str = "xauusd_setup.png",
     ) -> Dict[str, Any]:
         if not self.is_configured():
             return {"sent": False, "reason": "DISCORD_WEBHOOK_URL not configured"}
 
+        embed: Dict[str, Any] = {
+            "title": title,
+            "description": description,
+            "color": color,
+            "fields": fields or [],
+            "footer": {"text": footer},
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+        if image_bytes:
+            embed["image"] = {"url": f"attachment://{image_filename}"}
+
         payload = {
             "username": "Startify Quant Desk",
-            "embeds": [
-                {
-                    "title": title,
-                    "description": description,
-                    "color": color,
-                    "fields": fields or [],
-                    "footer": {"text": footer},
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
-                }
-            ],
+            "embeds": [embed],
         }
-        data = json.dumps(payload).encode("utf-8")
+
+        if image_bytes:
+            boundary = f"----StartifyBoundary{uuid.uuid4().hex}"
+            parts = [
+                f"--{boundary}\r\n"
+                f'Content-Disposition: form-data; name="payload_json"\r\n'
+                f"Content-Type: application/json\r\n\r\n"
+                f"{json.dumps(payload)}\r\n".encode("utf-8"),
+                f"--{boundary}\r\n"
+                f'Content-Disposition: form-data; name="files[0]"; filename="{image_filename}"\r\n'
+                f"Content-Type: image/png\r\n\r\n".encode("utf-8")
+                + image_bytes
+                + b"\r\n",
+                f"--{boundary}--\r\n".encode("utf-8"),
+            ]
+            body = b"".join(parts)
+            content_type = f"multipart/form-data; boundary={boundary}"
+        else:
+            body = json.dumps(payload).encode("utf-8")
+            content_type = "application/json"
+
         req = urllib.request.Request(
             self.webhook_url,
-            data=data,
+            data=body,
             headers={
-                "Content-Type": "application/json",
-                "User-Agent": "Startify-XAUUSD-Desk/3.0",
+                "Content-Type": content_type,
+                "User-Agent": "Startify-XAUUSD-Desk/3.1",
             },
             method="POST",
         )
         try:
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                return {"sent": True, "status": resp.status}
+            with urllib.request.urlopen(req, timeout=12) as resp:
+                return {"sent": True, "status": resp.status, "has_chart": bool(image_bytes)}
         except Exception as exc:
             return {"sent": False, "reason": str(exc)}
 
-    def send_entry_signal(self, signal: Dict[str, Any]) -> Dict[str, Any]:
+    def send_entry_signal(
+        self,
+        signal: Dict[str, Any],
+        chart_png: Optional[bytes] = None,
+    ) -> Dict[str, Any]:
         side = str(signal.get("direction", "long")).upper()
+        mode = str(signal.get("execution_mode", "limit")).upper()
         color = 0x30D158 if side == "LONG" else 0xFF453A
+
+        entry = float(signal.get("entry", 0.0))
+        sl = float(signal.get("stop_loss", 0.0))
+        tp1 = float(signal.get("tp1", 0.0))
+        tp2 = float(signal.get("tp2", 0.0))
+        tp3 = float(signal.get("tp3", 0.0))
+        lot = float(signal.get("lot", 0.01))
+        risk_pct = float(signal.get("risk_pct", 0.5))
+        risk_usd = float(signal.get("risk_usd", 5.0))
+        score = int(signal.get("conviction_score", 0))
+
         votes = signal.get("specialist_votes", [])
-        vote_summary = "\n".join(
-            f"• **{v.get('display_name', 'AI')}** ({v.get('role') or v.get('role_title') or v.get('role_code', 'Specialist')}): `{str(v.get('vote', 'wait')).upper()}` ({v.get('confidence', 0)}%)"
-            for v in votes[:8]
+        aligned = signal.get("aligned_count")
+        total = signal.get("total_specialists") or len(votes) or 8
+        if aligned is None:
+            aligned = sum(1 for v in votes if str(v.get("vote", "")).lower() in (side.lower(), "clear", "approved"))
+
+        # Clean, scannable typographic hierarchy (no long per-model wall of text)
+        description = (
+            f"## {side} @ `${entry:,.2f}` · `{mode}`\n"
+            f"**Conviction:** `{score}/100` (`{aligned}/{total}` Aligned) · "
+            f"**Risk:** `${risk_usd:.2f}` (`{risk_pct}%`)\n"
+            f"-# {signal.get('rationale', 'Fib OTE + Orderflow + FVG consensus')}"
         )
+
         fields = [
-            {"name": "Direction & Mode", "value": f"**{side}** (`{signal.get('execution_mode', 'limit')}`)", "inline": True},
-            {"name": "Entry Price", "value": f"`${float(signal.get('entry', 0)):.2f}`", "inline": True},
-            {"name": "Stop Loss", "value": f"`${float(signal.get('stop_loss', 0)):.2f}`", "inline": True},
-            {"name": "TP1 (ATR + BE)", "value": f"`${float(signal.get('tp1', 0)):.2f}`", "inline": True},
-            {"name": "TP2 (Fib -0.27)", "value": f"`${float(signal.get('tp2', 0)):.2f}`", "inline": True},
-            {"name": "TP3 (Fib -0.618)", "value": f"`${float(signal.get('tp3', 0)):.2f}`", "inline": True},
-            {"name": "Lot / Risk ($1,000)", "value": f"`{signal.get('lot', 0.01)} lot` ({signal.get('risk_pct', 0.5)}%)", "inline": True},
-            {"name": "Desk Conviction", "value": f"`{signal.get('conviction_score', 0)}/100`", "inline": True},
-            {"name": "8-AI Specialist Votes", "value": vote_summary or "Consensus approved", "inline": False},
+            {"name": "Entry", "value": f"**`${entry:,.2f}`**", "inline": True},
+            {"name": "Stop Loss", "value": f"`${sl:,.2f}`", "inline": True},
+            {"name": "Size ($1,000)", "value": f"`{lot:.2f} lot`", "inline": True},
+            {"name": "TP1 (BE Lock)", "value": f"`${tp1:,.2f}`", "inline": True},
+            {"name": "TP2 (-0.27)", "value": f"`${tp2:,.2f}`", "inline": True},
+            {"name": "TP3 (-0.618)", "value": f"`${tp3:,.2f}`", "inline": True},
         ]
+
         return self.send_embed(
-            title=f"XAUUSD {side} SIGNAL — {signal.get('setup_label', 'Fib OTE 0.79 + Orderflow')}",
-            description=signal.get("rationale", "8-AI specialized desk consensus approved."),
+            title=f"XAUUSD {side} SIGNAL — {signal.get('setup_label', 'Fib OTE + Orderflow')}",
+            description=description,
             color=color,
             fields=fields,
+            footer="Startify Quant Desk • $1,000 Portfolio • USD Macro Clear",
+            image_bytes=chart_png,
+            image_filename="xauusd_setup.png",
         )
 
     def send_trade_update(self, event_type: str, trade_id: str, detail: str, pnl_usd: float = 0.0) -> Dict[str, Any]:
         color = 0x30D158 if pnl_usd >= 0 else 0xFF453A
         return self.send_embed(
             title=f"XAUUSD {event_type.upper()} — {trade_id}",
-            description=detail,
+            description=f"### `{pnl_usd:+.2f} USD`\n{detail}",
             color=color,
-            fields=[{"name": "Realized P&L", "value": f"`{pnl_usd:+.2f} USD`", "inline": True}],
         )

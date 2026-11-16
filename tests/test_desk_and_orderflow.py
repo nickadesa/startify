@@ -2,8 +2,9 @@ import json
 import unittest
 from unittest.mock import MagicMock, patch
 
-from agents.desk_roles import DESK_ROLES, SpecializedDeskCoordinator
+from agents.desk_roles import ALTERNATIVE_FREE_MODELS, DESK_ROLES, SpecializedDeskCoordinator
 from data.orderflow_provider import OrderflowProvider
+from notifications.chart_renderer import render_setup_chart_png
 from notifications.discord_webhook import DiscordNotifier
 
 
@@ -21,6 +22,7 @@ class TestDeskAndOrderflow(unittest.TestCase):
 
     def test_specialized_desk_8_roles_and_blackout_gate(self):
         self.assertEqual(len(DESK_ROLES), 8)
+        self.assertGreaterEqual(len(ALTERNATIVE_FREE_MODELS), 4)
         coordinator = SpecializedDeskCoordinator()
         snapshot = {
             "price": 4020.0,
@@ -51,6 +53,7 @@ class TestDeskAndOrderflow(unittest.TestCase):
         self.assertEqual(approved_plan["direction"], "long")
         self.assertEqual(approved_plan["portfolio_equity"], 1000.0)
         self.assertEqual(len(approved_plan["specialist_votes"]), 8)
+        self.assertGreaterEqual(approved_plan["aligned_count"], 5)
         self.assertGreaterEqual(approved_plan["conviction_score"], 65)
         self.assertGreater(approved_plan["tp3"], approved_plan["tp2"])
         self.assertGreater(approved_plan["tp2"], approved_plan["tp1"])
@@ -65,7 +68,27 @@ class TestDeskAndOrderflow(unittest.TestCase):
         self.assertEqual(blocked_plan["specialist_votes"][6]["vote"], "block")
         self.assertEqual(blocked_plan["specialist_votes"][7]["vote"], "hold")
 
-    def test_discord_notifier_entry_signal_formatting(self):
+    def test_pure_python_chart_png_renderer(self):
+        candles = [
+            {"open": 4010 + i * 0.4, "high": 4012 + i * 0.4, "low": 4008 + i * 0.4, "close": 4011 + i * 0.4}
+            for i in range(30)
+        ]
+        signal = {
+            "direction": "long",
+            "entry": 4020.0,
+            "stop_loss": 4012.0,
+            "tp1": 4026.0,
+            "tp2": 4034.0,
+            "tp3": 4045.0,
+            "conviction_score": 85,
+            "lot": 0.01,
+            "risk_pct": 0.5,
+        }
+        png_bytes = render_setup_chart_png(candles=candles, signal=signal, ote={"zone_low": 4015.0, "zone_high": 4023.0})
+        self.assertTrue(png_bytes.startswith(b"\x89PNG\r\n\x1a\n"))
+        self.assertGreater(len(png_bytes), 2000)
+
+    def test_discord_notifier_compact_signal_with_chart_attachment(self):
         notifier = DiscordNotifier(webhook_url="https://discord.com/api/webhooks/123456/abcdef")
         self.assertTrue(notifier.is_configured())
 
@@ -76,6 +99,7 @@ class TestDeskAndOrderflow(unittest.TestCase):
             portfolio_equity=1000.0,
             news_blackout_active=False,
         )
+        chart_png = render_setup_chart_png(candles=[], signal=plan)
 
         mock_resp = MagicMock()
         mock_resp.status = 204
@@ -83,17 +107,16 @@ class TestDeskAndOrderflow(unittest.TestCase):
         mock_resp.__exit__.return_value = False
 
         with patch("urllib.request.urlopen", return_value=mock_resp) as mock_urlopen:
-            result = notifier.send_entry_signal(plan)
+            result = notifier.send_entry_signal(plan, chart_png=chart_png)
 
         self.assertTrue(result["sent"])
+        self.assertTrue(result["has_chart"])
         self.assertEqual(result["status"], 204)
         req_arg = mock_urlopen.call_args[0][0]
-        body = json.loads(req_arg.data.decode("utf-8"))
-        self.assertEqual(body["username"], "Startify Quant Desk")
-        self.assertIn("XAUUSD LONG SIGNAL", body["embeds"][0]["title"])
-        votes_field = body["embeds"][0]["fields"][-1]
-        self.assertEqual(votes_field["name"], "8-AI Specialist Votes")
-        self.assertIn("Gemini 3.8", votes_field["value"])
+        self.assertIn("multipart/form-data", req_arg.headers["Content-type"])
+        self.assertIn(b"attachment://xauusd_setup.png", req_arg.data)
+        self.assertIn(b"Aligned", req_arg.data)
+        self.assertNotIn(b"8-AI Specialist Votes", req_arg.data)
 
 
 if __name__ == "__main__":

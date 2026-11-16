@@ -199,14 +199,150 @@ def get_live_orderflow() -> Dict[str, Any]:
     return OrderflowProvider().get_live_orderflow(spot_xauusd_price=spot_px)
 
 
+def _ensure_journal_table(conn):
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS desk_journal (
+            id TEXT PRIMARY KEY,
+            timestamp TEXT NOT NULL,
+            direction TEXT NOT NULL,
+            execution_mode TEXT NOT NULL,
+            setup_label TEXT NOT NULL,
+            entry REAL NOT NULL,
+            stop_loss REAL NOT NULL,
+            tp1 REAL NOT NULL,
+            tp2 REAL NOT NULL,
+            tp3 REAL NOT NULL,
+            lot REAL NOT NULL,
+            risk_pct REAL NOT NULL,
+            risk_usd REAL NOT NULL,
+            conviction_score INTEGER NOT NULL,
+            status TEXT NOT NULL,
+            pnl_usd REAL NOT NULL DEFAULT 0.0,
+            rationale TEXT NOT NULL DEFAULT ''
+        )
+        """
+    )
+    conn.commit()
+
+
+def _record_desk_trade(desk_res: Dict[str, Any]) -> Dict[str, Any]:
+    from datetime import datetime, timezone
+    import hashlib
+
+    conn = ensure_seeded()
+    _ensure_journal_table(conn)
+    ts = desk_res.get("timestamp") or datetime.now(timezone.utc).isoformat()
+    trade_id = "DSK-" + hashlib.md5(f"{ts[:16]}-{desk_res.get('direction')}-{desk_res.get('entry')}".encode()).hexdigest()[:8].upper()
+    conn.execute(
+        """
+        INSERT OR IGNORE INTO desk_journal
+        (id, timestamp, direction, execution_mode, setup_label, entry, stop_loss, tp1, tp2, tp3, lot, risk_pct, risk_usd, conviction_score, status, pnl_usd, rationale)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            trade_id,
+            ts,
+            str(desk_res.get("direction", "long")),
+            str(desk_res.get("execution_mode", "limit")),
+            str(desk_res.get("setup_label", "Fib OTE + Orderflow")),
+            float(desk_res.get("entry", 0.0)),
+            float(desk_res.get("stop_loss", 0.0)),
+            float(desk_res.get("tp1", 0.0)),
+            float(desk_res.get("tp2", 0.0)),
+            float(desk_res.get("tp3", 0.0)),
+            float(desk_res.get("lot", 0.01)),
+            float(desk_res.get("risk_pct", 0.5)),
+            float(desk_res.get("risk_usd", 5.0)),
+            int(desk_res.get("conviction_score", 0)),
+            "OPEN",
+            0.0,
+            str(desk_res.get("rationale", "")),
+        ),
+    )
+    conn.commit()
+    return {"id": trade_id}
+
+
+@app.get("/api/desk/journal")
+@app.post("/api/desk/journal")
+def get_or_update_desk_journal(live_price: Optional[float] = Query(default=None)) -> Dict[str, Any]:
+    from data.orderflow_provider import OrderflowProvider
+
+    conn = ensure_seeded()
+    _ensure_journal_table(conn)
+    cur_px = live_price
+    if cur_px is None:
+        try:
+            of = OrderflowProvider().get_live_orderflow()
+            cur_px = float(of.get("paxg_price", 0.0)) or None
+        except Exception:
+            cur_px = None
+
+    rows = [dict(r) for r in conn.execute("SELECT * FROM desk_journal ORDER BY timestamp DESC LIMIT 120").fetchall()]
+    updated = False
+    if cur_px:
+        for row in rows:
+            if row["status"] in ("OPEN", "TP1_BE"):
+                side = row["direction"].lower()
+                entry = float(row["entry"])
+                sl = float(row["stop_loss"])
+                tp1 = float(row["tp1"])
+                tp2 = float(row["tp2"])
+                lot = float(row["lot"])
+                new_status = row["status"]
+                new_pnl = float(row["pnl_usd"])
+                if side == "long":
+                    if cur_px <= sl and row["status"] == "OPEN":
+                        new_status = "LOSS"
+                        new_pnl = round((sl - entry) * 100.0 * lot, 2)
+                    elif cur_px >= tp2:
+                        new_status = "WIN"
+                        new_pnl = round((tp2 - entry) * 100.0 * lot, 2)
+                    elif cur_px >= tp1 and row["status"] == "OPEN":
+                        new_status = "TP1_BE"
+                        new_pnl = round((tp1 - entry) * 100.0 * lot * 0.5, 2)
+                    else:
+                        new_pnl = round((cur_px - entry) * 100.0 * lot, 2)
+                else:
+                    if cur_px >= sl and row["status"] == "OPEN":
+                        new_status = "LOSS"
+                        new_pnl = round((entry - sl) * 100.0 * lot, 2)
+                    elif cur_px <= tp2:
+                        new_status = "WIN"
+                        new_pnl = round((entry - tp2) * 100.0 * lot, 2)
+                    elif cur_px <= tp1 and row["status"] == "OPEN":
+                        new_status = "TP1_BE"
+                        new_pnl = round((entry - tp1) * 100.0 * lot * 0.5, 2)
+                    else:
+                        new_pnl = round((entry - cur_px) * 100.0 * lot, 2)
+                row["status"] = new_status
+                row["pnl_usd"] = new_pnl
+                conn.execute("UPDATE desk_journal SET status = ?, pnl_usd = ? WHERE id = ?", (new_status, new_pnl, row["id"]))
+                updated = True
+    if updated:
+        conn.commit()
+    return {"live_price": cur_px, "entries": rows}
+
+
+@app.get("/api/desk/models")
+def get_desk_models() -> Dict[str, Any]:
+    from agents.desk_roles import ALTERNATIVE_FREE_MODELS, DESK_ROLES
+
+    return {"active_roles": DESK_ROLES, "alternative_free_models": ALTERNATIVE_FREE_MODELS}
+
+
 @app.get("/api/desk/evaluate")
 @app.post("/api/desk/evaluate")
 def evaluate_team_desk(send_discord: bool = Query(default=False)) -> Dict[str, Any]:
     from agents.desk_roles import SpecializedDeskCoordinator
     from data.orderflow_provider import OrderflowProvider
+    from notifications.chart_renderer import render_setup_chart_png
     from notifications.discord_webhook import DiscordNotifier
 
-    snap = get_live_market_snapshot("2026-11-15T15:00:00Z")["snapshot"]
+    live_res = get_live_market_snapshot("2026-11-15T15:00:00Z")
+    snap = live_res["snapshot"]
+    candles = live_res.get("recent_candles_h1", [])
     orderflow = OrderflowProvider().get_live_orderflow(spot_xauusd_price=float(snap.get("price", 4028.90)))
     desk_res = SpecializedDeskCoordinator().evaluate_desk(
         snapshot=snap,
@@ -214,11 +350,38 @@ def evaluate_team_desk(send_discord: bool = Query(default=False)) -> Dict[str, A
         portfolio_equity=1000.0,
         news_blackout_active=False,
     )
+    if desk_res.get("approved"):
+        rec = _record_desk_trade(desk_res)
+        desk_res["journal_id"] = rec["id"]
+
     if send_discord and desk_res.get("approved"):
-        desk_res["discord_delivery"] = DiscordNotifier().send_entry_signal(desk_res)
+        chart_png = render_setup_chart_png(candles=candles, signal=desk_res, ote=snap.get("ote"))
+        desk_res["discord_delivery"] = DiscordNotifier().send_entry_signal(desk_res, chart_png=chart_png)
     else:
         desk_res["discord_delivery"] = {"sent": False, "reason": "send_discord=false or not approved"}
     return desk_res
+
+
+@app.post("/api/discord/send-chart")
+async def send_chart_to_discord(request: Request) -> Dict[str, Any]:
+    import base64
+    from notifications.discord_webhook import DiscordNotifier
+
+    body = await request.json()
+    b64_raw = str(body.get("image_base64", ""))
+    if "," in b64_raw:
+        b64_raw = b64_raw.split(",", 1)[1]
+    img_bytes = base64.b64decode(b64_raw) if b64_raw else None
+    title = str(body.get("title", "XAUUSD CHART SNAPSHOT — STARTIFY DESK"))
+    description = str(body.get("description", "Annotated TradingView-Pro snapshot from Startify Desk."))
+    res = DiscordNotifier().send_embed(
+        title=title,
+        description=description,
+        color=0x00ADFF,
+        image_bytes=img_bytes,
+        image_filename="xauusd_chart_snapshot.png",
+    )
+    return {"delivery": res}
 
 
 @app.post("/api/discord/test")
@@ -257,7 +420,7 @@ def serve_static_asset(asset_path: str):
 @app.api_route("/", methods=["GET", "POST", "HEAD"])
 @app.api_route("/api/main.py", methods=["GET", "POST", "HEAD"])
 @app.api_route("/{full_path:path}", methods=["GET", "POST", "HEAD"])
-def serve_spa_or_rewritten_route(request: Request, full_path: str = ""):
+async def serve_spa_or_rewritten_route(request: Request, full_path: str = ""):
     # 1. Check if Vercel rewrote an /api/* route into /api/main.py?__api=...
     api_subpath = request.query_params.get("__api", "").strip("/")
     if api_subpath:
@@ -279,6 +442,13 @@ def serve_spa_or_rewritten_route(request: Request, full_path: str = ""):
         if api_subpath == "desk/evaluate":
             send_d = request.query_params.get("send_discord", "false").lower() == "true"
             return JSONResponse(evaluate_team_desk(send_discord=send_d))
+        if api_subpath == "desk/journal":
+            lp = request.query_params.get("live_price")
+            return JSONResponse(get_or_update_desk_journal(live_price=float(lp) if lp else None))
+        if api_subpath == "desk/models":
+            return JSONResponse(get_desk_models())
+        if api_subpath == "discord/send-chart":
+            return JSONResponse(await send_chart_to_discord(request))
         if api_subpath == "discord/test":
             return JSONResponse(test_discord_webhook())
         if api_subpath == "cron/scan":

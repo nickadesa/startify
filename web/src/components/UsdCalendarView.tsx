@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -6,8 +6,10 @@ import {
   SlidersHorizontal,
   ShieldAlert,
   Clock,
+  Share2,
 } from 'lucide-react';
 import { LeaderboardEntry, TradeRecord, UsdNewsEvent } from '../types/arena';
+import { ShareCalendarData, ShareCardModal, ShareTradeData } from './ShareCardModal';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -323,6 +325,37 @@ export const UsdCalendarView: React.FC<Props> = ({
           <Badge variant="accent" className="font-mono-tabular">
             ±30m blackout guard
           </Badge>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => {
+              const allDays = calendarWeeks.flatMap((w) =>
+                w.days
+                  .filter((d) => d.inMonth)
+                  .map((d) => ({
+                    day: d.dayNum,
+                    pnl: d.summary?.pnlUsd || 0,
+                    trades: d.summary?.tradesCount || 0,
+                  }))
+              );
+              const totalT = allDays.reduce((a, b) => a + b.trades, 0);
+              const totalW = calendarWeeks.reduce((a, w) => a + w.wins, 0);
+              setShareModal({
+                mode: 'calendar',
+                calendar: {
+                  monthLabel: `${MONTH_NAMES[currentMonth]} ${currentYear}`,
+                  netPnl: monthlyNetPnl,
+                  winRate: totalT > 0 ? (totalW / totalT) * 100 : 0,
+                  totalTrades: totalT,
+                  days: allDays,
+                },
+              });
+            }}
+            className="gap-1.5"
+          >
+            <Share2 className="w-3.5 h-3.5" />
+            <span>Share Calendar</span>
+          </Button>
         </div>
       </Card>
 
@@ -761,6 +794,7 @@ export const UsdCalendarView: React.FC<Props> = ({
                   <TableHead className="text-right">Exit</TableHead>
                   <TableHead className="text-right">R-multiple</TableHead>
                   <TableHead className="text-right">Net P&L</TableHead>
+                  <TableHead className="text-right">Share</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -788,6 +822,32 @@ export const UsdCalendarView: React.FC<Props> = ({
                       }`}
                     >
                       {t.pnl_usd >= 0 ? '+' : ''}${t.pnl_usd.toFixed(2)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShareModal({
+                            mode: 'trade',
+                            trade: {
+                              id: t.trade_id,
+                              timestamp: t.closed_at || t.opened_at,
+                              direction: t.action,
+                              entry: t.entry,
+                              stop_loss: t.stop_loss,
+                              tp1: t.exit_price,
+                              tp2: t.exit_price,
+                              lot: t.lot,
+                              pnl_usd: t.pnl_usd,
+                              status: t.pnl_usd >= 0 ? 'WIN' : 'LOSS',
+                              setup_label: t.model_name,
+                            },
+                          })
+                        }
+                        className="px-2 py-1 text-[10px] font-semibold uppercase border border-white/[0.15] text-white hover:bg-white hover:text-black inline-flex items-center gap-1"
+                      >
+                        <Share2 className="w-3 h-3" /> Share
+                      </button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -922,6 +982,82 @@ export const UsdCalendarView: React.FC<Props> = ({
           </TableBody>
         </Table>
       </Card>
+
+      {/* Live Auto-Updated Team Desk Journal */}
+      <Card className="overflow-hidden">
+        <div className="p-5 border-b border-white/[0.08] flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-[14px] font-semibold uppercase tracking-[0.04em] text-white">
+              Live Auto-Updated Team Desk Journal ($1,000)
+            </h2>
+            <p className="text-[12px] text-[#71717A] mt-0.5">
+              Automatically logged from Desk evaluations &amp; reconciled against live PAXGUSDT price
+            </p>
+          </div>
+          <Badge variant="accent">{liveJournal.length} LIVE ENTRIES</Badge>
+        </div>
+        {liveJournal.length > 0 ? (
+          <div className="overflow-x-auto w-full">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Side</TableHead>
+                  <TableHead className="text-right">Entry</TableHead>
+                  <TableHead className="text-right">SL</TableHead>
+                  <TableHead className="text-right">Status</TableHead>
+                  <TableHead className="text-right">P&amp;L</TableHead>
+                  <TableHead className="text-right">Export</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {liveJournal.slice(0, 12).map((j) => (
+                  <TableRow key={j.id}>
+                    <TableCell className="font-mono-tabular text-white">{j.id}</TableCell>
+                    <TableCell>
+                      <Badge variant={j.direction === 'long' ? 'positive' : 'negative'}>
+                        {j.direction.toUpperCase()}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right font-mono-tabular">${j.entry.toFixed(2)}</TableCell>
+                    <TableCell className="text-right font-mono-tabular">${j.stop_loss.toFixed(2)}</TableCell>
+                    <TableCell className="text-right">
+                      <Badge variant={j.status === 'WIN' || j.status === 'TP1_BE' ? 'positive' : j.status === 'LOSS' ? 'negative' : 'secondary'}>
+                        {j.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className={`text-right font-mono-tabular font-semibold ${j.pnl_usd >= 0 ? 'text-[#30D158]' : 'text-[#FF453A]'}`}>
+                      {j.pnl_usd >= 0 ? '+' : ''}${j.pnl_usd.toFixed(2)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <button
+                        type="button"
+                        onClick={() => setShareModal({ mode: 'trade', trade: j })}
+                        className="px-2 py-1 text-[10px] font-semibold uppercase border border-white/[0.15] text-white hover:bg-white hover:text-black inline-flex items-center gap-1"
+                      >
+                        <Share2 className="w-3 h-3" /> Card
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <div className="p-5 text-[13px] text-[#71717A]">
+            No live signals evaluated yet in this session. Trigger an evaluation in Live Orderflow or via Cron to auto-populate.
+          </div>
+        )}
+      </Card>
+
+      {shareModal && (
+        <ShareCardModal
+          mode={shareModal.mode}
+          trade={shareModal.trade}
+          calendar={shareModal.calendar}
+          onClose={() => setShareModal(null)}
+        />
+      )}
     </div>
   );
 };

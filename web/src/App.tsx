@@ -36,7 +36,8 @@ type NavSection = 'overview' | 'orderflow' | 'calendar' | 'archive';
 export function App() {
   const [arenaData, setArenaData] = useState<ArenaPayload>(initialArenaData);
   const [activeNav, setActiveNav] = useState<NavSection>('overview');
-  const [selectedChartAgentId, setSelectedChartAgentId] = useState<string | null>(null);
+  const [overviewMode, setOverviewMode] = useState<'live' | 'historical'>('live');
+  const [selectedChartAgentId, setSelectedChartAgentId] = useState<string | null>('consensus');
   const [modalAgent, setModalAgent] = useState<LeaderboardEntry | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [accountFilter, setAccountFilter] = useState<'all' | 'ai_only' | 'benchmarks'>('all');
@@ -345,15 +346,60 @@ export function App() {
                 </div>
               </div>
 
-              {/* Ranked Leaderboard Table */}
+              {/* Live Desk Mode: Unified Portfolio Summary | Historical Mode: Full 8-Model Leaderboard */}
+              {overviewMode === 'live' ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="p-5 space-y-1.5">
+                    <div className="text-[11px] uppercase tracking-[0.04em] text-[#71717A]">
+                      Portfolio Architecture
+                    </div>
+                    <div className="text-[18px] font-semibold text-white">
+                      Unified $1,000.00 Desk
+                    </div>
+                    <p className="text-[12.5px] text-[#A1A1AA]">
+                      8 AI models act as specialized analysts feeding one shared risk-gated account (0.50% risk / trade).
+                    </p>
+                  </Card>
+                  <Card
+                    className="p-5 space-y-1.5 cursor-pointer hover:bg-[#121212] transition-colors"
+                    onClick={() => setActiveNav('orderflow')}
+                  >
+                    <div className="text-[11px] uppercase tracking-[0.04em] text-[#00adff]">
+                      Interactive Terminal
+                    </div>
+                    <div className="text-[18px] font-semibold text-white flex items-center justify-between">
+                      <span>TradingView-Pro Chart</span>
+                      <ArrowUpRight className="w-4 h-4" />
+                    </div>
+                    <p className="text-[12.5px] text-[#A1A1AA]">
+                      Pan/zoom, Orderflow, VPVR, TPO, Drawing tools &amp; one-tap Discord chart snapshot.
+                    </p>
+                  </Card>
+                  <Card
+                    className="p-5 space-y-1.5 cursor-pointer hover:bg-[#121212] transition-colors"
+                    onClick={() => setActiveNav('calendar')}
+                  >
+                    <div className="text-[11px] uppercase tracking-[0.04em] text-[#30D158]">
+                      Auto-Updating Journal
+                    </div>
+                    <div className="text-[18px] font-semibold text-white flex items-center justify-between">
+                      <span>Calendar &amp; 4K Share Cards</span>
+                      <ArrowUpRight className="w-4 h-4" />
+                    </div>
+                    <p className="text-[12.5px] text-[#A1A1AA]">
+                      Export any trade or full monthly P&amp;L calendar at 16:9, 1:1, 4:5, 9:16 (1080p/2K/4K).
+                    </p>
+                  </Card>
+                </div>
+              ) : (
               <Card className="overflow-hidden">
                 <div className="p-5 border-b border-white/[0.1] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
                     <h2 className="text-[15px] font-semibold uppercase tracking-[0.02em] text-white">
-                      Specialist & Benchmark Standings
+                      Historical Backtest Standings (45-Day Individual Benchmark)
                     </h2>
                     <p className="text-[12.5px] text-[#71717A] mt-0.5">
-                      Click any account to inspect executed trades, Break-Even saves, and playbook
+                      Archived per-model backtest results ({totalTradesCount} trades) — click any row to inspect
                     </p>
                   </div>
 
@@ -438,6 +484,7 @@ export function App() {
                   </TableBody>
                 </Table>
               </Card>
+              )}
             </div>
           )}
 
@@ -445,10 +492,6 @@ export function App() {
           {activeNav === 'orderflow' && (
             <div className="space-y-6">
               <OrderflowTerminal />
-              <OteCandlestickChart
-                trades={arenaData.trades}
-                selectedAgentId={selectedChartAgentId}
-              />
             </div>
           )}
 
