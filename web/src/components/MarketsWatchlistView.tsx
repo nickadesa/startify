@@ -30,11 +30,25 @@ interface MarketsWatchlistViewProps {
   streamerMode?: boolean;
 }
 
+const DEFAULT_MARKETS: MarketOverviewItem[] = [
+  { symbol: 'XAUUSD', name: 'Gold Spot', category: 'Commodities', leverage: '25x', price: 3874.5, change_24h_pct: -0.76, funding_rate: -0.0003, open_interest: '$12.36M', volume_24h: '$317.18M' },
+  { symbol: 'PAXGUSDT', name: 'Gold Perp', category: 'Commodities', leverage: '25x', price: 3876.4, change_24h_pct: -0.72, funding_rate: 0.0012, open_interest: '$28.45M', volume_24h: '$142.80M' },
+  { symbol: 'NAS100', name: 'NASDAQ 100', category: 'Indices', leverage: '50x', price: 21704.25, change_24h_pct: -1.85, funding_rate: 0.0001, open_interest: '$84.45M', volume_24h: '$6.64B' },
+  { symbol: 'SPX500', name: 'S&P 500', category: 'Indices', leverage: '75x', price: 6046.38, change_24h_pct: -0.85, funding_rate: -0.0001, open_interest: '$5.61M', volume_24h: '$282.44M' },
+  { symbol: 'BTCUSDT', name: 'Bitcoin', category: 'Crypto', leverage: '50x', price: 91354.0, change_24h_pct: -1.45, funding_rate: 0.0006, open_interest: '$10.38M', volume_24h: '$1.64B' },
+  { symbol: 'ETHUSDT', name: 'Ethereum', category: 'Crypto', leverage: '50x', price: 3104.16, change_24h_pct: -1.71, funding_rate: 0.0012, open_interest: '$4.22M', volume_24h: '$187.77M' },
+  { symbol: 'SOLUSDT', name: 'Solana', category: 'Crypto', leverage: '20x', price: 211.24, change_24h_pct: -2.06, funding_rate: -0.0009, open_interest: '$5.53M', volume_24h: '$23.01M' },
+  { symbol: 'XAGUSD', name: 'Silver Spot', category: 'Commodities', leverage: '25x', price: 31.42, change_24h_pct: -2.77, funding_rate: 0.0, open_interest: '$165.49K', volume_24h: '$12.74M' },
+  { symbol: 'EURUSD', name: 'Euro / USD', category: 'Forex', leverage: '100x', price: 1.0542, change_24h_pct: -0.16, funding_rate: -0.0001, open_interest: '$1.17M', volume_24h: '$8.37M' },
+  { symbol: 'DXY', name: 'US Dollar Index', category: 'Forex', leverage: '50x', price: 106.68, change_24h_pct: 0.34, funding_rate: 0.0, open_interest: '$3.20M', volume_24h: '$44.10M' },
+];
+
 export const MarketsWatchlistView: React.FC<MarketsWatchlistViewProps> = ({
   markets,
   onSelectMarket,
   streamerMode = false,
 }) => {
+  const effectiveMarkets = markets && markets.length > 0 ? markets : DEFAULT_MARKETS;
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<'All' | 'Favorites' | 'Commodities' | 'Indices' | 'Crypto' | 'Forex'>('All');
   const [favorites, setFavorites] = useState<string[]>(['XAUUSD', 'NAS100', 'BTCUSDT']);
