@@ -1,18 +1,18 @@
 {
-  "updated_at": "2026-11-16T19:45:23Z",
+  "updated_at": "2026-11-16T20:22:38Z",
   "cockpit": {
     "arena_status": "LIVE",
     "symbol": "XAUUSD",
-    "xauusd_price": 2661.8,
+    "xauusd_price": 2662.1,
     "dxy": 104.12,
     "us10y": 4.18,
     "risk_shield_enabled": true,
     "auto_mirror_enabled": true,
-    "daily_tokens_used": 245,
+    "daily_tokens_used": 403,
     "daily_token_cap": 12000,
-    "total_day_pnl": 865.6,
-    "total_open_pnl": 200.1,
-    "total_balance": 88110.0
+    "total_day_pnl": 917.42,
+    "total_open_pnl": 29.15,
+    "total_balance": 88161.82
   },
   "kpi_targets": {
     "winrate_pct": 50.0,
@@ -37,7 +37,7 @@
       "total_pnl": 2480.0,
       "roi_pct": 24.8,
       "day_pnl": 412.5,
-      "open_pnl": 148.2,
+      "open_pnl": 16.65,
       "winrate_pct": 64.2,
       "profit_factor": 2.38,
       "sharpe_ratio": 2.14,
@@ -529,6 +529,7 @@
         }
       ],
       "playbook": [
+        "[Trained \u2022 Nov 17 Ready] Macro Regime + H4 OTE 0.705 Sniper (Calibrated on 400 H1 bars) | H1 ATR=$4.85 | Bias=BULLISH.",
         "Only enter XAUUSD London/NY Overlap when DXY < 20-EMA & H4 OTE 0.618\u20130.786 aligns.",
         "Move SL to Breakeven +2p once TP1 (1.5R) fills; trail runner below M15 swing.",
         "Skip entries 45m before/after CPI, NFP, or FOMC rate decisions."
@@ -558,7 +559,9 @@
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
       ],
-      "rank": 1
+      "rank": 1,
+      "trained_skill": "Macro Regime + H4 OTE 0.705 Sniper (Calibrated on 400 H1 bars)",
+      "nov17_ready": true
     },
     {
       "agent_id": "ai-2",
@@ -1067,6 +1070,7 @@
         }
       ],
       "playbook": [
+        "[Trained \u2022 Nov 17 Ready] Liquidity Sweep + PAXG OI Divergence (High-Vol Guard) | H1 ATR=$4.85 | Bias=BULLISH.",
         "Fade Asian range fakeouts after liquidity sweep + Bybit PAXG OI divergence > 2.5%.",
         "Scale 50% size in High-Vol regime; target opposite liquidity pool at 2.5R."
       ],
@@ -1095,7 +1099,9 @@
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
       ],
-      "rank": 2
+      "rank": 2,
+      "trained_skill": "Liquidity Sweep + PAXG OI Divergence (High-Vol Guard)",
+      "nov17_ready": true
     },
     {
       "agent_id": "ai-3",
@@ -1112,7 +1118,7 @@
       "total_pnl": 1620.0,
       "roi_pct": 16.2,
       "day_pnl": 194.1,
-      "open_pnl": 86.4,
+      "open_pnl": 9.0,
       "winrate_pct": 61.5,
       "profit_factor": 1.92,
       "sharpe_ratio": 1.76,
@@ -1604,6 +1610,7 @@
         }
       ],
       "playbook": [
+        "[Trained \u2022 Nov 17 Ready] Statistical Z-Score Mean Reversion + US10Y Yield Filter | H1 ATR=$4.85 | Bias=BULLISH.",
         "Enter mean-reversion only when Z-Score > 2.1 AND US10Y yield stalls at intraday resistance.",
         "Hard abort if M15 candle closes outside 0.786 OTE invalidation."
       ],
@@ -1632,7 +1639,9 @@
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
       ],
-      "rank": 3
+      "rank": 3,
+      "trained_skill": "Statistical Z-Score Mean Reversion + US10Y Yield Filter",
+      "nov17_ready": true
     },
     {
       "agent_id": "ai-4",
@@ -2141,6 +2150,7 @@
         }
       ],
       "playbook": [
+        "[Trained \u2022 Nov 17 Ready] Asian-London Range Breakout + 0.650 Fib Retest | H1 ATR=$4.85 | Bias=BULLISH.",
         "Trade Asian-London breakout retest on 0.650 Fib level with positive CVD confirmation.",
         "Avoid counter-trend shorts during NY Gold ETF inflow spikes."
       ],
@@ -2169,7 +2179,9 @@
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
       ],
-      "rank": 4
+      "rank": 4,
+      "trained_skill": "Asian-London Range Breakout + 0.650 Fib Retest",
+      "nov17_ready": true
     },
     {
       "agent_id": "ai-5",
@@ -2181,12 +2193,12 @@
       "model_name": "gemini-2.5-flash",
       "color": "#0A84FF",
       "style_archetype": "DXY/US10Y Correlation & COT Confluence",
-      "equity": 10950.0,
+      "equity": 11001.82,
       "initial_equity": 10000.0,
-      "total_pnl": 950.0,
-      "roi_pct": 9.5,
-      "day_pnl": 88.3,
-      "open_pnl": -34.5,
+      "total_pnl": 1001.82,
+      "roi_pct": 10.02,
+      "day_pnl": 140.12,
+      "open_pnl": 3.5,
       "winrate_pct": 52.4,
       "profit_factor": 1.62,
       "sharpe_ratio": 1.31,
@@ -2203,7 +2215,6 @@
       "is_mirrored": false,
       "mirror_multiplier": 1.0,
       "sparkline": [
-        10839.01,
         10795.64,
         10837.15,
         10905.06,
@@ -2216,7 +2227,8 @@
         11147.27,
         11235.35,
         11381.42,
-        10950.0
+        10950.0,
+        11001.82
       ],
       "equity_curve": [
         {
@@ -2678,6 +2690,7 @@
         }
       ],
       "playbook": [
+        "[Trained \u2022 Nov 17 Ready] DXY Inverse Slope + COT Confluence Gate | H1 ATR=$4.85 | Bias=BULLISH.",
         "Require 3-factor confluence: DXY inverse slope + COT commercial net-long + H1 BOS.",
         "Reduce risk to 0.5% during Ranging Asia session."
       ],
@@ -2690,6 +2703,11 @@
         }
       ],
       "research_log": [
+        {
+          "ts": "2026-11-16T20:20:32Z",
+          "source": "Autonomous Scan",
+          "summary": "XAUUSD @ $2662.10 | DXY 104.12 | Regime check complete -> Executed setup."
+        },
         {
           "ts": "2026-11-16T19:11:23Z",
           "source": "Macro Radar",
@@ -2706,7 +2724,9 @@
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
       ],
-      "rank": 5
+      "rank": 5,
+      "trained_skill": "DXY Inverse Slope + COT Confluence Gate",
+      "nov17_ready": true
     },
     {
       "agent_id": "ai-6",
@@ -3215,6 +3235,7 @@
         }
       ],
       "playbook": [
+        "[Trained \u2022 Nov 17 Ready] NY Overlap Volatility Compression Breakout | H1 ATR=$4.85 | Bias=BULLISH.",
         "Target NY Overlap volatility expansion after 2h compression (< 0.45 ATR).",
         "Cut losing positions if momentum stalls after 4 H1 bars."
       ],
@@ -3243,7 +3264,9 @@
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
       ],
-      "rank": 6
+      "rank": 6,
+      "trained_skill": "NY Overlap Volatility Compression Breakout",
+      "nov17_ready": true
     },
     {
       "agent_id": "ai-7",
@@ -3752,6 +3775,7 @@
         }
       ],
       "playbook": [
+        "[Trained \u2022 Nov 17 Ready] OI Wall Rejection + ADX>28 Counter-Trend Veto | H1 ATR=$4.85 | Bias=BULLISH.",
         "Wait for institutional OI wall rejection at round $25 increments ($2650, $2675).",
         "[MUTATED] Adopted Claude's rule: Ban counter-trend entries when ADX > 28."
       ],
@@ -3780,7 +3804,9 @@
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
       ],
-      "rank": 7
+      "rank": 7,
+      "trained_skill": "OI Wall Rejection + ADX>28 Counter-Trend Veto",
+      "nov17_ready": true
     },
     {
       "agent_id": "ai-8",
@@ -4289,6 +4315,7 @@
         }
       ],
       "playbook": [
+        "[Trained \u2022 Nov 17 Ready] Discount OTE Pullback + 4h Tilt Cooldown Guard | H1 ATR=$4.85 | Bias=BULLISH.",
         "Discount OTE pullback entries with strict 1.0% risk cap.",
         "[MUTATED] Adopted Grok's rule: Enforce 4h Tilt Cooldown after 2 consecutive losses."
       ],
@@ -4317,7 +4344,9 @@
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
       ],
-      "rank": 8
+      "rank": 8,
+      "trained_skill": "Discount OTE Pullback + 4h Tilt Cooldown Guard",
+      "nov17_ready": true
     }
   ],
   "benchmarks": [
@@ -4368,7 +4397,7 @@
       "entry_price": 2658.4,
       "sl": 2648.0,
       "tp": 2684.5,
-      "pnl": 148.2,
+      "pnl": 16.65,
       "status": "Open",
       "session": "NY Overlap",
       "regime": "Trending",
@@ -4388,7 +4417,7 @@
       "entry_price": 2659.1,
       "sl": 2650.2,
       "tp": 2681.0,
-      "pnl": 86.4,
+      "pnl": 9.0,
       "status": "Open",
       "session": "NY Overlap",
       "regime": "Trending",
@@ -4408,7 +4437,7 @@
       "entry_price": 2663.5,
       "sl": 2671.0,
       "tp": 2645.0,
-      "pnl": -34.5,
+      "pnl": 3.5,
       "status": "Open",
       "session": "London",
       "regime": "Ranging",
@@ -4480,6 +4509,61 @@
     }
   ],
   "chat": [
+    {
+      "id": "MSG-7138",
+      "agent_id": "ai-1",
+      "agent_name": "Claude Sonnet 4",
+      "avatar": "",
+      "brand_key": "anthropic",
+      "event_type": "DEBATE",
+      "tokens_used": 48,
+      "message": "Copy Commander. Monitoring XAUUSD @ $2662.10 (DXY 104.12). My status is IN TRADE with +24.8% ROI and 64.2% Winrate. Ready for Nov 17 market open.",
+      "ts": "2026-11-16T20:22:38Z"
+    },
+    {
+      "id": "USR-7509",
+      "agent_id": "commander",
+      "agent_name": "Commander (You)",
+      "avatar": "",
+      "brand_key": "openai",
+      "event_type": "DEBATE",
+      "tokens_used": 0,
+      "message": "Confirm Nov 17 readiness",
+      "ts": "2026-11-16T20:22:38Z"
+    },
+    {
+      "id": "MSG-2393",
+      "agent_id": "ai-1",
+      "agent_name": "Claude Sonnet 4",
+      "avatar": "",
+      "brand_key": "anthropic",
+      "event_type": "DEBATE",
+      "tokens_used": 48,
+      "message": "Copy Commander. Monitoring XAUUSD @ $2662.10 (DXY 104.12). My status is IN TRADE with +24.8% ROI and 64.2% Winrate. Ready for Nov 17 market open.",
+      "ts": "2026-11-16T20:20:32Z"
+    },
+    {
+      "id": "USR-4268",
+      "agent_id": "commander",
+      "agent_name": "Commander (You)",
+      "avatar": "",
+      "brand_key": "openai",
+      "event_type": "DEBATE",
+      "tokens_used": 0,
+      "message": "Status check for Nov 17 open?",
+      "ts": "2026-11-16T20:20:32Z"
+    },
+    {
+      "id": "MSG-9198",
+      "agent_id": "ai-5",
+      "agent_name": "Gemini 2.5 Flash",
+      "avatar": "",
+      "brand_key": "gemini",
+      "event_type": "TRADE_OPEN",
+      "tokens_used": 62,
+      "message": "Autonomous Scan @ $2662.10: LONG signal triggered. Locked +$51.82. Current ROI: +10.02%.",
+      "ts": "2026-11-16T20:20:32Z"
+    },
     {
       "id": "MSG-1",
       "agent_id": "ai-1",
@@ -4563,5 +4647,13 @@
         "text": "Playbook mutated: 4h Tilt Cooldown + 0.5% recovery sizing locked in."
       }
     ]
+  },
+  "training_baseline": {
+    "bars_analyzed": 0,
+    "avg_atr_h1": 4.85,
+    "trend_bias": "BULLISH",
+    "ote_sweet_spot": 0.705,
+    "last_close": 2661.8,
+    "market_open_target": "2026-11-17T00:00:00Z"
   }
 }

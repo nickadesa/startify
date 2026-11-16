@@ -84,8 +84,7 @@ export const ShareFlexModal: React.FC<ShareFlexModalProps> = ({ state, onClose, 
               {state.ais.slice(0, 5).map((ai) => (
                 <div key={ai.agent_id} className="grid grid-cols-12 items-center py-2 text-[0.8125rem] tabular-nums">
                   <div className="col-span-6 flex items-center gap-2 truncate">
-                    <img src={ai.avatar} alt={ai.short_name} className="w-5 h-5 rounded-full object-cover" />
-                    <BrandIcon brand={ai.brand_key} size={16} />
+                    <BrandIcon brand={ai.brand_key} size={22} />
                     <span className="font-medium truncate">{ai.short_name}</span>
                     {ai.is_leader && <Crown className="w-3.5 h-3.5 text-[#FFD60A] shrink-0" />}
                   </div>

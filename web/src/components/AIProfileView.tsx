@@ -48,14 +48,9 @@ export const AIProfileView: React.FC<AIProfileViewProps> = ({
       {/* Profile Header */}
       <div className="apple-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <img
-            src={ai.avatar}
-            alt={ai.display_name}
-            className="w-[4.75rem] h-[4.75rem] rounded-full object-cover ring-2 ring-white/15"
-          />
+          <BrandIcon brand={ai.brand_key} size={64} className="ring-2 ring-white/15" />
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <BrandIcon brand={ai.brand_key} size={22} />
               <h2 className="text-[1.5rem] font-bold tracking-tight">{ai.display_name}</h2>
               {ai.is_leader && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[0.75rem] font-semibold bg-[#FF9F0A]/15 text-[#FF9F0A]">

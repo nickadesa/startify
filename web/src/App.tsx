@@ -61,9 +61,31 @@ export function App() {
 
   useEffect(() => {
     fetchState();
-    const timer = setInterval(fetchState, 15000);
+    const timer = setInterval(async () => {
+      try {
+        const res = await fetch("/api/arena/tick", { method: "POST" });
+        if (res.ok) {
+          const updated: ArenaState = await res.json();
+          setState(updated);
+        }
+      } catch {
+        fetchState();
+      }
+    }, 15000);
     return () => clearInterval(timer);
   }, [fetchState]);
+
+  const handleSendUserMessage = async (message: string, targetAgentId?: string) => {
+    const res = await fetch("/api/arena/chat/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message, target_agent_id: targetAgentId }),
+    });
+    if (res.ok) {
+      const payload = await res.json();
+      if (payload.state) setState(payload.state);
+    }
+  };
 
   const handleScan = async () => {
     setScanning(true);
@@ -409,14 +431,9 @@ export function App() {
                   </div>
 
                   <div className="flex items-center gap-4 mb-5">
-                    <img
-                      src={leaderAI.avatar}
-                      alt={leaderAI.display_name}
-                      className="w-16 h-16 rounded-full object-cover ring-2 ring-[#FF9F0A]/50"
-                    />
+                    <BrandIcon brand={leaderAI.brand_key} size={56} className="ring-2 ring-[#FF9F0A]/50" />
                     <div>
                       <div className="flex items-center gap-2">
-                        <BrandIcon brand={leaderAI.brand_key} size={20} />
                         <h2 className="text-[1.25rem] font-bold tracking-tight">{leaderAI.display_name}</h2>
                       </div>
                       <p className="text-[0.8125rem] mt-0.5" style={{ color: "var(--text-secondary)" }}>
@@ -516,14 +533,9 @@ export function App() {
                         {/* Card Top */}
                         <div className="flex items-start justify-between gap-2 mb-4">
                           <div className="flex items-center gap-3 min-w-0">
-                            <img
-                              src={ai.avatar}
-                              alt={ai.short_name}
-                              className="w-12 h-12 rounded-full object-cover shrink-0 ring-1 ring-white/15"
-                            />
+                            <BrandIcon brand={ai.brand_key} size={42} className="ring-1 ring-white/15" />
                             <div className="min-w-0">
                               <div className="flex items-center gap-1.5">
-                                <BrandIcon brand={ai.brand_key} size={18} />
                                 <span className="font-bold text-[0.9375rem] truncate">{ai.short_name}</span>
                                 {ai.is_leader && <Crown className="w-3.5 h-3.5 text-[#FF9F0A] shrink-0" />}
                               </div>
@@ -717,7 +729,10 @@ export function App() {
                       <tr key={o.id} className="text-[0.8125rem] tabular-nums">
                         <td className="py-3 px-3">
                           <div className="flex items-center gap-2 font-semibold">
-                            <img src={o.avatar} alt={o.agent_name} className="w-6 h-6 rounded-full object-cover" />
+                            <BrandIcon
+                              brand={state.ais.find((a) => a.agent_id === o.agent_id)?.brand_key || "openai"}
+                              size={22}
+                            />
                             <span>{o.agent_name}</span>
                           </div>
                         </td>
@@ -771,7 +786,7 @@ export function App() {
                     border: "1px solid var(--border-subtle)",
                   }}
                 >
-                  <img src={a.avatar} alt={a.short_name} className="w-5 h-5 rounded-full object-cover" />
+                  <BrandIcon brand={a.brand_key} size={20} />
                   <span>{a.short_name}</span>
                 </button>
               ))}
@@ -791,8 +806,10 @@ export function App() {
         {tab === "chat" && (
           <GrokBotChatView
             messages={state.chat}
+            ais={state.ais}
             cockpit={state.cockpit}
             onTriggerScan={handleScan}
+            onSendUserMessage={handleSendUserMessage}
             scanning={scanning}
           />
         )}

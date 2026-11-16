@@ -13,11 +13,24 @@ from typing import Any, Dict, List, Optional
 
 import yaml
 
+from api.ai_trainer import train_all_ais_foundational
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_PATH = BASE_DIR / "config.yaml"
 STATE_PATH = BASE_DIR / "data" / "arena_state.json"
 
 _LOCK = threading.Lock()
+
+MODEL_DISCORD_COLORS: Dict[str, int] = {
+    "ai-1": 0xE07A5F,  # Claude Sonnet 4
+    "ai-2": 0xF5F5F7,  # Grok 3
+    "ai-3": 0x3B82F6,  # DeepSeek V4
+    "ai-4": 0xA855F7,  # Qwen 3.8
+    "ai-5": 0x0A84FF,  # Gemini 2.5 Flash
+    "ai-6": 0x30D158,  # GPT-OSS 120B
+    "ai-7": 0xFF9F0A,  # Mistral Small 4
+    "ai-8": 0xFF375F,  # Llama 3.3 70B
+}
 
 
 def utc_now() -> datetime:
@@ -512,23 +525,32 @@ def _fetch_live_xau_price() -> Optional[float]:
     return None
 
 
-def send_discord_webhook(channel_key: str, title: str, description: str, color: int = 0x007AFF) -> Dict[str, Any]:
+def send_discord_webhook(
+    channel_key: str,
+    model_name: str,
+    description: str,
+    color: int = 0x007AFF,
+    fields: Optional[List[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
     cfg = load_config()
     env_name = cfg.get("discord", {}).get("channels", {}).get(channel_key, "DISCORD_WEBHOOK_LIVE_TRADES")
     webhook_url = os.getenv(env_name, "").strip() or os.getenv("DISCORD_WEBHOOK_URL", "").strip()
+
+    embed: Dict[str, Any] = {
+        "title": f"{model_name}",
+        "description": description,
+        "color": color,
+        "footer": {"text": f"TOPTIERclub Autonomous Arena • {utc_iso()}"},
+    }
+    if fields:
+        embed["fields"] = fields
+
     if not webhook_url:
-        return {"sent": False, "reason": f"No webhook configured for {env_name} (formatted preview ready)."}
+        return {"sent": False, "reason": f"No webhook configured for {env_name}.", "embed_preview": embed}
 
     payload = {
         "username": "TOPTIERclub Quant Bot",
-        "embeds": [
-            {
-                "title": title,
-                "description": description,
-                "color": color,
-                "footer": {"text": f"TOPTIERclub Autonomous Arena • {utc_iso()}"},
-            }
-        ],
+        "embeds": [embed],
     }
     try:
         req = urllib.request.Request(
@@ -538,13 +560,89 @@ def send_discord_webhook(channel_key: str, title: str, description: str, color: 
             method="POST",
         )
         with urllib.request.urlopen(req, timeout=6) as resp:
-            return {"sent": 200 <= resp.status < 300, "status": resp.status}
+            return {"sent": 200 <= resp.status < 300, "status": resp.status, "embed_preview": embed}
     except Exception as exc:
-        return {"sent": False, "reason": str(exc)}
+        return {"sent": False, "reason": str(exc), "embed_preview": embed}
+
+
+def train_ais() -> Dict[str, Any]:
+    state = get_state()
+    state = train_all_ais_foundational(state)
+    save_state(state)
+    return state
+
+
+def realtime_tick() -> Dict[str, Any]:
+    state = get_state()
+    if state["cockpit"]["arena_status"] != "LIVE":
+        return state
+    live_price = _fetch_live_xau_price()
+    if live_price:
+        state["cockpit"]["xauusd_price"] = live_price
+    px = state["cockpit"]["xauusd_price"]
+    for o in state["orders"]:
+        if o["status"] == "Open":
+            diff = (px - o["entry_price"]) if o["side"] == "BUY" else (o["entry_price"] - px)
+            o["pnl"] = round(diff * o["qty"] * 10.0, 2)
+    for ai in state["ais"]:
+        open_orders = [o for o in state["orders"] if o["agent_id"] == ai["agent_id"] and o["status"] == "Open"]
+        if open_orders:
+            ai["open_pnl"] = round(sum(o["pnl"] for o in open_orders), 2)
+    save_state(state)
+    return state
+
+
+def send_user_chat(message: str, target_agent_id: Optional[str] = None) -> Dict[str, Any]:
+    state = get_state()
+    clean_msg = message.strip()
+    if not clean_msg:
+        return {"state": state}
+
+    # Log user message
+    state["chat"].insert(0, {
+        "id": f"USR-{random.randint(1000, 9999)}",
+        "agent_id": "commander",
+        "agent_name": "Commander (You)",
+        "avatar": "",
+        "brand_key": "openai",
+        "event_type": "DEBATE",
+        "tokens_used": 0,
+        "message": clean_msg,
+        "ts": utc_iso(),
+    })
+
+    # Pick target AI (or leader #1)
+    responder = next((a for a in state["ais"] if a["agent_id"] == target_agent_id), state["ais"][0])
+    px = state["cockpit"]["xauusd_price"]
+    reply = (
+        f"Copy Commander. Monitoring XAUUSD @ ${px:.2f} (DXY {state['cockpit']['dxy']}). "
+        f"My status is {responder['status']} with {responder['roi_pct']:+.1f}% ROI and {responder['winrate_pct']}% Winrate. "
+        f"Ready for Nov 17 market open."
+    )
+    state["chat"].insert(0, {
+        "id": f"MSG-{random.randint(1000, 9999)}",
+        "agent_id": responder["agent_id"],
+        "agent_name": responder["display_name"],
+        "avatar": "",
+        "brand_key": responder["brand_key"],
+        "event_type": "DEBATE",
+        "tokens_used": 48,
+        "message": reply,
+        "ts": utc_iso(),
+    })
+    state["chat"] = state["chat"][:50]
+    state["cockpit"]["daily_tokens_used"] = min(
+        state["cockpit"]["daily_token_cap"],
+        state["cockpit"]["daily_tokens_used"] + 48,
+    )
+    save_state(state)
+    return {"state": state, "reply": reply, "responder": responder["display_name"]}
 
 
 def run_autonomous_scan() -> Dict[str, Any]:
     state = get_state()
+    if not state.get("training_baseline"):
+        state = train_all_ais_foundational(state)
     live_price = _fetch_live_xau_price()
     if live_price:
         state["cockpit"]["xauusd_price"] = live_price
@@ -586,22 +684,29 @@ def run_autonomous_scan() -> Dict[str, Any]:
             "id": f"MSG-{random.randint(1000, 9999)}",
             "agent_id": chosen["agent_id"],
             "agent_name": chosen["display_name"],
-            "avatar": chosen["avatar"],
+            "avatar": "",
             "brand_key": chosen["brand_key"],
             "event_type": "TRADE_OPEN" if delta >= 0 else "HOURLY_PULSE",
             "tokens_used": 62,
             "message": msg_text,
             "ts": utc_iso(),
         })
-        state["chat"] = state["chat"][:40]
+        state["chat"] = state["chat"][:50]
         state["cockpit"]["daily_tokens_used"] = used + 62
 
     save_state(state)
+    model_color = MODEL_DISCORD_COLORS.get(chosen["agent_id"], 0x007AFF)
     discord_res = send_discord_webhook(
         "live_trades_env",
-        f"⚡ {chosen['display_name']} Autonomous Scan (${px:.2f})",
-        f"PnL Delta: `${delta:+.2f}` | New ROI: `{chosen['roi_pct']:+.2f}%`",
-        color=0x34C759 if delta >= 0 else 0xFF3B30,
+        chosen["display_name"],
+        f"**Autonomous XAUUSD Scan @ `${px:.2f}`**",
+        color=model_color,
+        fields=[
+            {"name": "PnL Delta", "value": f"`${delta:+.2f}`", "inline": True},
+            {"name": "Total ROI", "value": f"`{chosen['roi_pct']:+.2f}%`", "inline": True},
+            {"name": "Winrate / Sharpe", "value": f"`{chosen['winrate_pct']}%` / `{chosen['sharpe_ratio']:.2f}`", "inline": True},
+            {"name": "Strategy", "value": chosen["style_archetype"], "inline": False},
+        ],
     )
     return {"state": state, "scanned_ai": chosen["display_name"], "discord": discord_res}
 

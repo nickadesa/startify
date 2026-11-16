@@ -33,10 +33,13 @@ from api.competition_engine import (
 from api.arena_engine import (
     cockpit_action,
     get_state as get_arena_state,
+    realtime_tick,
     run_autonomous_scan,
     run_sunday_summit,
     send_discord_webhook,
+    send_user_chat,
     toggle_mirror,
+    train_ais,
 )
 from data.orderflow_provider import OrderflowProvider
 from db.database import BASE_DIR, query_all, query_one
@@ -621,6 +624,12 @@ async def serve_spa_or_vercel_rewrite(
             return get_arena_state()
         if api_path == "arena/scan" and request.method == "POST":
             return run_autonomous_scan()
+        if api_path == "arena/train" and request.method == "POST":
+            return train_ais()
+        if api_path == "arena/tick" and request.method == "POST":
+            return realtime_tick()
+        if api_path == "arena/chat/send" and request.method == "POST":
+            return send_user_chat(str(body.get("message", "")), body.get("target_agent_id"))
         if api_path == "arena/summit/run" and request.method == "POST":
             return run_sunday_summit()
         if api_path == "arena/cockpit/action" and request.method == "POST":
@@ -633,6 +642,8 @@ async def serve_spa_or_vercel_rewrite(
                 str(body.get("channel", "live_trades_env")),
                 str(body.get("title", "TOPTIERclub Arena Snapshot")),
                 str(body.get("description", "Live Multi-AI Quant Arena update")),
+                color=int(body.get("color", 0x007AFF)),
+                fields=body.get("fields"),
             )
         return JSONResponse({"error": f"Unknown API route: {api_path}"}, status_code=404)
 
@@ -659,6 +670,21 @@ def api_arena_scan():
     return run_autonomous_scan()
 
 
+@app.post("/api/arena/train")
+def api_arena_train():
+    return train_ais()
+
+
+@app.post("/api/arena/tick")
+def api_arena_tick():
+    return realtime_tick()
+
+
+@app.post("/api/arena/chat/send")
+def api_arena_chat_send(payload: Dict[str, Any]):
+    return send_user_chat(str(payload.get("message", "")), payload.get("target_agent_id"))
+
+
 @app.post("/api/arena/summit/run")
 def api_arena_summit():
     return run_sunday_summit()
@@ -681,6 +707,8 @@ def api_arena_discord_test(payload: Dict[str, Any]):
         str(payload.get("channel", "live_trades_env")),
         str(payload.get("title", "TOPTIERclub Arena Snapshot")),
         str(payload.get("description", "Live Multi-AI Quant Arena update")),
+        color=int(payload.get("color", 0x007AFF)),
+        fields=payload.get("fields"),
     )
 
 

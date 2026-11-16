@@ -9,7 +9,7 @@ interface BrandIconProps {
 
 const BRAND_COLORS: Record<BrandKey, { bg: string; fg: string }> = {
   anthropic: { bg: "#D97757", fg: "#FFFFFF" },
-  xai: { bg: "#111111", fg: "#FFFFFF" },
+  xai: { bg: "#141416", fg: "#FFFFFF" },
   deepseek: { bg: "#2563EB", fg: "#FFFFFF" },
   qwen: { bg: "#7C3AED", fg: "#FFFFFF" },
   gemini: { bg: "#0A84FF", fg: "#FFFFFF" },
@@ -18,7 +18,7 @@ const BRAND_COLORS: Record<BrandKey, { bg: string; fg: string }> = {
   meta: { bg: "#0668E1", fg: "#FFFFFF" },
 };
 
-export const BrandIcon: React.FC<BrandIconProps> = ({ brand, size = 20, className = "" }) => {
+export const BrandIcon: React.FC<BrandIconProps> = ({ brand, size = 24, className = "" }) => {
   const palette = BRAND_COLORS[brand] || { bg: "#333333", fg: "#FFFFFF" };
   return (
     <span
@@ -26,7 +26,7 @@ export const BrandIcon: React.FC<BrandIconProps> = ({ brand, size = 20, classNam
       style={{ width: `${size}px`, height: `${size}px`, backgroundColor: palette.bg, color: palette.fg }}
       title={brand.toUpperCase()}
     >
-      <svg width={size * 0.6} height={size * 0.6} viewBox="0 0 24 24" fill="none">
+      <svg width={size * 0.58} height={size * 0.58} viewBox="0 0 24 24" fill="none">
         {brand === "anthropic" && (
           <path d="M14.2 5L19.5 19H16.6L15.4 15.8H10.1L8.9 19H6L11.3 5H14.2ZM11 13.4H14.5L12.75 8.5L11 13.4Z" fill="currentColor" />
         )}

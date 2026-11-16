@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { AITrader, PnLCandle } from "../types/arena";
+import { BrandIcon } from "./BrandIcon";
 
 export type ChartMode = "equity" | "candles" | "drawdown" | "matrix";
 
@@ -195,7 +196,7 @@ export const ArenaCharts: React.FC<ArenaChartsProps> = ({ ais, mode }) => {
           return (
             <div key={ai.agent_id} className="flex items-center gap-3">
               <div className="w-[24%] md:w-[16%] flex items-center gap-2 text-[0.8125rem] font-medium truncate">
-                <img src={ai.avatar} alt={ai.short_name} className="w-6 h-6 rounded-full object-cover" />
+                <BrandIcon brand={ai.brand_key} size={22} />
                 <span className="truncate">{ai.short_name}</span>
               </div>
               <div className="flex-1 h-3 rounded-full overflow-hidden" style={{ backgroundColor: "var(--bg-subtle)" }}>
@@ -237,7 +238,7 @@ export const ArenaCharts: React.FC<ArenaChartsProps> = ({ ais, mode }) => {
           {ais.map((ai) => (
             <tr key={ai.agent_id} className="text-[0.8125rem] tabular-nums hover:opacity-90">
               <td className="py-2.5 px-3 font-medium flex items-center gap-2">
-                <img src={ai.avatar} alt={ai.short_name} className="w-6 h-6 rounded-full object-cover" />
+                <BrandIcon brand={ai.brand_key} size={22} />
                 <span>{ai.display_name}</span>
               </td>
               <td className="py-2.5 px-3 text-right font-semibold" style={{ color: ai.roi_pct >= 0 ? "var(--accent-green)" : "var(--accent-red)" }}>
