@@ -326,6 +326,17 @@ export function App() {
           />
         )}
 
+        {activeTab === 'portfolio' && (
+          <PortfolioView
+            user={user}
+            accounts={accounts}
+            positions={positions}
+            streamerMode={streamerMode}
+            onRequireAuth={() => setShowAuthModal(true)}
+            onGoTrade={() => setActiveTab('trade')}
+          />
+        )}
+
         {activeTab === 'ranked' && (
           <WeeklyRankedView
             token={token}
