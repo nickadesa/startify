@@ -733,9 +733,7 @@ export const KLineChartWidget: React.FC<KLineChartWidgetProps> = ({
         {/* KLineChart Canvas (60dvh on mobile for spacious touch charting, 100% height on desktop) */}
         <div
           ref={hostRef}
-          className={`flex-1 w-full ${
-            isFullscreen ? 'h-full' : 'min-h-[60dvh] md:min-h-[30rem] h-full'
-          }`}
+          className="flex-1 w-full h-full min-h-[380px]"
           style={{ backgroundColor: theme === 'dark' ? '#000000' : '#FFFFFF' }}
         />
       </div>

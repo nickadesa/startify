@@ -847,7 +847,7 @@ export const TradingTerminal: React.FC<TradingTerminalProps> = ({
         </div>
 
         {mobileTab === 'chart' && (
-          <div className="min-h-[60dvh] tt-card overflow-hidden">
+          <div className="h-[62dvh] min-h-[460px] tt-card overflow-hidden">
             <KLineChartWidget
               symbol={activeSymbol}
               candles={candles}
