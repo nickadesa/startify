@@ -56,7 +56,7 @@ export const MarketsWatchlistView: React.FC<MarketsWatchlistViewProps> = ({
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return markets
+    return effectiveMarkets
       .filter((m) => {
         if (category === 'Favorites' && !favorites.includes(m.symbol)) return false;
         if (category !== 'All' && category !== 'Favorites' && m.category !== category) return false;
@@ -71,7 +71,7 @@ export const MarketsWatchlistView: React.FC<MarketsWatchlistViewProps> = ({
         }
         return sortAsc ? Number(av) - Number(bv) : Number(bv) - Number(av);
       });
-  }, [markets, search, category, favorites, sortKey, sortAsc]);
+  }, [effectiveMarkets, search, category, favorites, sortKey, sortAsc]);
 
   const categories = ['All', 'Favorites', 'Commodities', 'Indices', 'Crypto', 'Forex'] as const;
 
