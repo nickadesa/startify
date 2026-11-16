@@ -1,0 +1,20 @@
+name: Startify 15m XAUUSD Desk Scan
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel Desk Scan
+        env:
+          APP_URL: ${{ vars.VERCEL_APP_URL }}
+        run: |
+          if [ -z "$APP_URL" ]; then
+            echo "VERCEL_APP_URL variable not set; skipping 15m scan."
+            exit 0
+          fi
+          curl -fsSL "${APP_URL%/}/api/cron/scan"
