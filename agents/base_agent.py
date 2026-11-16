@@ -41,17 +41,15 @@ class AITraderAgent:
 
     def _resolve_credentials(self) -> tuple[str, str, str]:
         """
-        Resolves (provider, model_name, api_key) with strict Quota Isolation:
-        - Each agent uses its own distinct AI model & separate rate-limit bucket so agents never steal quota from one another.
-        - On Groq & Cloudflare Workers AI, rate limits are tracked PER MODEL ID:
-          * ai-2 uses Groq `llama-3.3-70b-versatile` (1,000 req/day bucket A)
-          * ai-6 uses Groq `qwen-qwq-32b` (1,000 req/day bucket B — replaces CN-phone Z.ai)
-          * ai-7 uses Groq `deepseek-r1-distill-llama-70b` (1,000 req/day bucket C) if NVIDIA key is omitted
-          * ai-3 uses Cloudflare `@cf/mistral/mistral-7b-instruct-v0.2` if Mistral key is omitted
-          * ai-4 uses OpenRouter `meta-llama/llama-3.3-70b-instruct:free`
-          * ai-5 uses Cloudflare `@cf/meta/llama-3.1-8b-instruct`
-          * ai-1 uses Google Gemini `gemini-2.5-flash`
-          * ai-8 uses Cohere `command-r-08-2024`
+        Resolves (provider, model_name, api_key) with strict Quota Isolation & Latest Flagship Models:
+        - ai-1 (Alpha-Gemini): Google `gemini-2.5-flash`
+        - ai-2 (Beta-Groq): Groq `meta-llama/llama-4-maverick-17b-128e-instruct` (Llama 4 Maverick)
+        - ai-3 (Gamma-Mistral): Cloudflare `@cf/mistralai/mistral-small-3.1-24b-instruct` (or Mistral `mistral-small-latest`)
+        - ai-4 (Delta-Router): OpenRouter `meta-llama/llama-4-maverick:free`
+        - ai-5 (Epsilon-CF): Cloudflare `@cf/meta/llama-3.3-70b-instruct-fp8-fast`
+        - ai-6 (Zeta-Qwen3): Groq `qwen/qwen3-32b` (Alibaba Qwen 3 32B — replaces CN-phone GLM)
+        - ai-7 (Eta-DeepSeek): OpenRouter `deepseek/deepseek-r1-0528:free` or Groq `deepseek-r1-distill-llama-70b`
+        - ai-8 (Theta-Cohere): Cohere `command-a-03-2025` (Command A Latest)
         """
         primary_key = os.environ.get(self.api_key_env, "").strip() if self.api_key_env else ""
         if self.provider == "cloudflare" and not primary_key:
@@ -64,22 +62,21 @@ class AITraderAgent:
         cf_key = os.environ.get("CF_API_TOKEN", "").strip() or os.environ.get("CLOUDFLARE_API_TOKEN", "").strip()
         openrouter_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
 
-        # Isolated per-model buckets so no two agents share the same model quota
         if self.provider == "zai":
             if groq_key:
-                return "groq", "qwen-qwq-32b", groq_key
+                return "groq", "qwen/qwen3-32b", groq_key
             if openrouter_key:
                 return "openrouter", "z-ai/glm-4.5-air:free", openrouter_key
 
         if self.provider == "nvidia":
+            if openrouter_key:
+                return "openrouter", "deepseek/deepseek-r1-0528:free", openrouter_key
             if groq_key:
                 return "groq", "deepseek-r1-distill-llama-70b", groq_key
-            if openrouter_key:
-                return "openrouter", "deepseek/deepseek-r1:free", openrouter_key
 
         if self.provider == "mistral":
             if cf_key:
-                return "cloudflare", "@cf/mistral/mistral-7b-instruct-v0.2", cf_key
+                return "cloudflare", "@cf/mistralai/mistral-small-3.1-24b-instruct", cf_key
             if openrouter_key:
                 return "openrouter", "mistralai/mistral-small-3.1-24b-instruct:free", openrouter_key
 
@@ -125,16 +122,19 @@ class AITraderAgent:
         return (
             f"You are {self.display_name} ({self.model_name}), an autonomous XAUUSD paper trader.\n"
             f"Your Playbook Style: {self.style_archetype}\n\n"
-            "CORE TECHNIQUE RULES:\n"
+            "CORE TECHNIQUE & AUTONOMOUS EXECUTION RULES:\n"
             "1. Multi-Timeframe Analysis: Check 4H macro bias, 1H impulse swing & OI walls, M15 Fibonacci OTE (0.618-0.786 / 0.705 sweet spot), and M5 BOS/CHoCH trigger.\n"
-            "2. Pre-Trade Historical Warm-Up: Use `historical_warmup` stats in the snapshot before entering.\n"
+            "2. Flexible Entry Execution (`order_type`): You must autonomously choose the best execution method for the current price:\n"
+            "   - `market`: Enter BUY or SELL immediately at current market price if price is already inside the OTE zone and M5 displacement is confirmed.\n"
+            "   - `limit`: Place a pending BUY LIMIT or SELL LIMIT order resting at your chosen Fib OTE level (0.618, 0.705, or 0.786).\n"
+            "   - `zone_confirm`: Do NOT place a resting limit order; instead wait/stalk until price reaches your target zone and forms a confirmed M5/M15 candle before entering at market.\n"
             "3. Break-Even ('ตั้ง SL กันหน้าทุน'): Once price moves +1.0R or reaches Fib 0.0 (Swing High/Low), shift SL to Entry ± $0.50.\n"
             "4. Partial Close & Fib Extensions: Set TP1 at Fib -0.27 (`tp1_neg_027`, close 50% of lots) and TP2 at Fib -0.618 (`tp2_neg_0618`, close remaining 50% runner).\n"
-            "5. Self-Journal: Include a concise journal note recording MTF alignment, Fib OTE level, and Break-Even/Partial strategy.\n\n"
+            "5. Self-Journal: Include a concise journal note recording MTF alignment, chosen execution mode (market / limit / zone_confirm), Fib OTE level, and Break-Even/Partial strategy.\n\n"
             f"PLAYBOOK:\n{self.playbook_text[:2500]}\n\n"
             f"MARKET SNAPSHOT (JSON):\n{json.dumps(snapshot, indent=2)}\n\n"
             "Respond strictly with a single valid JSON object matching the trade plan schema:\n"
-            '{"action": "long|short|no_trade", "order_type": "limit|market", "entry": float, '
+            '{"action": "long|short|no_trade", "order_type": "market|limit|zone_confirm", "entry": float, '
             '"stop_loss": float, "be_trigger_price": float, '
             '"take_profits": [{"price": float, "close_pct": 50, "fib_level": "-0.27"}, {"price": float, "close_pct": 50, "fib_level": "-0.618"}], '
             '"risk_pct": float, "lot": float, "confidence": float, "style_tag": str, '
@@ -274,14 +274,14 @@ class AITraderAgent:
         tp2_neg_0618 = float(ote.get("tp2_neg_0618", fib_0_0 + (10.5 if direction == "long" else -10.5)))
 
         agent_profiles = {
-            "ai-1": {"entry_bias": 0.0, "risk_pct": 1.2, "partial_pct": 50, "conf": 0.84, "tag": "OTE-0.705-FibExt-Sniper"},
-            "ai-2": {"entry_bias": 0.5, "risk_pct": 1.5, "partial_pct": 50, "conf": 0.80, "tag": "M5-BOS-OTE-PartialRunner"},
-            "ai-3": {"entry_bias": -0.4, "risk_pct": 1.1, "partial_pct": 60, "conf": 0.77, "tag": "GLD-OI-Wall-FibNeg027"},
-            "ai-4": {"entry_bias": 0.3, "risk_pct": 1.2, "partial_pct": 50, "conf": 0.79, "tag": "4H-1H-M15-M5-Confluence"},
-            "ai-5": {"entry_bias": -0.3, "risk_pct": 1.25, "partial_pct": 50, "conf": 0.76, "tag": "PAXG-OI-BreakEven-Guard"},
-            "ai-6": {"entry_bias": 0.9, "risk_pct": 1.4, "partial_pct": 50, "conf": 0.73, "tag": "London-OTE-Neg0618-Runner"},
-            "ai-7": {"entry_bias": -0.7, "risk_pct": 1.6, "partial_pct": 40, "conf": 0.86, "tag": "DeepSeek-Asymmetric-Neg0618"},
-            "ai-8": {"entry_bias": 0.0, "risk_pct": 0.9, "partial_pct": 60, "conf": 0.82, "tag": "Conservative-BE-Lock-0.705"},
+            "ai-1": {"entry_bias": 0.0, "risk_pct": 1.2, "partial_pct": 50, "conf": 0.84, "pref_mode": "limit", "tag": "OTE-0.705-Limit-Sniper"},
+            "ai-2": {"entry_bias": 0.5, "risk_pct": 1.5, "partial_pct": 50, "conf": 0.80, "pref_mode": "zone_confirm", "tag": "M5-BOS-ZoneConfirm-Runner"},
+            "ai-3": {"entry_bias": -0.4, "risk_pct": 1.1, "partial_pct": 60, "conf": 0.77, "pref_mode": "limit", "tag": "GLD-OI-Wall-Limit-Neg027"},
+            "ai-4": {"entry_bias": 0.3, "risk_pct": 1.2, "partial_pct": 50, "conf": 0.79, "pref_mode": "market", "tag": "4H-1H-M15-M5-MarketExec"},
+            "ai-5": {"entry_bias": -0.3, "risk_pct": 1.25, "partial_pct": 50, "conf": 0.76, "pref_mode": "zone_confirm", "tag": "PAXG-OI-ZoneWatch-BEGuard"},
+            "ai-6": {"entry_bias": 0.9, "risk_pct": 1.4, "partial_pct": 50, "conf": 0.73, "pref_mode": "market", "tag": "Qwen3-Momentum-Neg0618"},
+            "ai-7": {"entry_bias": -0.7, "risk_pct": 1.6, "partial_pct": 40, "conf": 0.86, "pref_mode": "limit", "tag": "DeepSeek-Limit-Neg0618"},
+            "ai-8": {"entry_bias": 0.0, "risk_pct": 0.9, "partial_pct": 60, "conf": 0.82, "pref_mode": "zone_confirm", "tag": "CommandA-ZoneConfirm-0.705"},
         }
         prof = agent_profiles.get(self.agent_id, agent_profiles["ai-1"])
 
@@ -292,9 +292,13 @@ class AITraderAgent:
             sl = round(entry - 7.5 if direction == "long" else entry + 7.5, 2)
             sl_dist = 7.5
 
-        order_type = "market" if abs(price - entry) <= 2.2 else "limit"
-        if order_type == "market":
+        if abs(price - entry) <= 2.0 or prof["pref_mode"] == "market":
+            order_type = "market"
             entry = price
+        elif prof["pref_mode"] == "zone_confirm":
+            order_type = "zone_confirm"
+        else:
+            order_type = "limit"
 
         # Ensure TP1 (-0.27) and TP2 (-0.618) satisfy >= 1.5R minimum Risk-Reward required by Hard Risk Validator
         min_tp1 = round(entry + (sl_dist * 1.65 if direction == "long" else -sl_dist * 1.65), 2)
@@ -312,6 +316,15 @@ class AITraderAgent:
         partial_2 = 100 - partial_1
         mtf = snapshot.get("mtf_alignment", "4/4 Timeframes Aligned")
         warmup_027 = snapshot.get("historical_warmup", {}).get("tp1_neg_027_hit_rate_pct", 74.2)
+        exec_label = (
+            f"{direction.upper()} NOW (Market)"
+            if order_type == "market"
+            else (
+                f"{direction.upper()} LIMIT @ ${entry:.2f}"
+                if order_type == "limit"
+                else f"WAIT ZONE ${entry:.2f} + M5 CONFIRM (No Resting Limit)"
+            )
+        )
 
         return {
             "action": direction,
@@ -328,8 +341,8 @@ class AITraderAgent:
             "confidence": prof["conf"],
             "style_tag": prof["tag"],
             "reasoning": (
-                f"[{mtf}] Entry at Fib OTE 0.705 (${entry:.2f}), SL ${sl:.2f}. "
-                f"Auto Break-Even ('กันหน้าทุน') at ${be_trigger:.2f}; Partial Close {partial_1}% at Fib -0.27 (${tp1:.2f}, hist hit-rate {warmup_027}%) "
+                f"[{mtf} • {exec_label}] SL ${sl:.2f}, Auto Break-Even ('กันหน้าทุน') at ${be_trigger:.2f}; "
+                f"Partial Close {partial_1}% at Fib -0.27 (${tp1:.2f}, hist hit-rate {warmup_027}%) "
                 f"& Runner {partial_2}% to Fib -0.618 (${tp2:.2f})."
             ),
             "invalid_if": f"M15/1H candle closes beyond ${sl:.2f} or USD high-impact event enters 30m blackout window.",

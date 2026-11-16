@@ -301,11 +301,23 @@ def seed_arena_database(export_json_path: Path = None) -> Dict[str, Any]:
                 entry_p = ote["sweet_spot"]
                 sl_dist = 5.0
                 sl_p = round(entry_p - sl_dist if direction == "long" else entry_p + sl_dist, 2)
-                tp1_p = round(entry_p + (sl_dist * 2.0 if direction == "long" else -sl_dist * 2.0), 2)
-                tp2_p = round(entry_p + (sl_dist * 3.2 if direction == "long" else -sl_dist * 3.2), 2)
+                tp1_p = ote["tp1_neg_027"]
+                tp2_p = ote["tp2_neg_0618"]
                 exit_p = round(entry_p + (sl_dist * r_mult if direction == "long" else -sl_dist * r_mult), 2)
 
-                lot = max(round(risk_usd / (sl_dist * 100.0), 2), 0.01)
+                order_modes = ["limit", "market", "zone_confirm"]
+                ord_type = order_modes[(idx_day + t_idx) % len(order_modes)]
+                ord_label = (
+                    f"{direction.upper()} NOW (Market)"
+                    if ord_type == "market"
+                    else (
+                        f"{direction.upper()} LIMIT @ ${entry_p:.2f}"
+                        if ord_type == "limit"
+                        else f"WAIT ZONE ${entry_p:.2f} + M5 CONFIRM"
+                    )
+                )
+
+                lot = max(round(risk_usd / (sl_dist * 100.0), 2), 0.02)
                 sess = sessions_pool[(idx_day + t_idx) % len(sessions_pool)]
                 style = tags[(idx_day + t_idx) % len(tags)]
                 trig = triggers_pool[(idx_day + t_idx) % len(triggers_pool)]
@@ -334,11 +346,12 @@ def seed_arena_database(export_json_path: Path = None) -> Dict[str, Any]:
                     "cot_bias": "net long increasing (+14,280 contracts WoW)",
                 }
 
+                be_lock = round(entry_p + 0.50 if direction == "long" else entry_p - 0.50, 2)
                 reasoning_text = (
-                    f"{ag['display_name']} identified {direction.upper()} setup at 0.705 OTE sweet spot (${entry_p:.2f}) "
-                    f"during {sess} session with Rank #1 GLD OI wall defense and +{snap_obj['oi_change_paxg_1h_pct']}% PAXG OI expansion."
+                    f"[4H/1H/M15/M5 • {ord_label}] {ag['display_name']} ({ag['model_name']}) entered at Fib 0.705 (${entry_p:.2f}). "
+                    f"Auto Break-Even ('กันหน้าทุน') locked at ${be_lock:.2f}; 50% Partial Close at Fib -0.27 (${tp1_p:.2f}) & 50% Runner to Fib -0.618 (${tp2_p:.2f})."
                 )
-                invalid_text = f"H1 close beyond swing invalidation ${ote['invalidation']:.2f} or USD news blackout."
+                invalid_text = f"M15/1H close beyond swing invalidation ${ote['invalidation']:.2f} or USD news blackout."
 
                 cur.execute(
                     """INSERT INTO trades
@@ -347,7 +360,7 @@ def seed_arena_database(export_json_path: Path = None) -> Dict[str, Any]:
                         pnl_usd, pnl_pct, r_multiple, duration_hours, session, style_tag,
                         trigger_type, market_regime, confidence, snapshot_json, reasoning,
                         invalid_if, playbook_version, model_name, model_version, status, news_refs_json)
-                       VALUES (?, ?, ?, ?, ?, ?, 'limit', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'closed', ?)""",
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'closed', ?)""",
                     (
                         trade_id,
                         aid,
@@ -355,6 +368,7 @@ def seed_arena_database(export_json_path: Path = None) -> Dict[str, Any]:
                         opened_at,
                         closed_at,
                         direction,
+                        ord_type,
                         entry_p,
                         sl_p,
                         json.dumps([{"price": tp1_p, "close_pct": 50}, {"price": tp2_p, "close_pct": 50}]),

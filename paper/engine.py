@@ -92,6 +92,35 @@ class PaperTradingEngine:
                     fill_price = round(requested_entry + (fill_cost if action == "long" else -fill_cost), 2)
                     fill_time = b_time
                     filled = True
+                elif order_type == "zone_confirm":
+                    # Wait for price to reach target zone WITHOUT a resting limit order, then confirm candle close
+                    b_close = float(bar.get("close", requested_entry))
+                    b_open = float(bar.get("open", requested_entry))
+                    zone_touched = (b_low <= requested_entry + 1.5) if action == "long" else (b_high >= requested_entry - 1.5)
+                    candle_confirmed = (b_close >= b_open) if action == "long" else (b_close <= b_open)
+                    if zone_touched and candle_confirmed:
+                        fill_cost = (eff_spread / 2.0) + self.slippage
+                        fill_price = round(b_close + (fill_cost if action == "long" else -fill_cost), 2)
+                        fill_time = b_time
+                        filled = True
+                    else:
+                        bars_waited += 1
+                        if bars_waited >= self.limit_timeout_bars:
+                            return {
+                                "status": "expired_timeout",
+                                "filled": False,
+                                "entry": requested_entry,
+                                "exit_price": None,
+                                "pnl_usd": 0.0,
+                                "r_multiple": 0.0,
+                                "tp1_breakeven_triggered": False,
+                                "partial_closed_neg027": False,
+                                "runner_hit_neg0618": False,
+                                "be_saved_trade": False,
+                                "closed_at": b_time,
+                                "bars_held": 0,
+                            }
+                        continue
                 else:
                     if b_low <= requested_entry <= b_high:
                         fill_price = round(requested_entry + (self.slippage if action == "long" else -self.slippage), 2)

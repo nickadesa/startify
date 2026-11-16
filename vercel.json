@@ -1,9 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "npm --prefix web install && npm --prefix web run build",
-  "outputDirectory": "web/dist",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/main.py" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/api/main.py" }
   ]
 }
