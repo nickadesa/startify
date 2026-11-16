@@ -1,7 +1,8 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/main.py" },
-    { "source": "/(.*)", "destination": "/api/main.py" }
+    { "source": "/api/(.*)", "destination": "/api/main.py?__api=$1" },
+    { "source": "/assets/(.*)", "destination": "/api/main.py?__asset=$1" },
+    { "source": "/(.*)", "destination": "/api/main.py?__path=$1" }
   ]
 }

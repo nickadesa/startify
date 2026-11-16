@@ -501,32 +501,48 @@ export const PlaybooksAndSystemView: React.FC<Props> = ({ data }) => {
           <div className="rounded-xl border border-white/[0.08] bg-[#0C1017] p-4 space-y-3">
             <div className="flex items-center justify-between border-b border-white/[0.07] pb-2.5">
               <span className="text-xs font-semibold text-slate-200 uppercase tracking-wider">
-                Connected API Keys & Cloud DB Status
+                Latest Nov 2026 Models & Cloud DB Status
               </span>
               <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10.5px] font-mono-tabular">
-                KEYS CONFIGURED
+                100–500 SCANS/DAY • AUTO-FALLBACK
               </span>
             </div>
             <div className="space-y-1.5 text-xs font-mono-tabular">
               <div className="flex items-center justify-between p-2 rounded bg-[#111722]">
-                <span className="text-slate-300">TwelveData (`M5/M15/1H/4H` XAUUSD)</span>
+                <span className="text-slate-300">ai-1 Alpha-Gemini (`gemini-3.8-flash`)</span>
                 <span className="text-emerald-400">CONNECTED ✓</span>
               </div>
               <div className="flex items-center justify-between p-2 rounded bg-[#111722]">
-                <span className="text-slate-300">Finnhub (USD-Only Macro News)</span>
+                <span className="text-slate-300">ai-2 Beta-Groq (`openai/gpt-oss-120b`)</span>
                 <span className="text-emerald-400">CONNECTED ✓</span>
               </div>
               <div className="flex items-center justify-between p-2 rounded bg-[#111722]">
-                <span className="text-slate-300">Gemini / Groq / OpenRouter / CF / Cohere</span>
+                <span className="text-slate-300">ai-3 Gamma-Mistral (`mistral-small-4`)</span>
+                <span className="text-emerald-400">CF + ROUTER ✓</span>
+              </div>
+              <div className="flex items-center justify-between p-2 rounded bg-[#111722]">
+                <span className="text-slate-300">ai-4 Delta-Router (`nemotron-3-ultra-550b`)</span>
                 <span className="text-emerald-400">CONNECTED ✓</span>
               </div>
               <div className="flex items-center justify-between p-2 rounded bg-[#111722]">
-                <span className="text-slate-300">ai-6 (GLM) & ai-7 (NVIDIA DeepSeek-R1)</span>
-                <span className="text-[#00adff]">AUTO-ROUTED VIA OPENROUTER/GROQ ✓</span>
+                <span className="text-slate-300">ai-5 Epsilon-CF (`llama-3.3-70b-fp8-fast`)</span>
+                <span className="text-emerald-400">CONNECTED ✓</span>
               </div>
               <div className="flex items-center justify-between p-2 rounded bg-[#111722]">
-                <span className="text-slate-300">Turso Cloud LibSQL (`ai-davinick`)</span>
-                <span className="text-emerald-400">URL CONFIGURED ✓</span>
+                <span className="text-slate-300">ai-6 Zeta-Qwen3.8 (`qwen/qwen3.8-27b`)</span>
+                <span className="text-[#00adff]">GROQ + CF GLM-5.3 ✓</span>
+              </div>
+              <div className="flex items-center justify-between p-2 rounded bg-[#111722]">
+                <span className="text-slate-300">ai-7 Eta-Nemotron (`nemotron-3.5-super-vl`)</span>
+                <span className="text-[#00adff]">ROUTER + GROQ ✓</span>
+              </div>
+              <div className="flex items-center justify-between p-2 rounded bg-[#111722]">
+                <span className="text-slate-300">ai-8 Theta-Cohere (`command-a-plus-05-2026`)</span>
+                <span className="text-emerald-400">CONNECTED ✓</span>
+              </div>
+              <div className="flex items-center justify-between p-2 rounded bg-[#111722]">
+                <span className="text-slate-300">TwelveData (`M5/M15/1H/4H`) + Finnhub USD + Turso</span>
+                <span className="text-emerald-400">ACTIVE ✓</span>
               </div>
             </div>
           </div>

@@ -18,10 +18,48 @@ PROVIDER_ENDPOINTS = {
 }
 
 
+MODEL_FALLBACK_CHAINS = {
+    "gemini": [
+        "gemini-3.8-flash",
+        "gemini-3.6-flash",
+        "gemini-3.5-flash-lite",
+        "gemini-2.5-flash",
+    ],
+    "groq": [
+        "openai/gpt-oss-120b",
+        "qwen/qwen3.8-27b",
+        "meta-llama/llama-4-maverick-17b-128e-instruct",
+        "llama-3.3-70b-versatile",
+    ],
+    "openrouter": [
+        "nvidia/nemotron-3-ultra-550b-a55b:free",
+        "nvidia/nemotron-3.5-super-vl:free",
+        "google/gemma-4-31b-it:free",
+        "openrouter/free",
+    ],
+    "cloudflare": [
+        "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+        "@cf/mistralai/mistral-small-3.1-24b-instruct",
+        "@cf/zai/glm-5.3",
+        "@cf/meta/llama-3.1-8b-instruct",
+    ],
+    "cohere": [
+        "command-a-plus-05-2026",
+        "command-a-03-2025",
+        "command-r-plus-08-2024",
+    ],
+    "mistral": [
+        "mistral-small-4",
+        "mistral-large-4",
+        "mistral-small-latest",
+    ],
+}
+
+
 class AITraderAgent:
     """
     Represents a competing AI Trader Agent (ai-1 through ai-8) with its own:
-    - Provider & Model adapter (Gemini, Groq, Mistral, OpenRouter, Cloudflare, Z.ai/Groq-Qwen fallback, NVIDIA/OpenRouter-DeepSeek fallback, Cohere)
+    - Provider & Model adapter (Nov 2026 Latest Models + automatic multi-model fallback chains)
     - Multi-Timeframe (4H, 1H, M15, M5) & Historical Warm-Up context awareness
     - Exact ICT Fibonacci OTE (0.618-0.786 / 0.705) entry + Fib -0.27 (50% Partial Close) & Fib -0.618 (50% Runner)
     - Automatic Break-Even ("ตั้ง SL กันหน้าทุน") protection & Self-Authored Trading Journal
@@ -39,24 +77,25 @@ class AITraderAgent:
         self.knowledge_pack_text = knowledge_pack_text
         self.playbook_text = playbook_text
 
-    def _resolve_credentials(self) -> tuple[str, str, str]:
+    def _resolve_credentials(self) -> tuple[str, list[str], str]:
         """
-        Resolves (provider, model_name, api_key) with strict Quota Isolation & Latest Flagship Models:
-        - ai-1 (Alpha-Gemini): Google `gemini-2.5-flash`
-        - ai-2 (Beta-Groq): Groq `meta-llama/llama-4-maverick-17b-128e-instruct` (Llama 4 Maverick)
-        - ai-3 (Gamma-Mistral): Cloudflare `@cf/mistralai/mistral-small-3.1-24b-instruct` (or Mistral `mistral-small-latest`)
-        - ai-4 (Delta-Router): OpenRouter `meta-llama/llama-4-maverick:free`
+        Resolves (provider, candidate_models_list, api_key) with strict Quota Isolation & Nov 2026 Latest Models:
+        - ai-1 (Alpha-Gemini): Google `gemini-3.8-flash` -> `gemini-3.6-flash` -> `gemini-3.5-flash-lite`
+        - ai-2 (Beta-Groq): Groq `openai/gpt-oss-120b` -> `meta-llama/llama-4-maverick-17b-128e-instruct`
+        - ai-3 (Gamma-Mistral): Mistral `mistral-small-4` / Cloudflare `@cf/mistralai/mistral-small-3.1-24b-instruct`
+        - ai-4 (Delta-Router): OpenRouter `nvidia/nemotron-3-ultra-550b-a55b:free` -> `openrouter/free`
         - ai-5 (Epsilon-CF): Cloudflare `@cf/meta/llama-3.3-70b-instruct-fp8-fast`
-        - ai-6 (Zeta-Qwen3): Groq `qwen/qwen3-32b` (Alibaba Qwen 3 32B — replaces CN-phone GLM)
-        - ai-7 (Eta-DeepSeek): OpenRouter `deepseek/deepseek-r1-0528:free` or Groq `deepseek-r1-distill-llama-70b`
-        - ai-8 (Theta-Cohere): Cohere `command-a-03-2025` (Command A Latest)
+        - ai-6 (Zeta-Qwen3.8): Groq `qwen/qwen3.8-27b` / Cloudflare `@cf/zai/glm-5.3` (No CN phone needed)
+        - ai-7 (Eta-Nemotron): OpenRouter `nvidia/nemotron-3.5-super-vl:free` / Groq `openai/gpt-oss-20b`
+        - ai-8 (Theta-Cohere): Cohere `command-a-plus-05-2026` -> `command-a-03-2025`
         """
         primary_key = os.environ.get(self.api_key_env, "").strip() if self.api_key_env else ""
         if self.provider == "cloudflare" and not primary_key:
             primary_key = os.environ.get("CF_API_TOKEN", "").strip() or os.environ.get("CLOUDFLARE_API_TOKEN", "").strip()
 
         if primary_key:
-            return self.provider, self.model_name, primary_key
+            chain = [self.model_name] + [m for m in MODEL_FALLBACK_CHAINS.get(self.provider, []) if m != self.model_name]
+            return self.provider, chain, primary_key
 
         groq_key = os.environ.get("GROQ_API_KEY", "").strip()
         cf_key = os.environ.get("CF_API_TOKEN", "").strip() or os.environ.get("CLOUDFLARE_API_TOKEN", "").strip()
@@ -64,33 +103,33 @@ class AITraderAgent:
 
         if self.provider == "zai":
             if groq_key:
-                return "groq", "qwen/qwen3-32b", groq_key
-            if openrouter_key:
-                return "openrouter", "z-ai/glm-4.5-air:free", openrouter_key
+                return "groq", ["qwen/qwen3.8-27b", "qwen/qwen3-32b", "openai/gpt-oss-20b"], groq_key
+            if cf_key:
+                return "cloudflare", ["@cf/zai/glm-5.3", "@cf/qwen/qwen2.5-coder-32b-instruct"], cf_key
 
         if self.provider == "nvidia":
             if openrouter_key:
-                return "openrouter", "deepseek/deepseek-r1-0528:free", openrouter_key
+                return "openrouter", ["nvidia/nemotron-3.5-super-vl:free", "nvidia/nemotron-3-ultra-550b-a55b:free", "openrouter/free"], openrouter_key
             if groq_key:
-                return "groq", "deepseek-r1-distill-llama-70b", groq_key
+                return "groq", ["openai/gpt-oss-20b", "llama-3.3-70b-versatile"], groq_key
 
         if self.provider == "mistral":
             if cf_key:
-                return "cloudflare", "@cf/mistralai/mistral-small-3.1-24b-instruct", cf_key
+                return "cloudflare", ["@cf/mistralai/mistral-small-3.1-24b-instruct", "@cf/mistral/mistral-7b-instruct-v0.2-lora"], cf_key
             if openrouter_key:
-                return "openrouter", "mistralai/mistral-small-3.1-24b-instruct:free", openrouter_key
+                return "openrouter", ["google/gemma-4-31b-it:free", "openrouter/free"], openrouter_key
 
-        return self.provider, self.model_name, ""
+        return self.provider, [self.model_name], ""
 
     def decide(self, snapshot: Dict[str, Any], allow_live_network: bool = False) -> Dict[str, Any]:
         t0 = time.time()
-        eff_provider, eff_model, api_key = self._resolve_credentials()
+        eff_provider, candidate_models, api_key = self._resolve_credentials()
 
         if allow_live_network and api_key:
-            for _ in range(2):
+            for candidate_model in candidate_models:
                 try:
                     raw_resp, tokens_in, tokens_out = self._call_live_provider(
-                        eff_provider, eff_model, api_key, snapshot
+                        eff_provider, candidate_model, api_key, snapshot
                     )
                     parsed = self._extract_and_validate_json(raw_resp)
                     if parsed:
@@ -101,7 +140,7 @@ class AITraderAgent:
                             "tokens_in": tokens_in,
                             "tokens_out": tokens_out,
                             "latency_ms": max(latency_ms, 120),
-                            "mode": f"live_api:{eff_provider}",
+                            "mode": f"live_api:{eff_provider}:{candidate_model}",
                         }
                 except Exception:
                     continue
@@ -115,7 +154,7 @@ class AITraderAgent:
             "tokens_in": 1080,
             "tokens_out": 210,
             "latency_ms": latency_ms,
-            "mode": "playbook_simulation" if not api_key else f"configured_ready:{eff_provider}",
+            "mode": "playbook_simulation" if not api_key else f"configured_ready:{eff_provider}:{candidate_models[0]}",
         }
 
     def _build_prompt(self, snapshot: Dict[str, Any]) -> str:
