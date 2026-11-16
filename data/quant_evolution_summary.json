@@ -1,0 +1,1739 @@
+{
+  "generated_at": "2026-11-16T08:13:37.282960+00:00",
+  "elapsed_sec": 7.3,
+  "ai_evolution_logs": [
+    {
+      "agent_id": "ai-1",
+      "display_name": "Gemini 3.8",
+      "specialty": "Charting + OTE Sniper (TP1/BE/FVG)",
+      "worst_round": {
+        "name": "Gemini 3.8-R1-Naive-NoBE",
+        "round": 1,
+        "tf": "H1",
+        "trades": 341,
+        "win_rate": 36.66,
+        "max_dd": 31.62,
+        "sharpe": -0.191,
+        "pf": 0.949,
+        "avg_r": -0.023,
+        "worst_trade_pct": 1.08,
+        "max_consec_losses": 10,
+        "consistency": 50.0,
+        "score": 0.1585,
+        "net_ret_pct": -9.69,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 54.5,
+          "tp2": 36.1,
+          "tp3": 19.6
+        }
+      },
+      "best_round": {
+        "name": "Gemini 3.8-R5-ADX-Regime",
+        "round": 5,
+        "tf": "H1",
+        "trades": 169,
+        "win_rate": 74.56,
+        "max_dd": 2.19,
+        "sharpe": 1.929,
+        "pf": 2.079,
+        "avg_r": 0.286,
+        "worst_trade_pct": 0.55,
+        "max_consec_losses": 3,
+        "consistency": 100.0,
+        "score": 1.2009,
+        "net_ret_pct": 27.04,
+        "passed_filters": false,
+        "tp_rates": {
+          "tp1": 74.6,
+          "tp2": 20.7,
+          "tp3": 10.7
+        }
+      },
+      "all_rounds": [
+        {
+          "name": "Gemini 3.8-R1-Naive-NoBE",
+          "round": 1,
+          "tf": "H1",
+          "trades": 341,
+          "win_rate": 36.66,
+          "max_dd": 31.62,
+          "sharpe": -0.191,
+          "pf": 0.949,
+          "avg_r": -0.023,
+          "worst_trade_pct": 1.08,
+          "max_consec_losses": 10,
+          "consistency": 50.0,
+          "score": 0.1585,
+          "net_ret_pct": -9.69,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 54.5,
+            "tp2": 36.1,
+            "tp3": 19.6
+          }
+        },
+        {
+          "name": "Gemini 3.8-R2-BE-Lock",
+          "round": 2,
+          "tf": "H1",
+          "trades": 356,
+          "win_rate": 59.55,
+          "max_dd": 23.21,
+          "sharpe": 0.2,
+          "pf": 1.035,
+          "avg_r": 0.02,
+          "worst_trade_pct": 1.09,
+          "max_consec_losses": 8,
+          "consistency": 75.0,
+          "score": 0.3732,
+          "net_ret_pct": 5.41,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 59.6,
+            "tp2": 21.9,
+            "tp3": 13.5
+          }
+        },
+        {
+          "name": "Gemini 3.8-R3-OTE79-TightSL",
+          "round": 3,
+          "tf": "H1",
+          "trades": 280,
+          "win_rate": 62.86,
+          "max_dd": 8.14,
+          "sharpe": 0.728,
+          "pf": 1.211,
+          "avg_r": 0.09,
+          "worst_trade_pct": 0.83,
+          "max_consec_losses": 5,
+          "consistency": 75.0,
+          "score": 0.6096,
+          "net_ret_pct": 19.63,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 62.9,
+            "tp2": 15.4,
+            "tp3": 8.6
+          }
+        },
+        {
+          "name": "Gemini 3.8-R4-Killzone-Fill",
+          "round": 4,
+          "tf": "H1",
+          "trades": 181,
+          "win_rate": 72.38,
+          "max_dd": 2.2,
+          "sharpe": 1.743,
+          "pf": 1.906,
+          "avg_r": 0.261,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.107,
+          "net_ret_pct": 26.28,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 72.4,
+            "tp2": 19.3,
+            "tp3": 9.9
+          }
+        },
+        {
+          "name": "Gemini 3.8-R5-ADX-Regime",
+          "round": 5,
+          "tf": "H1",
+          "trades": 169,
+          "win_rate": 74.56,
+          "max_dd": 2.19,
+          "sharpe": 1.929,
+          "pf": 2.079,
+          "avg_r": 0.286,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.2009,
+          "net_ret_pct": 27.04,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 74.6,
+            "tp2": 20.7,
+            "tp3": 10.7
+          }
+        },
+        {
+          "name": "Gemini 3.8-R6-SkillMax",
+          "round": 6,
+          "tf": "H1",
+          "trades": 176,
+          "win_rate": 73.3,
+          "max_dd": 3.03,
+          "sharpe": 1.567,
+          "pf": 1.756,
+          "avg_r": 0.211,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.0237,
+          "net_ret_pct": 20.16,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 73.3,
+            "tp2": 19.3,
+            "tp3": 9.7
+          }
+        }
+      ]
+    },
+    {
+      "agent_id": "ai-2",
+      "display_name": "GPT-OSS 120B",
+      "specialty": "Zone-Confirm + Killzone Momentum",
+      "worst_round": {
+        "name": "GPT-OSS 120B-R1-Naive-NoBE",
+        "round": 1,
+        "tf": "H1",
+        "trades": 341,
+        "win_rate": 36.66,
+        "max_dd": 31.62,
+        "sharpe": -0.191,
+        "pf": 0.949,
+        "avg_r": -0.023,
+        "worst_trade_pct": 1.08,
+        "max_consec_losses": 10,
+        "consistency": 50.0,
+        "score": 0.1585,
+        "net_ret_pct": -9.69,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 54.5,
+          "tp2": 36.1,
+          "tp3": 19.6
+        }
+      },
+      "best_round": {
+        "name": "GPT-OSS 120B-R5-ADX-Regime",
+        "round": 5,
+        "tf": "H1",
+        "trades": 90,
+        "win_rate": 85.56,
+        "max_dd": 1.07,
+        "sharpe": 2.785,
+        "pf": 4.516,
+        "avg_r": 0.555,
+        "worst_trade_pct": 0.55,
+        "max_consec_losses": 2,
+        "consistency": 100.0,
+        "score": 1.9643,
+        "net_ret_pct": 28.19,
+        "passed_filters": false,
+        "tp_rates": {
+          "tp1": 85.6,
+          "tp2": 27.8,
+          "tp3": 14.4
+        }
+      },
+      "all_rounds": [
+        {
+          "name": "GPT-OSS 120B-R1-Naive-NoBE",
+          "round": 1,
+          "tf": "H1",
+          "trades": 341,
+          "win_rate": 36.66,
+          "max_dd": 31.62,
+          "sharpe": -0.191,
+          "pf": 0.949,
+          "avg_r": -0.023,
+          "worst_trade_pct": 1.08,
+          "max_consec_losses": 10,
+          "consistency": 50.0,
+          "score": 0.1585,
+          "net_ret_pct": -9.69,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 54.5,
+            "tp2": 36.1,
+            "tp3": 19.6
+          }
+        },
+        {
+          "name": "GPT-OSS 120B-R2-BE-Lock",
+          "round": 2,
+          "tf": "H1",
+          "trades": 356,
+          "win_rate": 59.55,
+          "max_dd": 23.21,
+          "sharpe": 0.2,
+          "pf": 1.035,
+          "avg_r": 0.02,
+          "worst_trade_pct": 1.09,
+          "max_consec_losses": 8,
+          "consistency": 75.0,
+          "score": 0.3732,
+          "net_ret_pct": 5.41,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 59.6,
+            "tp2": 21.9,
+            "tp3": 13.5
+          }
+        },
+        {
+          "name": "GPT-OSS 120B-R3-OTE79-TightSL",
+          "round": 3,
+          "tf": "H1",
+          "trades": 280,
+          "win_rate": 62.86,
+          "max_dd": 8.14,
+          "sharpe": 0.728,
+          "pf": 1.211,
+          "avg_r": 0.09,
+          "worst_trade_pct": 0.83,
+          "max_consec_losses": 5,
+          "consistency": 75.0,
+          "score": 0.6096,
+          "net_ret_pct": 19.63,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 62.9,
+            "tp2": 15.4,
+            "tp3": 8.6
+          }
+        },
+        {
+          "name": "GPT-OSS 120B-R4-Killzone-Fill",
+          "round": 4,
+          "tf": "H1",
+          "trades": 181,
+          "win_rate": 72.38,
+          "max_dd": 2.2,
+          "sharpe": 1.743,
+          "pf": 1.906,
+          "avg_r": 0.261,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.107,
+          "net_ret_pct": 26.28,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 72.4,
+            "tp2": 19.3,
+            "tp3": 9.9
+          }
+        },
+        {
+          "name": "GPT-OSS 120B-R5-ADX-Regime",
+          "round": 5,
+          "tf": "H1",
+          "trades": 90,
+          "win_rate": 85.56,
+          "max_dd": 1.07,
+          "sharpe": 2.785,
+          "pf": 4.516,
+          "avg_r": 0.555,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 2,
+          "consistency": 100.0,
+          "score": 1.9643,
+          "net_ret_pct": 28.19,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 85.6,
+            "tp2": 27.8,
+            "tp3": 14.4
+          }
+        },
+        {
+          "name": "GPT-OSS 120B-R6-SkillMax",
+          "round": 6,
+          "tf": "H1",
+          "trades": 169,
+          "win_rate": 74.56,
+          "max_dd": 2.19,
+          "sharpe": 1.801,
+          "pf": 1.942,
+          "avg_r": 0.25,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.1351,
+          "net_ret_pct": 23.29,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 74.6,
+            "tp2": 20.7,
+            "tp3": 10.7
+          }
+        }
+      ]
+    },
+    {
+      "agent_id": "ai-3",
+      "display_name": "Mistral 4",
+      "specialty": "ADX Regime + Risk-Review Guard",
+      "worst_round": {
+        "name": "Mistral 4-R1-Naive-NoBE",
+        "round": 1,
+        "tf": "H1",
+        "trades": 341,
+        "win_rate": 36.66,
+        "max_dd": 31.62,
+        "sharpe": -0.191,
+        "pf": 0.949,
+        "avg_r": -0.023,
+        "worst_trade_pct": 1.08,
+        "max_consec_losses": 10,
+        "consistency": 50.0,
+        "score": 0.1585,
+        "net_ret_pct": -9.69,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 54.5,
+          "tp2": 36.1,
+          "tp3": 19.6
+        }
+      },
+      "best_round": {
+        "name": "Mistral 4-R5-ADX-Regime",
+        "round": 5,
+        "tf": "H1",
+        "trades": 169,
+        "win_rate": 74.56,
+        "max_dd": 2.19,
+        "sharpe": 1.929,
+        "pf": 2.079,
+        "avg_r": 0.286,
+        "worst_trade_pct": 0.55,
+        "max_consec_losses": 3,
+        "consistency": 100.0,
+        "score": 1.2009,
+        "net_ret_pct": 27.04,
+        "passed_filters": false,
+        "tp_rates": {
+          "tp1": 74.6,
+          "tp2": 20.7,
+          "tp3": 10.7
+        }
+      },
+      "all_rounds": [
+        {
+          "name": "Mistral 4-R1-Naive-NoBE",
+          "round": 1,
+          "tf": "H1",
+          "trades": 341,
+          "win_rate": 36.66,
+          "max_dd": 31.62,
+          "sharpe": -0.191,
+          "pf": 0.949,
+          "avg_r": -0.023,
+          "worst_trade_pct": 1.08,
+          "max_consec_losses": 10,
+          "consistency": 50.0,
+          "score": 0.1585,
+          "net_ret_pct": -9.69,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 54.5,
+            "tp2": 36.1,
+            "tp3": 19.6
+          }
+        },
+        {
+          "name": "Mistral 4-R2-BE-Lock",
+          "round": 2,
+          "tf": "H1",
+          "trades": 356,
+          "win_rate": 59.55,
+          "max_dd": 23.21,
+          "sharpe": 0.2,
+          "pf": 1.035,
+          "avg_r": 0.02,
+          "worst_trade_pct": 1.09,
+          "max_consec_losses": 8,
+          "consistency": 75.0,
+          "score": 0.3732,
+          "net_ret_pct": 5.41,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 59.6,
+            "tp2": 21.9,
+            "tp3": 13.5
+          }
+        },
+        {
+          "name": "Mistral 4-R3-OTE79-TightSL",
+          "round": 3,
+          "tf": "H1",
+          "trades": 280,
+          "win_rate": 62.86,
+          "max_dd": 8.14,
+          "sharpe": 0.728,
+          "pf": 1.211,
+          "avg_r": 0.09,
+          "worst_trade_pct": 0.83,
+          "max_consec_losses": 5,
+          "consistency": 75.0,
+          "score": 0.6096,
+          "net_ret_pct": 19.63,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 62.9,
+            "tp2": 15.4,
+            "tp3": 8.6
+          }
+        },
+        {
+          "name": "Mistral 4-R4-Killzone-Fill",
+          "round": 4,
+          "tf": "H1",
+          "trades": 181,
+          "win_rate": 72.38,
+          "max_dd": 2.2,
+          "sharpe": 1.743,
+          "pf": 1.906,
+          "avg_r": 0.261,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.107,
+          "net_ret_pct": 26.28,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 72.4,
+            "tp2": 19.3,
+            "tp3": 9.9
+          }
+        },
+        {
+          "name": "Mistral 4-R5-ADX-Regime",
+          "round": 5,
+          "tf": "H1",
+          "trades": 169,
+          "win_rate": 74.56,
+          "max_dd": 2.19,
+          "sharpe": 1.929,
+          "pf": 2.079,
+          "avg_r": 0.286,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.2009,
+          "net_ret_pct": 27.04,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 74.6,
+            "tp2": 20.7,
+            "tp3": 10.7
+          }
+        },
+        {
+          "name": "Mistral 4-R6-SkillMax",
+          "round": 6,
+          "tf": "H1",
+          "trades": 173,
+          "win_rate": 75.72,
+          "max_dd": 2.04,
+          "sharpe": 1.702,
+          "pf": 1.86,
+          "avg_r": 0.219,
+          "worst_trade_pct": 0.54,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.0912,
+          "net_ret_pct": 20.58,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 75.7,
+            "tp2": 20.2,
+            "tp3": 10.4
+          }
+        }
+      ]
+    },
+    {
+      "agent_id": "ai-4",
+      "display_name": "Nemotron Ultra",
+      "specialty": "HTF EMA Bias + Multi-TP Runner",
+      "worst_round": {
+        "name": "Nemotron Ultra-R1-Naive-NoBE",
+        "round": 1,
+        "tf": "H1",
+        "trades": 341,
+        "win_rate": 36.66,
+        "max_dd": 31.62,
+        "sharpe": -0.191,
+        "pf": 0.949,
+        "avg_r": -0.023,
+        "worst_trade_pct": 1.08,
+        "max_consec_losses": 10,
+        "consistency": 50.0,
+        "score": 0.1585,
+        "net_ret_pct": -9.69,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 54.5,
+          "tp2": 36.1,
+          "tp3": 19.6
+        }
+      },
+      "best_round": {
+        "name": "Nemotron Ultra-R6-SkillMax",
+        "round": 6,
+        "tf": "H1",
+        "trades": 169,
+        "win_rate": 74.56,
+        "max_dd": 2.19,
+        "sharpe": 1.801,
+        "pf": 1.942,
+        "avg_r": 0.25,
+        "worst_trade_pct": 0.55,
+        "max_consec_losses": 3,
+        "consistency": 100.0,
+        "score": 1.1351,
+        "net_ret_pct": 23.29,
+        "passed_filters": false,
+        "tp_rates": {
+          "tp1": 74.6,
+          "tp2": 20.7,
+          "tp3": 10.7
+        }
+      },
+      "all_rounds": [
+        {
+          "name": "Nemotron Ultra-R1-Naive-NoBE",
+          "round": 1,
+          "tf": "H1",
+          "trades": 341,
+          "win_rate": 36.66,
+          "max_dd": 31.62,
+          "sharpe": -0.191,
+          "pf": 0.949,
+          "avg_r": -0.023,
+          "worst_trade_pct": 1.08,
+          "max_consec_losses": 10,
+          "consistency": 50.0,
+          "score": 0.1585,
+          "net_ret_pct": -9.69,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 54.5,
+            "tp2": 36.1,
+            "tp3": 19.6
+          }
+        },
+        {
+          "name": "Nemotron Ultra-R2-BE-Lock",
+          "round": 2,
+          "tf": "H1",
+          "trades": 356,
+          "win_rate": 59.55,
+          "max_dd": 23.21,
+          "sharpe": 0.2,
+          "pf": 1.035,
+          "avg_r": 0.02,
+          "worst_trade_pct": 1.09,
+          "max_consec_losses": 8,
+          "consistency": 75.0,
+          "score": 0.3732,
+          "net_ret_pct": 5.41,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 59.6,
+            "tp2": 21.9,
+            "tp3": 13.5
+          }
+        },
+        {
+          "name": "Nemotron Ultra-R3-OTE79-TightSL",
+          "round": 3,
+          "tf": "H1",
+          "trades": 280,
+          "win_rate": 62.86,
+          "max_dd": 8.14,
+          "sharpe": 0.728,
+          "pf": 1.211,
+          "avg_r": 0.09,
+          "worst_trade_pct": 0.83,
+          "max_consec_losses": 5,
+          "consistency": 75.0,
+          "score": 0.6096,
+          "net_ret_pct": 19.63,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 62.9,
+            "tp2": 15.4,
+            "tp3": 8.6
+          }
+        },
+        {
+          "name": "Nemotron Ultra-R4-Killzone-Fill",
+          "round": 4,
+          "tf": "H1",
+          "trades": 181,
+          "win_rate": 72.38,
+          "max_dd": 2.2,
+          "sharpe": 1.743,
+          "pf": 1.906,
+          "avg_r": 0.261,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.107,
+          "net_ret_pct": 26.28,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 72.4,
+            "tp2": 19.3,
+            "tp3": 9.9
+          }
+        },
+        {
+          "name": "Nemotron Ultra-R5-ADX-Regime",
+          "round": 5,
+          "tf": "H1",
+          "trades": 110,
+          "win_rate": 73.64,
+          "max_dd": 1.91,
+          "sharpe": 1.448,
+          "pf": 1.956,
+          "avg_r": 0.267,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 2,
+          "consistency": 100.0,
+          "score": 1.0311,
+          "net_ret_pct": 15.62,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 73.6,
+            "tp2": 20.0,
+            "tp3": 11.8
+          }
+        },
+        {
+          "name": "Nemotron Ultra-R6-SkillMax",
+          "round": 6,
+          "tf": "H1",
+          "trades": 169,
+          "win_rate": 74.56,
+          "max_dd": 2.19,
+          "sharpe": 1.801,
+          "pf": 1.942,
+          "avg_r": 0.25,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.1351,
+          "net_ret_pct": 23.29,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 74.6,
+            "tp2": 20.7,
+            "tp3": 10.7
+          }
+        }
+      ]
+    },
+    {
+      "agent_id": "ai-5",
+      "display_name": "Llama 3.3 70B",
+      "specialty": "OI-Volume Proxy + Volatility Guard",
+      "worst_round": {
+        "name": "Llama 3.3 70B-R1-Naive-NoBE",
+        "round": 1,
+        "tf": "H1",
+        "trades": 341,
+        "win_rate": 36.66,
+        "max_dd": 31.62,
+        "sharpe": -0.191,
+        "pf": 0.949,
+        "avg_r": -0.023,
+        "worst_trade_pct": 1.08,
+        "max_consec_losses": 10,
+        "consistency": 50.0,
+        "score": 0.1585,
+        "net_ret_pct": -9.69,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 54.5,
+          "tp2": 36.1,
+          "tp3": 19.6
+        }
+      },
+      "best_round": {
+        "name": "Llama 3.3 70B-R5-ADX-Regime",
+        "round": 5,
+        "tf": "H1",
+        "trades": 169,
+        "win_rate": 74.56,
+        "max_dd": 2.19,
+        "sharpe": 1.929,
+        "pf": 2.079,
+        "avg_r": 0.286,
+        "worst_trade_pct": 0.55,
+        "max_consec_losses": 3,
+        "consistency": 100.0,
+        "score": 1.2009,
+        "net_ret_pct": 27.04,
+        "passed_filters": false,
+        "tp_rates": {
+          "tp1": 74.6,
+          "tp2": 20.7,
+          "tp3": 10.7
+        }
+      },
+      "all_rounds": [
+        {
+          "name": "Llama 3.3 70B-R1-Naive-NoBE",
+          "round": 1,
+          "tf": "H1",
+          "trades": 341,
+          "win_rate": 36.66,
+          "max_dd": 31.62,
+          "sharpe": -0.191,
+          "pf": 0.949,
+          "avg_r": -0.023,
+          "worst_trade_pct": 1.08,
+          "max_consec_losses": 10,
+          "consistency": 50.0,
+          "score": 0.1585,
+          "net_ret_pct": -9.69,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 54.5,
+            "tp2": 36.1,
+            "tp3": 19.6
+          }
+        },
+        {
+          "name": "Llama 3.3 70B-R2-BE-Lock",
+          "round": 2,
+          "tf": "H1",
+          "trades": 356,
+          "win_rate": 59.55,
+          "max_dd": 23.21,
+          "sharpe": 0.2,
+          "pf": 1.035,
+          "avg_r": 0.02,
+          "worst_trade_pct": 1.09,
+          "max_consec_losses": 8,
+          "consistency": 75.0,
+          "score": 0.3732,
+          "net_ret_pct": 5.41,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 59.6,
+            "tp2": 21.9,
+            "tp3": 13.5
+          }
+        },
+        {
+          "name": "Llama 3.3 70B-R3-OTE79-TightSL",
+          "round": 3,
+          "tf": "H1",
+          "trades": 280,
+          "win_rate": 62.86,
+          "max_dd": 8.14,
+          "sharpe": 0.728,
+          "pf": 1.211,
+          "avg_r": 0.09,
+          "worst_trade_pct": 0.83,
+          "max_consec_losses": 5,
+          "consistency": 75.0,
+          "score": 0.6096,
+          "net_ret_pct": 19.63,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 62.9,
+            "tp2": 15.4,
+            "tp3": 8.6
+          }
+        },
+        {
+          "name": "Llama 3.3 70B-R4-Killzone-Fill",
+          "round": 4,
+          "tf": "H1",
+          "trades": 181,
+          "win_rate": 72.38,
+          "max_dd": 2.2,
+          "sharpe": 1.743,
+          "pf": 1.906,
+          "avg_r": 0.261,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.107,
+          "net_ret_pct": 26.28,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 72.4,
+            "tp2": 19.3,
+            "tp3": 9.9
+          }
+        },
+        {
+          "name": "Llama 3.3 70B-R5-ADX-Regime",
+          "round": 5,
+          "tf": "H1",
+          "trades": 169,
+          "win_rate": 74.56,
+          "max_dd": 2.19,
+          "sharpe": 1.929,
+          "pf": 2.079,
+          "avg_r": 0.286,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.2009,
+          "net_ret_pct": 27.04,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 74.6,
+            "tp2": 20.7,
+            "tp3": 10.7
+          }
+        },
+        {
+          "name": "Llama 3.3 70B-R6-SkillMax",
+          "round": 6,
+          "tf": "H1",
+          "trades": 169,
+          "win_rate": 74.56,
+          "max_dd": 2.19,
+          "sharpe": 1.801,
+          "pf": 1.942,
+          "avg_r": 0.25,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.1351,
+          "net_ret_pct": 23.29,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 74.6,
+            "tp2": 20.7,
+            "tp3": 10.7
+          }
+        }
+      ]
+    },
+    {
+      "agent_id": "ai-6",
+      "display_name": "Qwen 3.8",
+      "specialty": "M15 High-Freq Killzone OTE",
+      "worst_round": {
+        "name": "Qwen 3.8-R1-Naive-NoBE",
+        "round": 1,
+        "tf": "M15",
+        "trades": 344,
+        "win_rate": 41.28,
+        "max_dd": 13.91,
+        "sharpe": 1.038,
+        "pf": 1.102,
+        "avg_r": 0.061,
+        "worst_trade_pct": 1.18,
+        "max_consec_losses": 8,
+        "consistency": 50.0,
+        "score": 0.6089,
+        "net_ret_pct": 20.57,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 58.7,
+          "tp2": 40.4,
+          "tp3": 23.3
+        }
+      },
+      "best_round": {
+        "name": "Qwen 3.8-R6-SkillMax",
+        "round": 6,
+        "tf": "M15",
+        "trades": 111,
+        "win_rate": 81.98,
+        "max_dd": 2.11,
+        "sharpe": 3.907,
+        "pf": 2.451,
+        "avg_r": 0.276,
+        "worst_trade_pct": 0.53,
+        "max_consec_losses": 2,
+        "consistency": 100.0,
+        "score": 1.8802,
+        "net_ret_pct": 16.42,
+        "passed_filters": false,
+        "tp_rates": {
+          "tp1": 82.0,
+          "tp2": 17.1,
+          "tp3": 5.4
+        }
+      },
+      "all_rounds": [
+        {
+          "name": "Qwen 3.8-R1-Naive-NoBE",
+          "round": 1,
+          "tf": "M15",
+          "trades": 344,
+          "win_rate": 41.28,
+          "max_dd": 13.91,
+          "sharpe": 1.038,
+          "pf": 1.102,
+          "avg_r": 0.061,
+          "worst_trade_pct": 1.18,
+          "max_consec_losses": 8,
+          "consistency": 50.0,
+          "score": 0.6089,
+          "net_ret_pct": 20.57,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 58.7,
+            "tp2": 40.4,
+            "tp3": 23.3
+          }
+        },
+        {
+          "name": "Qwen 3.8-R2-BE-Lock",
+          "round": 2,
+          "tf": "M15",
+          "trades": 375,
+          "win_rate": 63.47,
+          "max_dd": 8.73,
+          "sharpe": 1.089,
+          "pf": 1.12,
+          "avg_r": 0.052,
+          "worst_trade_pct": 1.21,
+          "max_consec_losses": 4,
+          "consistency": 100.0,
+          "score": 0.7242,
+          "net_ret_pct": 19.19,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 63.5,
+            "tp2": 21.3,
+            "tp3": 12.3
+          }
+        },
+        {
+          "name": "Qwen 3.8-R3-OTE79-TightSL",
+          "round": 3,
+          "tf": "M15",
+          "trades": 310,
+          "win_rate": 62.9,
+          "max_dd": 9.78,
+          "sharpe": 2.271,
+          "pf": 1.344,
+          "avg_r": 0.141,
+          "worst_trade_pct": 0.98,
+          "max_consec_losses": 4,
+          "consistency": 100.0,
+          "score": 1.12,
+          "net_ret_pct": 37.2,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 62.9,
+            "tp2": 18.7,
+            "tp3": 10.0
+          }
+        },
+        {
+          "name": "Qwen 3.8-R4-Killzone-Fill",
+          "round": 4,
+          "tf": "M15",
+          "trades": 123,
+          "win_rate": 76.42,
+          "max_dd": 2.83,
+          "sharpe": 3.254,
+          "pf": 2.028,
+          "avg_r": 0.26,
+          "worst_trade_pct": 0.54,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.5893,
+          "net_ret_pct": 17.17,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 76.4,
+            "tp2": 17.9,
+            "tp3": 6.5
+          }
+        },
+        {
+          "name": "Qwen 3.8-R5-ADX-Regime",
+          "round": 5,
+          "tf": "M15",
+          "trades": 110,
+          "win_rate": 80.0,
+          "max_dd": 2.11,
+          "sharpe": 3.801,
+          "pf": 2.419,
+          "avg_r": 0.299,
+          "worst_trade_pct": 0.53,
+          "max_consec_losses": 2,
+          "consistency": 100.0,
+          "score": 1.8388,
+          "net_ret_pct": 17.75,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 80.0,
+            "tp2": 19.1,
+            "tp3": 6.4
+          }
+        },
+        {
+          "name": "Qwen 3.8-R6-SkillMax",
+          "round": 6,
+          "tf": "M15",
+          "trades": 111,
+          "win_rate": 81.98,
+          "max_dd": 2.11,
+          "sharpe": 3.907,
+          "pf": 2.451,
+          "avg_r": 0.276,
+          "worst_trade_pct": 0.53,
+          "max_consec_losses": 2,
+          "consistency": 100.0,
+          "score": 1.8802,
+          "net_ret_pct": 16.42,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 82.0,
+            "tp2": 17.1,
+            "tp3": 5.4
+          }
+        }
+      ]
+    },
+    {
+      "agent_id": "ai-7",
+      "display_name": "Nemotron 3.5",
+      "specialty": "Asymmetric 0.79 OTE + FVG Target",
+      "worst_round": {
+        "name": "Nemotron 3.5-R1-Naive-NoBE",
+        "round": 1,
+        "tf": "H1",
+        "trades": 341,
+        "win_rate": 36.66,
+        "max_dd": 31.62,
+        "sharpe": -0.191,
+        "pf": 0.949,
+        "avg_r": -0.023,
+        "worst_trade_pct": 1.08,
+        "max_consec_losses": 10,
+        "consistency": 50.0,
+        "score": 0.1585,
+        "net_ret_pct": -9.69,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 54.5,
+          "tp2": 36.1,
+          "tp3": 19.6
+        }
+      },
+      "best_round": {
+        "name": "Nemotron 3.5-R5-ADX-Regime",
+        "round": 5,
+        "tf": "H1",
+        "trades": 169,
+        "win_rate": 74.56,
+        "max_dd": 2.19,
+        "sharpe": 1.929,
+        "pf": 2.079,
+        "avg_r": 0.286,
+        "worst_trade_pct": 0.55,
+        "max_consec_losses": 3,
+        "consistency": 100.0,
+        "score": 1.2009,
+        "net_ret_pct": 27.04,
+        "passed_filters": false,
+        "tp_rates": {
+          "tp1": 74.6,
+          "tp2": 20.7,
+          "tp3": 10.7
+        }
+      },
+      "all_rounds": [
+        {
+          "name": "Nemotron 3.5-R1-Naive-NoBE",
+          "round": 1,
+          "tf": "H1",
+          "trades": 341,
+          "win_rate": 36.66,
+          "max_dd": 31.62,
+          "sharpe": -0.191,
+          "pf": 0.949,
+          "avg_r": -0.023,
+          "worst_trade_pct": 1.08,
+          "max_consec_losses": 10,
+          "consistency": 50.0,
+          "score": 0.1585,
+          "net_ret_pct": -9.69,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 54.5,
+            "tp2": 36.1,
+            "tp3": 19.6
+          }
+        },
+        {
+          "name": "Nemotron 3.5-R2-BE-Lock",
+          "round": 2,
+          "tf": "H1",
+          "trades": 356,
+          "win_rate": 59.55,
+          "max_dd": 23.21,
+          "sharpe": 0.2,
+          "pf": 1.035,
+          "avg_r": 0.02,
+          "worst_trade_pct": 1.09,
+          "max_consec_losses": 8,
+          "consistency": 75.0,
+          "score": 0.3732,
+          "net_ret_pct": 5.41,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 59.6,
+            "tp2": 21.9,
+            "tp3": 13.5
+          }
+        },
+        {
+          "name": "Nemotron 3.5-R3-OTE79-TightSL",
+          "round": 3,
+          "tf": "H1",
+          "trades": 280,
+          "win_rate": 62.86,
+          "max_dd": 8.14,
+          "sharpe": 0.728,
+          "pf": 1.211,
+          "avg_r": 0.09,
+          "worst_trade_pct": 0.83,
+          "max_consec_losses": 5,
+          "consistency": 75.0,
+          "score": 0.6096,
+          "net_ret_pct": 19.63,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 62.9,
+            "tp2": 15.4,
+            "tp3": 8.6
+          }
+        },
+        {
+          "name": "Nemotron 3.5-R4-Killzone-Fill",
+          "round": 4,
+          "tf": "H1",
+          "trades": 181,
+          "win_rate": 72.38,
+          "max_dd": 2.2,
+          "sharpe": 1.743,
+          "pf": 1.906,
+          "avg_r": 0.261,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.107,
+          "net_ret_pct": 26.28,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 72.4,
+            "tp2": 19.3,
+            "tp3": 9.9
+          }
+        },
+        {
+          "name": "Nemotron 3.5-R5-ADX-Regime",
+          "round": 5,
+          "tf": "H1",
+          "trades": 169,
+          "win_rate": 74.56,
+          "max_dd": 2.19,
+          "sharpe": 1.929,
+          "pf": 2.079,
+          "avg_r": 0.286,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.2009,
+          "net_ret_pct": 27.04,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 74.6,
+            "tp2": 20.7,
+            "tp3": 10.7
+          }
+        },
+        {
+          "name": "Nemotron 3.5-R6-SkillMax",
+          "round": 6,
+          "tf": "H1",
+          "trades": 176,
+          "win_rate": 73.3,
+          "max_dd": 3.03,
+          "sharpe": 1.567,
+          "pf": 1.756,
+          "avg_r": 0.211,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.0237,
+          "net_ret_pct": 20.16,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 73.3,
+            "tp2": 19.3,
+            "tp3": 9.7
+          }
+        }
+      ]
+    },
+    {
+      "agent_id": "ai-8",
+      "display_name": "Command A+",
+      "specialty": "Ultra-Low-DD Capital Preservation",
+      "worst_round": {
+        "name": "Command A+-R1-Naive-NoBE",
+        "round": 1,
+        "tf": "H1",
+        "trades": 341,
+        "win_rate": 36.66,
+        "max_dd": 31.62,
+        "sharpe": -0.191,
+        "pf": 0.949,
+        "avg_r": -0.023,
+        "worst_trade_pct": 1.08,
+        "max_consec_losses": 10,
+        "consistency": 50.0,
+        "score": 0.1585,
+        "net_ret_pct": -9.69,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 54.5,
+          "tp2": 36.1,
+          "tp3": 19.6
+        }
+      },
+      "best_round": {
+        "name": "Command A+-R6-SkillMax",
+        "round": 6,
+        "tf": "H1",
+        "trades": 169,
+        "win_rate": 74.56,
+        "max_dd": 1.76,
+        "sharpe": 1.801,
+        "pf": 1.943,
+        "avg_r": 0.25,
+        "worst_trade_pct": 0.44,
+        "max_consec_losses": 3,
+        "consistency": 100.0,
+        "score": 1.1362,
+        "net_ret_pct": 18.28,
+        "passed_filters": false,
+        "tp_rates": {
+          "tp1": 74.6,
+          "tp2": 20.7,
+          "tp3": 10.7
+        }
+      },
+      "all_rounds": [
+        {
+          "name": "Command A+-R1-Naive-NoBE",
+          "round": 1,
+          "tf": "H1",
+          "trades": 341,
+          "win_rate": 36.66,
+          "max_dd": 31.62,
+          "sharpe": -0.191,
+          "pf": 0.949,
+          "avg_r": -0.023,
+          "worst_trade_pct": 1.08,
+          "max_consec_losses": 10,
+          "consistency": 50.0,
+          "score": 0.1585,
+          "net_ret_pct": -9.69,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 54.5,
+            "tp2": 36.1,
+            "tp3": 19.6
+          }
+        },
+        {
+          "name": "Command A+-R2-BE-Lock",
+          "round": 2,
+          "tf": "H1",
+          "trades": 356,
+          "win_rate": 59.55,
+          "max_dd": 23.21,
+          "sharpe": 0.2,
+          "pf": 1.035,
+          "avg_r": 0.02,
+          "worst_trade_pct": 1.09,
+          "max_consec_losses": 8,
+          "consistency": 75.0,
+          "score": 0.3732,
+          "net_ret_pct": 5.41,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 59.6,
+            "tp2": 21.9,
+            "tp3": 13.5
+          }
+        },
+        {
+          "name": "Command A+-R3-OTE79-TightSL",
+          "round": 3,
+          "tf": "H1",
+          "trades": 280,
+          "win_rate": 62.86,
+          "max_dd": 8.14,
+          "sharpe": 0.728,
+          "pf": 1.211,
+          "avg_r": 0.09,
+          "worst_trade_pct": 0.83,
+          "max_consec_losses": 5,
+          "consistency": 75.0,
+          "score": 0.6096,
+          "net_ret_pct": 19.63,
+          "passed_filters": true,
+          "tp_rates": {
+            "tp1": 62.9,
+            "tp2": 15.4,
+            "tp3": 8.6
+          }
+        },
+        {
+          "name": "Command A+-R4-Killzone-Fill",
+          "round": 4,
+          "tf": "H1",
+          "trades": 181,
+          "win_rate": 72.38,
+          "max_dd": 2.2,
+          "sharpe": 1.743,
+          "pf": 1.906,
+          "avg_r": 0.261,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.107,
+          "net_ret_pct": 26.28,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 72.4,
+            "tp2": 19.3,
+            "tp3": 9.9
+          }
+        },
+        {
+          "name": "Command A+-R5-ADX-Regime",
+          "round": 5,
+          "tf": "H1",
+          "trades": 104,
+          "win_rate": 75.0,
+          "max_dd": 1.8,
+          "sharpe": 1.616,
+          "pf": 2.155,
+          "avg_r": 0.307,
+          "worst_trade_pct": 0.55,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.1239,
+          "net_ret_pct": 17.15,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 75.0,
+            "tp2": 21.2,
+            "tp3": 12.5
+          }
+        },
+        {
+          "name": "Command A+-R6-SkillMax",
+          "round": 6,
+          "tf": "H1",
+          "trades": 169,
+          "win_rate": 74.56,
+          "max_dd": 1.76,
+          "sharpe": 1.801,
+          "pf": 1.943,
+          "avg_r": 0.25,
+          "worst_trade_pct": 0.44,
+          "max_consec_losses": 3,
+          "consistency": 100.0,
+          "score": 1.1362,
+          "net_ret_pct": 18.28,
+          "passed_filters": false,
+          "tp_rates": {
+            "tp1": 74.6,
+            "tp2": 20.7,
+            "tp3": 10.7
+          }
+        }
+      ]
+    }
+  ],
+  "top3_one_shot_test": [
+    {
+      "config": {
+        "agent_id": "ai-6",
+        "display_name": "Qwen 3.8",
+        "round_num": 3,
+        "name": "Qwen 3.8-R3-OTE79-TightSL",
+        "tf": "M15",
+        "entry_lvl": 0.79,
+        "fractal_lookback": 5,
+        "tp1_atr": 0.8,
+        "splits": [
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "move_be_after_tp1": true,
+        "sl_atr_k": 0.35,
+        "risk_pct": 0.0075,
+        "fill_killzone_only": false,
+        "adx_min": 0.0,
+        "htf_ema_align": false,
+        "zone_confirm_candle": false,
+        "oi_vol_proxy_filter": false,
+        "news_blackout": true,
+        "fvg_tp_target": true
+      },
+      "validation": {
+        "name": "Qwen 3.8-R3-OTE79-TightSL",
+        "round": 3,
+        "tf": "M15",
+        "trades": 310,
+        "win_rate": 62.9,
+        "max_dd": 9.78,
+        "sharpe": 2.271,
+        "pf": 1.344,
+        "avg_r": 0.141,
+        "worst_trade_pct": 0.98,
+        "max_consec_losses": 4,
+        "consistency": 100.0,
+        "score": 1.12,
+        "net_ret_pct": 37.2,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 62.9,
+          "tp2": 18.7,
+          "tp3": 10.0
+        }
+      },
+      "test_one_shot": {
+        "name": "Qwen 3.8-R3-OTE79-TightSL",
+        "round": 3,
+        "tf": "M15",
+        "trades": 277,
+        "win_rate": 64.98,
+        "max_dd": 9.45,
+        "sharpe": 2.773,
+        "pf": 1.427,
+        "avg_r": 0.177,
+        "worst_trade_pct": 0.81,
+        "max_consec_losses": 5,
+        "consistency": 100.0,
+        "score": 1.2911,
+        "net_ret_pct": 43.04,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 65.0,
+          "tp2": 18.1,
+          "tp3": 9.0
+        }
+      },
+      "monte_carlo_1000": {
+        "p50_dd": 7.31,
+        "p95_dd": 12.71,
+        "p99_dd": 15.68
+      },
+      "test_by_year": {
+        "2026": {
+          "trades": 277,
+          "wins": 180,
+          "pnl": 4303.82
+        }
+      }
+    },
+    {
+      "config": {
+        "agent_id": "ai-6",
+        "display_name": "Qwen 3.8",
+        "round_num": 2,
+        "name": "Qwen 3.8-R2-BE-Lock",
+        "tf": "M15",
+        "entry_lvl": 0.705,
+        "fractal_lookback": 5,
+        "tp1_atr": 1.0,
+        "splits": [
+          0.35,
+          0.35,
+          0.2,
+          0.1
+        ],
+        "move_be_after_tp1": true,
+        "sl_atr_k": 0.5,
+        "risk_pct": 0.01,
+        "fill_killzone_only": false,
+        "adx_min": 0.0,
+        "htf_ema_align": false,
+        "zone_confirm_candle": false,
+        "oi_vol_proxy_filter": false,
+        "news_blackout": false,
+        "fvg_tp_target": false
+      },
+      "validation": {
+        "name": "Qwen 3.8-R2-BE-Lock",
+        "round": 2,
+        "tf": "M15",
+        "trades": 375,
+        "win_rate": 63.47,
+        "max_dd": 8.73,
+        "sharpe": 1.089,
+        "pf": 1.12,
+        "avg_r": 0.052,
+        "worst_trade_pct": 1.21,
+        "max_consec_losses": 4,
+        "consistency": 100.0,
+        "score": 0.7242,
+        "net_ret_pct": 19.19,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 63.5,
+          "tp2": 21.3,
+          "tp3": 12.3
+        }
+      },
+      "test_one_shot": {
+        "name": "Qwen 3.8-R2-BE-Lock",
+        "round": 2,
+        "tf": "M15",
+        "trades": 343,
+        "win_rate": 65.6,
+        "max_dd": 15.36,
+        "sharpe": 1.908,
+        "pf": 1.222,
+        "avg_r": 0.094,
+        "worst_trade_pct": 1.07,
+        "max_consec_losses": 6,
+        "consistency": 100.0,
+        "score": 0.9769,
+        "net_ret_pct": 35.53,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 65.6,
+          "tp2": 21.3,
+          "tp3": 14.0
+        }
+      },
+      "monte_carlo_1000": {
+        "p50_dd": 11.26,
+        "p95_dd": 20.13,
+        "p99_dd": 24.76
+      },
+      "test_by_year": {
+        "2026": {
+          "trades": 343,
+          "wins": 225,
+          "pnl": 3552.53
+        }
+      }
+    },
+    {
+      "config": {
+        "agent_id": "ai-1",
+        "display_name": "Gemini 3.8",
+        "round_num": 3,
+        "name": "Gemini 3.8-R3-OTE79-TightSL",
+        "tf": "H1",
+        "entry_lvl": 0.79,
+        "fractal_lookback": 5,
+        "tp1_atr": 0.8,
+        "splits": [
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "move_be_after_tp1": true,
+        "sl_atr_k": 0.35,
+        "risk_pct": 0.0075,
+        "fill_killzone_only": false,
+        "adx_min": 0.0,
+        "htf_ema_align": false,
+        "zone_confirm_candle": false,
+        "oi_vol_proxy_filter": false,
+        "news_blackout": true,
+        "fvg_tp_target": true
+      },
+      "validation": {
+        "name": "Gemini 3.8-R3-OTE79-TightSL",
+        "round": 3,
+        "tf": "H1",
+        "trades": 280,
+        "win_rate": 62.86,
+        "max_dd": 8.14,
+        "sharpe": 0.728,
+        "pf": 1.211,
+        "avg_r": 0.09,
+        "worst_trade_pct": 0.83,
+        "max_consec_losses": 5,
+        "consistency": 75.0,
+        "score": 0.6096,
+        "net_ret_pct": 19.63,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 62.9,
+          "tp2": 15.4,
+          "tp3": 8.6
+        }
+      },
+      "test_one_shot": {
+        "name": "Gemini 3.8-R3-OTE79-TightSL",
+        "round": 3,
+        "tf": "H1",
+        "trades": 255,
+        "win_rate": 62.75,
+        "max_dd": 13.77,
+        "sharpe": 0.429,
+        "pf": 1.129,
+        "avg_r": 0.053,
+        "worst_trade_pct": 0.86,
+        "max_consec_losses": 6,
+        "consistency": 50.0,
+        "score": 0.4641,
+        "net_ret_pct": 9.76,
+        "passed_filters": true,
+        "tp_rates": {
+          "tp1": 62.7,
+          "tp2": 13.7,
+          "tp3": 6.3
+        }
+      },
+      "monte_carlo_1000": {
+        "p50_dd": 10.02,
+        "p95_dd": 19.23,
+        "p99_dd": 23.77
+      },
+      "test_by_year": {
+        "2023": {
+          "trades": 37,
+          "wins": 25,
+          "pnl": 742.95
+        },
+        "2024": {
+          "trades": 70,
+          "wins": 40,
+          "pnl": -504.87
+        },
+        "2025": {
+          "trades": 79,
+          "wins": 45,
+          "pnl": -353.87
+        },
+        "2026": {
+          "trades": 69,
+          "wins": 50,
+          "pnl": 1091.35
+        }
+      }
+    }
+  ]
+}
