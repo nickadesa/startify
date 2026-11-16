@@ -50,7 +50,8 @@ export function App() {
   const [showTickerBar, setShowTickerBar] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState<'general' | 'trading' | 'chart'>('general');
-  const [chartEnginePref, setChartEnginePref] = useState<'tv' | 'lightweight'>('tv');
+  const [candleTypePref, setCandleTypePref] = useState<'candle_solid' | 'candle_stroke' | 'ohlc' | 'area'>('candle_solid');
+  const [showPositionLines, setShowPositionLines] = useState(true);
   const [confirmOrders, setConfirmOrders] = useState(false);
   const [showQuickOrder, setShowQuickOrder] = useState(true);
   const [showMobileDrawer, setShowMobileDrawer] = useState(false);
@@ -309,7 +310,8 @@ export function App() {
             markets={markets}
             theme={theme}
             streamerMode={streamerMode}
-            chartEnginePref={chartEnginePref}
+            candleTypePref={candleTypePref}
+            showPositionLines={showPositionLines}
             user={user}
             token={token}
             accounts={accounts}
@@ -515,34 +517,40 @@ export function App() {
             {settingsTab === 'chart' && (
               <div className="space-y-3.5 text-[0.8125rem]">
                 <div>
-                  <div className="font-semibold mb-1.5">Default Chart Engine</div>
+                  <div className="font-semibold mb-1.5">Default Candle Style</div>
                   <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => setChartEnginePref('tv')}
-                      className={`p-3 rounded-xl border text-left cursor-pointer transition-colors ${
-                        chartEnginePref === 'tv'
-                          ? 'border-[var(--text-primary)] bg-[var(--bg-subtle)]'
-                          : 'border-[var(--border-subtle)] hover:bg-[var(--bg-subtle)]'
-                      }`}
-                    >
-                      <div className="font-bold text-[0.8125rem]">TradingView Full</div>
-                      <div className="text-[0.6875rem] text-[var(--text-muted)]">Drawing tools, indicators & live feed</div>
-                    </button>
-                    <button
-                      onClick={() => setChartEnginePref('lightweight')}
-                      className={`p-3 rounded-xl border text-left cursor-pointer transition-colors ${
-                        chartEnginePref === 'lightweight'
-                          ? 'border-[var(--text-primary)] bg-[var(--bg-subtle)]'
-                          : 'border-[var(--border-subtle)] hover:bg-[var(--bg-subtle)]'
-                      }`}
-                    >
-                      <div className="font-bold text-[0.8125rem]">Orderflow / Replay</div>
-                      <div className="text-[0.6875rem] text-[var(--text-muted)]">Bybit WS, 10m 30x Replay & Team Sync</div>
-                    </button>
+                    {(
+                      [
+                        { id: 'candle_solid', label: 'Solid Candles', desc: 'Classic filled bodies' },
+                        { id: 'candle_stroke', label: 'Hollow Candles', desc: 'Outlined bullish bars' },
+                        { id: 'ohlc', label: 'OHLC Bars', desc: 'Institutional tick bars' },
+                        { id: 'area', label: 'Area Line', desc: 'Smooth equity-style curve' },
+                      ] as const
+                    ).map((st) => (
+                      <button
+                        key={st.id}
+                        onClick={() => setCandleTypePref(st.id)}
+                        className={`p-2.5 rounded-xl border text-left cursor-pointer transition-colors ${
+                          candleTypePref === st.id
+                            ? 'border-[var(--text-primary)] bg-[var(--bg-subtle)]'
+                            : 'border-[var(--border-subtle)] hover:bg-[var(--bg-subtle)]'
+                        }`}
+                      >
+                        <div className="font-bold text-[0.8125rem]">{st.label}</div>
+                        <div className="text-[0.6875rem] text-[var(--text-muted)]">{st.desc}</div>
+                      </button>
+                    ))}
                   </div>
                 </div>
+                <label className="flex items-center justify-between cursor-pointer">
+                  <div>
+                    <div className="font-semibold">Show Entry / TP / SL on Chart</div>
+                    <div className="text-[0.6875rem] text-[var(--text-muted)]">Render live position lines directly on candles</div>
+                  </div>
+                  <input type="checkbox" checked={showPositionLines} onChange={(e) => setShowPositionLines(e.target.checked)} className="accent-emerald-500 w-4 h-4" />
+                </label>
                 <div className="p-3 rounded-xl bg-[var(--bg-subtle)] text-[0.75rem] text-[var(--text-secondary)]">
-                  Data feeds: <strong className="text-[var(--text-primary)]">Bybit v5 Public Linear WS</strong> (Crypto & PAXG Gold Perps) + <strong className="text-[var(--text-primary)]">TradingView</strong>.
+                  Engine: <strong className="text-[var(--text-primary)]">KLineChart Pro</strong> · Feeds: <strong className="text-[var(--text-primary)]">Bybit v5 WS + Market API</strong>.
                 </div>
               </div>
             )}

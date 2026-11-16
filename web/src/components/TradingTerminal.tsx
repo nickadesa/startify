@@ -19,9 +19,8 @@ import {
   X,
 } from 'lucide-react';
 import { AssetIcon } from './AssetIcon';
+import { ChartCandle, KLineChartWidget } from './KLineChartWidget';
 import { MarketOverviewItem } from './MarketsWatchlistView';
-import { TradingViewWidget } from './TradingViewWidget';
-import { ChartCandle, VestChart } from './VestChart';
 import {
   RoomDetailPayload,
   TraderAccount,
@@ -35,7 +34,8 @@ interface TradingTerminalProps {
   markets: MarketOverviewItem[];
   theme: 'light' | 'dark';
   streamerMode: boolean;
-  chartEnginePref: 'tv' | 'lightweight';
+  candleTypePref?: 'candle_solid' | 'candle_stroke' | 'ohlc' | 'area';
+  showPositionLines?: boolean;
   user: UserProfile | null;
   token: string | null;
   accounts: TraderAccount[];
@@ -64,7 +64,8 @@ export const TradingTerminal: React.FC<TradingTerminalProps> = ({
   markets,
   theme,
   streamerMode,
-  chartEnginePref,
+  candleTypePref = 'candle_solid',
+  showPositionLines = true,
   user,
   token,
   accounts,
@@ -81,12 +82,6 @@ export const TradingTerminal: React.FC<TradingTerminalProps> = ({
   const [wsConnected, setWsConnected] = useState(false);
   const [liveTickPrice, setLiveTickPrice] = useState<number | null>(null);
   const [showSymMenu, setShowSymMenu] = useState(false);
-
-  // Chart Mode: 'tv' (Full TradingView) or 'lw' (Lightweight / Replay / Team)
-  const [localChartMode, setLocalChartMode] = useState<'tv' | 'lw'>(chartEnginePref === 'tv' ? 'tv' : 'lw');
-  useEffect(() => {
-    setLocalChartMode(chartEnginePref === 'tv' ? 'tv' : 'lw');
-  }, [chartEnginePref]);
 
   // 10-Minute Historical Replay State
   const [replayActive, setReplayActive] = useState(false);
@@ -162,7 +157,6 @@ export const TradingTerminal: React.FC<TradingTerminalProps> = ({
     setReplayDate(data.replay_date || '2024-05-15');
     setReplaySecondsLeft(600);
     setReplayActive(true);
-    setLocalChartMode('lw');
   };
 
   useEffect(() => {
@@ -283,7 +277,6 @@ export const TradingTerminal: React.FC<TradingTerminalProps> = ({
   useEffect(() => {
     loadRoomDetail();
     if (!activeRoomCode) return;
-    setLocalChartMode('lw');
     const t = setInterval(loadRoomDetail, 3000);
     return () => clearInterval(t);
   }, [activeRoomCode]);
@@ -751,28 +744,6 @@ export const TradingTerminal: React.FC<TradingTerminalProps> = ({
             </button>
           )}
 
-          <div className="flex items-center gap-1 p-1 rounded-full bg-[var(--bg-subtle)]">
-            <button
-              onClick={() => {
-                setReplayActive(false);
-                setLocalChartMode('tv');
-              }}
-              className={`px-2.5 py-1 rounded-full text-[0.75rem] font-semibold cursor-pointer ${
-                localChartMode === 'tv' ? 'bg-[var(--text-primary)] text-[var(--bg-card)]' : 'text-[var(--text-secondary)]'
-              }`}
-            >
-              TradingView
-            </button>
-            <button
-              onClick={() => setLocalChartMode('lw')}
-              className={`px-2.5 py-1 rounded-full text-[0.75rem] font-semibold cursor-pointer ${
-                localChartMode === 'lw' ? 'bg-[var(--text-primary)] text-[var(--bg-card)]' : 'text-[var(--text-secondary)]'
-              }`}
-            >
-              Orderflow
-            </button>
-          </div>
-
           {anyPanelHidden && (
             <button
               onClick={() => setHiddenPanels({ chart: false, book: false, ticket: false, health: false, dock: false })}
@@ -822,23 +793,21 @@ export const TradingTerminal: React.FC<TradingTerminalProps> = ({
         </div>
 
         {mobileTab === 'chart' && (
-          <div className="h-[26rem] tt-card overflow-hidden">
-            {localChartMode === 'tv' && !replayActive ? (
-              <TradingViewWidget symbol={activeSymbol} timeframe={timeframe} theme={theme} />
-            ) : (
-              <VestChart
-                symbol={activeSymbol}
-                timeframe={timeframe}
-                onTimeframeChange={setTimeframe}
-                candles={candles}
-                positions={positions}
-                roomDrawings={roomDetail?.drawings || []}
-                onAddDrawing={handleAddDrawing}
-                onDeleteDrawing={handleDeleteDrawing}
-                theme={theme}
-                wsConnected={wsConnected || replayActive}
-              />
-            )}
+          <div className="min-h-[60dvh] tt-card overflow-hidden">
+            <KLineChartWidget
+              symbol={activeSymbol}
+              candles={candles}
+              livePrice={liveTickPrice}
+              timeframe={timeframe}
+              onTimeframeChange={setTimeframe}
+              theme={theme}
+              openPositions={openPositions.filter((p) => p.symbol === activeSymbol)}
+              candleTypePref={candleTypePref}
+              showPositionLines={showPositionLines}
+              replayActive={replayActive}
+              replayBadge={`Replay ${replayDate} · ${fmtTimer(replaySecondsLeft)}`}
+              wsConnected={wsConnected || replayActive}
+            />
           </div>
         )}
 
@@ -978,22 +947,20 @@ export const TradingTerminal: React.FC<TradingTerminalProps> = ({
               className="group relative h-full tt-card overflow-hidden"
             >
               {renderHoverClose('chart')}
-              {localChartMode === 'tv' && !replayActive ? (
-                <TradingViewWidget symbol={activeSymbol} timeframe={timeframe} theme={theme} />
-              ) : (
-                <VestChart
-                  symbol={activeSymbol}
-                  timeframe={timeframe}
-                  onTimeframeChange={setTimeframe}
-                  candles={candles}
-                  positions={positions}
-                  roomDrawings={roomDetail?.drawings || []}
-                  onAddDrawing={handleAddDrawing}
-                  onDeleteDrawing={handleDeleteDrawing}
-                  theme={theme}
-                  wsConnected={wsConnected || replayActive}
-                />
-              )}
+              <KLineChartWidget
+                symbol={activeSymbol}
+                candles={candles}
+                livePrice={liveTickPrice}
+                timeframe={timeframe}
+                onTimeframeChange={setTimeframe}
+                theme={theme}
+                openPositions={openPositions.filter((p) => p.symbol === activeSymbol)}
+                candleTypePref={candleTypePref}
+                showPositionLines={showPositionLines}
+                replayActive={replayActive}
+                replayBadge={`Replay ${replayDate} · ${fmtTimer(replaySecondsLeft)}`}
+                wsConnected={wsConnected || replayActive}
+              />
             </div>
           )}
 
