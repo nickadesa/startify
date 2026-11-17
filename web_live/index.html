@@ -1032,7 +1032,7 @@ $('#bTop').onclick=()=>{topOnly=!topOnly;$('#bTop').classList.toggle('on',topOnl
 $('#bEye').onclick=()=>{hide=!hide;$('#bEye').classList.toggle('on',hide);if($('#spStream'))$('#spStream').classList.toggle('on',hide);renderAll()};
 
 async function loadPresets(){
-  try{const d=await get('/api/live/presets');PRESETS=d.presets||[]}catch{}
+  try{const d=await get('/api/live/presets');PRESETS=d.presets||[];renderSettingsExtras()}catch{}
 }
 function openAgentCfg(aid){
   const a=agents[aid];if(!a)return;
@@ -1115,15 +1115,24 @@ $('#agTabs').onclick=e=>{const t=e.target.closest('.tab');if(!t)return;selAg=t.d
 // ── Orders derived from real trades
 function buildOrders(){
   const o=[];const opp=s=>s==='BUY'?'SELL':'BUY';
-  for(const t of S.recent_trades){
+  for(const t of (S.recent_trades||[])){
     if(selAg&&t.agent_id!==selAg)continue;
-    o.push({time:t.opened_at,ag:t.agent_id,type:'Market',side:t.side,qty:t.lots,price:t.entry,status:'Filled',pnl:null});
+    const ot=t.opened_at||'';
+    if(t.status==='Pending'){
+      o.push({time:ot,ag:t.agent_id,type:'Limit',side:t.side,qty:t.lots,price:t.entry,status:'Open',pnl:null});
+      continue;
+    }
+    if(t.status==='Cancelled'){
+      o.push({time:t.closed_at||ot,ag:t.agent_id,type:'Limit',side:t.side,qty:t.lots,price:t.entry,status:'Canceled',pnl:null});
+      continue;
+    }
+    o.push({time:ot,ag:t.agent_id,type:t.order_type==='LIMIT'?'Limit':'Market',side:t.side,qty:t.lots,price:t.entry,status:'Filled',pnl:null});
     if(t.status==='Open'){
-      o.push({time:t.opened_at,ag:t.agent_id,type:'Stop (SL)',side:opp(t.side),qty:t.lots,price:t.sl,status:'Open',pnl:null});
-      o.push({time:t.opened_at,ag:t.agent_id,type:'Limit (TP)',side:opp(t.side),qty:t.lots,price:t.tp,status:'Open',pnl:null});
-    }else{
-      const tp=t.exit_reason==='TP',sl=t.exit_reason==='SL';
-      o.push({time:t.closed_at,ag:t.agent_id,type:tp?'Limit (TP)':sl?'Stop (SL)':'Market',side:opp(t.side),qty:t.lots,price:t.exit,status:'Filled',pnl:t.pnl});
+      o.push({time:ot,ag:t.agent_id,type:'Stop (SL)',side:opp(t.side),qty:t.lots,price:t.sl,status:'Open',pnl:null});
+      o.push({time:ot,ag:t.agent_id,type:'Limit (TP)',side:opp(t.side),qty:t.lots,price:t.tp,status:'Open',pnl:null});
+    }else if(t.closed_at&&t.exit!=null){
+      const tp=t.exit_reason==='TP',sl=t.exit_reason==='SL'||t.exit_reason==='BE';
+      o.push({time:t.closed_at,ag:t.agent_id,type:tp?'Limit (TP)':sl?`Stop (${t.exit_reason})`:'Market',side:opp(t.side),qty:t.lots,price:t.exit,status:'Filled',pnl:t.pnl});
       if(tp||sl){
         o.push({time:t.closed_at,ag:t.agent_id,type:tp?'Stop (SL)':'Limit (TP)',side:opp(t.side),qty:t.lots,price:tp?t.sl:t.tp,status:'Canceled',pnl:null});
       }else{
@@ -1132,7 +1141,7 @@ function buildOrders(){
       }
     }
   }
-  return o.sort((a,b)=>b.time<a.time?-1:b.time>a.time?1:0);
+  return o.sort((a,b)=>(b.time||'')<(a.time||'')?-1:(b.time||'')>(a.time||'')?1:0);
 }
 
 let ORD=[];
@@ -1144,15 +1153,15 @@ function renderOrders(){
   const r=ORD.filter(x=>(statusTab==='All'||x.status===statusTab)&&(sideF==='All'||x.side===sideF.toUpperCase()));
   const pages=Math.max(1,Math.ceil(r.length/PS));page=Math.min(page,pages);
   const a=(page-1)*PS,v=r.slice(a,a+PS),day=new Date().toISOString().slice(0,10);
-  $('#orders').innerHTML=v.length?v.map(x=>`<tr>
-    <td class="num">${x.time.slice(0,10)===day?'':'<span class="m">'+x.time.slice(5,10)+'</span> '}${x.time.slice(11,19)}</td>
+  $('#orders').innerHTML=v.length?v.map(x=>{const tm=x.time||'';const pr=Number(x.price||0);return `<tr>
+    <td class="num">${tm.slice(0,10)===day?'':'<span class="m">'+tm.slice(5,10)+'</span> '}${tm.slice(11,19)}</td>
     <td><span class="mcell">${ico(x.ag,agents[x.ag]?.color)}<b style="color:var(--tx)">${esc(agents[x.ag]?.short)}</b></span></td>
     <td>XAUUSD</td><td>${x.type}</td>
     <td><span class="side ${x.side==='BUY'?'g':'r'}"><svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="${x.side==='BUY'?'m6 15 6-6 6 6':'m6 9 6 6 6-6'}"/></svg>${x.side==='BUY'?'Buy':'Sell'}</span></td>
-    <td class="num">${x.qty}</td><td class="num">${x.price.toFixed(2)}</td>
+    <td class="num">${x.qty}</td><td class="num">${pr.toFixed(2)}</td>
     <td class="num">${x.pnl==null?'<span class="m">-</span>':sgn(x.pnl)}</td>
     <td><span class="badge ${x.status==='Filled'?'b-f':x.status==='Open'?'b-o':'b-c'}">${x.status}</span></td>
-  </tr>`).join(''):`<tr><td colspan="9" class="empty">No orders yet — the AIs are watching XAUUSD.</td></tr>`;
+  </tr>`}).join(''):`<tr><td colspan="9" class="empty">No orders yet — the AIs are watching XAUUSD.</td></tr>`;
   $('#showing').textContent=r.length?`Showing ${a+1} to ${a+v.length} of ${r.length} orders`:'Showing 0 orders';
   $('#pgTxt').textContent=`Page ${page} of ${pages}`;
   $('#p0').disabled=$('#p1').disabled=page<=1;$('#p2').disabled=page>=pages;
@@ -1204,7 +1213,7 @@ function renderAll(){
   $('#bDisT').textContent=S.paused?'Arise All':'Dimiss All';
   if($('#setTradeAllow'))$('#setTradeAllow').classList.toggle('on',!S.trade_paused);
   if(S.ai_analysis_assets)analysisSyms=S.ai_analysis_assets;
-  if($('#spBatchAis')&&!$('#spBatchAis').children.length)renderSettingsExtras();
+  if($('#spBatchAis')&&(!$('#spBatchAis').children.length||($('#spBatchPreset')&&PRESETS.length&&!$('#spBatchPreset').options.length)))renderSettingsExtras();
   $('#tokUsed').textContent=(S.tokens_used||0).toLocaleString()+' tok';
   if(tab==='leaderboard')loadLeaderboard();
 }
