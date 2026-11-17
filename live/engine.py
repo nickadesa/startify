@@ -159,6 +159,28 @@ def tick() -> Dict[str, Any]:
             t["mae"] = min(t.get("mae", 0.0), _pnl(t["side"], t["entry"], px, t["lots"]))
             t["pnl"] = _pnl(t["side"], t["entry"], px, t["lots"])
             t["last_price"] = px
+            # Multi-TP Partial (50% at 1R) + Auto-Breakeven
+            pk = f"part:{t['id']}"
+            pst = store.kv_get(pk) or {"tp1_hit": False}
+            if not pst.get("tp1_hit") and t["lots"] >= 0.02:
+                r_dist = abs(t["entry"] - t.get("sl_initial", t["sl"]))
+                tp1 = (t["entry"] + r_dist) if t["side"] == "BUY" else (t["entry"] - r_dist)
+                hit_tp1 = (px >= tp1) if t["side"] == "BUY" else (px <= tp1)
+                if r_dist > 0 and hit_tp1:
+                    half = round(t["lots"] / 2, 2)
+                    rem = round(t["lots"] - half, 2)
+                    if half >= 0.01 and rem >= 0.01:
+                        part_pnl = _pnl(t["side"], t["entry"], tp1, half)
+                        ag_acc = store.acct_get(t["agent_id"])
+                        if ag_acc:
+                            ag_acc["equity"] = round(ag_acc["equity"] + part_pnl, 2)
+                            ag_acc["last_note"] = f"TP1 partial +{half} lot @ {tp1:.2f} (${part_pnl:+.2f}), SL → BE"
+                            store.acct_put(ag_acc)
+                        t["lots"] = rem
+                        t["sl"] = t["entry"]
+                        t["pnl"] = _pnl(t["side"], t["entry"], px, t["lots"])
+                        pst["tp1_hit"] = True
+                        store.kv_set(pk, pst)
             reason = None
             if t["side"] == "BUY":
                 if px <= t["sl"]: reason, fill = "SL", t["sl"]
@@ -252,8 +274,12 @@ def _context(a: Dict[str, Any], ag: Dict[str, Any], px: float, bars: List[Dict[s
                 leader_note = (f"\n[LEADER CONSULT SIGNAL] Leader {agent_cfg(o['agent_id'])['short_name']} is {o['side']} @ {o['entry']} "
                                f"(SL {o['sl']}, TP {o['tp']}, Thesis: {o.get('thesis','')}). "
                                f"Analyze this signal against your own strategy — do NOT blind-copy 100%; confirm confluence before entering.")
+    vp = market.volume_profile(bars[-48:])
+    vp_txt = f"Volume Profile (M15): POC {vp['poc']}, VAH {vp['vah']}, VAL {vp['val']}" if vp else ""
+    mc = market.macro_context()
+    mc_txt = f"Macro: DXY {mc.get('DXY','-')}, TLT {mc.get('TLT','-')}, Gold/Silver {mc.get('gold_silver_ratio','-')}" if mc else ""
     return (f"Your style: {ag['style_archetype']}.\nActive Preset ({pr_obj['name']}): {pr_obj['prompt']}\n"
-            f"Price now: {px}\nATR(14, M15): {market.atr(bars):.2f}\n"
+            f"Price now: {px}\nATR(14, M15): {market.atr(bars):.2f}\n{vp_txt}\n{mc_txt}\n"
             f"Session: {market.session(now().hour)} (UTC {now().strftime('%H:%M')})\nM15 candles (last 24):\n{rows}\n"
             f"Your equity: ${a['equity']:.2f} (day {a['equity']-a['day_start_equity']:+.2f}), losses in a row: {a['consecutive_losses']}\n"
             f"Your own recent lessons: {a['lessons'][:3] or 'none yet'}\nOther AIs' open trades: {others or 'none'}{leader_note}")
@@ -281,6 +307,15 @@ def _risk_gate(a: Dict[str, Any]) -> Optional[str]:
     r = cfg()["risk_rules"]
     prefs = get_agent_prefs(a["agent_id"])
     if store.kv_get("paused"): return "arena paused"
+    pr = store.kv_get("price") or {}
+    if pr.get("ts"):
+        try:
+            age = (now() - datetime.strptime(pr["ts"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)).total_seconds()
+            if age > 180: return "stale price feed"
+        except Exception:
+            pass
+    nev = market.is_news_window(15)
+    if nev: return f"news filter (±15m {nev.get('title','USD')})"
     if a.get("cooldown_until") and iso() < a["cooldown_until"]: return "tilt cooldown"
     if a["trades_today"] >= r["max_trades_per_day"]: return "daily trade cap"
     day_pnl = a["equity"] + a.get("open_pnl", 0.0) - a["day_start_equity"]
@@ -592,6 +627,93 @@ def snapshot() -> Dict[str, Any]:
             "open_positions": len(opens), "tokens_used": tok.get("used", 0), "agents": rows,
             "open_trades": opens, "recent_trades": store.trades(limit=300)}
 
+def strategy_dna(agent_id: str) -> Dict[str, Any]:
+    """Condition winrate breakdown & lessons for the Strategy DNA panel."""
+    cl = store.trades(status="Closed", agent_id=agent_id, limit=500)
+    a = store.acct_get(agent_id) or {}
+    prefs = get_agent_prefs(agent_id)
+    by_sess: Dict[str, Dict[str, int]] = {}
+    by_side: Dict[str, Dict[str, int]] = {}
+    for t in cl:
+        s = t.get("session") or "Unknown"
+        sd = t.get("side") or "BUY"
+        for d, k in ((by_sess, s), (by_side, sd)):
+            b = d.setdefault(k, {"wins": 0, "total": 0})
+            b["total"] += 1
+            if t.get("pnl", 0) > 0: b["wins"] += 1
+    return {
+        "agent_id": agent_id,
+        "preset": prefs["preset"],
+        "preset_name": presets.get_preset(prefs["preset"])["name"],
+        "lessons": a.get("lessons", [])[:6],
+        "sessions": {k: {"total": v["total"], "winrate": round(v["wins"] / v["total"] * 100, 1)} for k, v in by_sess.items()},
+        "sides": {k: {"total": v["total"], "winrate": round(v["wins"] / v["total"] * 100, 1)} for k, v in by_side.items()},
+    }
+
+def leaderboard(period: str = "all") -> Dict[str, Any]:
+    """Ranked leaderboard with Daily/Weekly/Monthly/All-Time filtering & Sunday countdown."""
+    snap = snapshot()
+    n = now()
+    cutoff = None
+    if period == "daily":
+        cutoff = n.strftime("%Y-%m-%d")
+    elif period == "weekly":
+        cutoff = (n - timedelta(days=n.weekday())).strftime("%Y-%m-%d")
+    elif period == "monthly":
+        cutoff = n.strftime("%Y-%m-01")
+    rows = []
+    for r in snap["agents"]:
+        item = dict(r)
+        if cutoff:
+            cl = [t for t in store.trades(status="Closed", agent_id=r["agent_id"], limit=2000) if (t.get("closed_at") or "")[:10] >= cutoff]
+            pnl = round(sum(t["pnl"] for t in cl) + r.get("open_pnl", 0.0), 2)
+            wins = [t["pnl"] for t in cl if t["pnl"] > 0]
+            losses = [-t["pnl"] for t in cl if t["pnl"] <= 0]
+            item["period_pnl"] = pnl
+            item["period_roi"] = round(pnl / 100.0, 2)
+            item["period_trades"] = len(cl)
+            item["period_winrate"] = round(len(wins) / len(cl) * 100, 1) if cl else 0.0
+            item["period_pf"] = round(sum(wins) / sum(losses), 2) if losses and sum(losses) else (99.0 if wins else 0.0)
+        else:
+            item["period_pnl"] = round(r["equity"] - 10000.0, 2)
+            item["period_roi"] = r["roi_pct"]
+            item["period_trades"] = r["trades"]
+            item["period_winrate"] = r["winrate"]
+            item["period_pf"] = r["profit_factor"] or 0.0
+        rows.append(item)
+    rows.sort(key=lambda x: x["period_pnl"], reverse=True)
+    for i, x in enumerate(rows):
+        x["period_rank"] = i + 1
+    days_to_sun = (6 - n.weekday()) % 7 or 7
+    next_sun = (n + timedelta(days=days_to_sun)).replace(hour=20, minute=0, second=0, microsecond=0)
+    return {"period": period, "agents": rows, "next_sunday_utc": iso(next_sun)}
+
+def weekly_mentor_review(force: bool = False) -> Dict[str, Any]:
+    """Sunday Weekly Review: #1 AI mentors bottom AIs and posts to Chat + Discord."""
+    wk = now().strftime("%Y-W%W")
+    if not force and store.kv_get("last_weekly_review") == wk:
+        return {"ok": True, "skipped": True, "week": wk}
+    snap = snapshot()
+    if not snap["agents"]:
+        return {"ok": False}
+    top = snap["agents"][0]
+    bottom = snap["agents"][-3:]
+    ag = agent_cfg(top["agent_id"])
+    summary = (f"Sunday Weekly Review ({wk}) — Leader: {top['short']} (${top['equity']:,.2f}, {top['roi_pct']:+.2f}%). "
+               f"Coaching for {', '.join(b['short'] for b in bottom)}: cut losers early at invalidation, respect ±15m USD news filter, "
+               f"and wait for 2.0R+ confluence inside London/NY Killzones.")
+    if llm.has_key(ag) and _tokens_ok(500):
+        res = llm.ask(ag, "You are the #1 ranked AI gold trader giving a crisp Sunday coaching review to the bottom 3 traders. Max 3 sentences.",
+                      f"Top: {top['short']} ${top['equity']:.0f}. Bottom 3: {[(b['short'], b['equity'], b['winrate']) for b in bottom]}", 180)
+        if res:
+            summary = res[0].strip()[:420]
+            _tokens_add(res[1])
+    ts = iso()
+    store.chat_add(ts, top["agent_id"], "CHAT", summary, 0, None)
+    discord.notify_chat(ag, f"[Sunday Mentor Review] {summary}", ts, None)
+    store.kv_set("last_weekly_review", wk)
+    return {"ok": True, "week": wk, "mentor": top["short"], "summary": summary}
+
 # ───────────────────────── loop ─────────────────────────
 _started = False
 def run_forever() -> None:
@@ -603,6 +725,8 @@ def run_forever() -> None:
             tick()
             if n % 6 == 0: decide()          # internally throttled per agent
             if n % 12 == 0: converse()       # internally throttled by chat_min_gap_seconds
+            if now().weekday() == 6 and now().hour >= 20:
+                weekly_mentor_review(force=False)
         except Exception as e:               # never let the loop die
             print("engine loop error:", repr(e), flush=True)
         n += 1

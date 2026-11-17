@@ -129,6 +129,32 @@ def set_leader(body: dict, x_admin_token: Optional[str] = Header(default=None)):
     _admin(x_admin_token)
     return engine.set_leader_config(body.get("leader_id"), body.get("consult_mode"))
 
+@router.get("/api/live/candles")
+def get_candles(symbol: str = "XAUUSD", interval: str = "15m", rng: str = "5d"):
+    bars = market.candles(interval, rng, symbol)
+    return {"symbol": symbol, "interval": interval, "bars": bars, "vp": market.volume_profile(bars[-60:]), "news": market.news_events()[:20]}
+
+@router.get("/api/live/news")
+def get_news():
+    return {"events": market.news_events()}
+
+@router.get("/api/live/agent/{agent_id}/dna")
+def get_dna(agent_id: str):
+    return engine.strategy_dna(agent_id)
+
+@router.get("/api/live/leaderboard")
+def get_leaderboard(period: str = "all"):
+    return engine.leaderboard(period)
+
+@router.get("/api/live/equity-all")
+def equity_all():
+    return {a["agent_id"]: store.equity_series(a["agent_id"], 120) for a in engine.agents()}
+
+@router.post("/api/live/weekly-review")
+def trigger_weekly_review(x_admin_token: Optional[str] = Header(default=None)):
+    _admin(x_admin_token)
+    return engine.weekly_mentor_review(force=True)
+
 @router.post("/api/live/reset-season")
 def reset(x_admin_token: Optional[str] = Header(default=None)):
     _admin(x_admin_token); engine.reset_season(); return {"ok": True}
