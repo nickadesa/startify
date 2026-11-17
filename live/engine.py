@@ -59,8 +59,13 @@ def reset_season() -> None:
 def _lots(equity: float, entry: float, sl: float, risk_pct: float) -> float:
     dist = abs(entry - sl)
     if dist <= 0: return 0.0
+    tr = cfg()["trading"]
+    step = float(tr.get("lot_step", 0.01))
+    min_l = float(tr.get("min_lot", 0.01))
+    max_l = float(tr.get("max_lot", 2.00))
     lots = (equity * risk_pct / 100.0) / (dist * CONTRACT)
-    return round(max(float(cfg()["trading"].get("sim_min_lot", 0.001)), min(lots, float(cfg()["trading"]["max_lot"]))), 3)
+    lots = max(min_l, min(lots, max_l))
+    return round(round(lots / step) * step, 2)
 
 def _pnl(side: str, entry: float, px: float, lots: float) -> float:
     return round(((px - entry) if side == "BUY" else (entry - px)) * lots * CONTRACT, 2)
