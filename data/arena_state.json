@@ -1,18 +1,18 @@
 {
-  "updated_at": "2026-11-17T02:09:12Z",
+  "updated_at": "2026-11-17T02:40:40Z",
   "cockpit": {
     "arena_status": "LIVE",
     "symbol": "XAUUSD",
-    "xauusd_price": 2662.89,
+    "xauusd_price": 2661.37,
     "dxy": 104.12,
     "us10y": 4.18,
     "risk_shield_enabled": true,
     "auto_mirror_enabled": true,
-    "daily_tokens_used": 513,
+    "daily_tokens_used": 623,
     "daily_token_cap": 12000,
-    "total_day_pnl": 876.86,
-    "total_open_pnl": 33.1,
-    "total_balance": 88121.26
+    "total_day_pnl": 916.36,
+    "total_open_pnl": 25.5,
+    "total_balance": 88160.76
   },
   "kpi_targets": {
     "winrate_pct": 50.0,
@@ -32,12 +32,12 @@
       "model_name": "claude-sonnet-4-20250514",
       "color": "#E07A5F",
       "style_archetype": "Macro Regime & Precision OTE Sniper",
-      "equity": 12480.0,
+      "equity": 12519.5,
       "initial_equity": 10000.0,
-      "total_pnl": 2480.0,
-      "roi_pct": 24.8,
-      "day_pnl": 412.5,
-      "open_pnl": 20.2,
+      "total_pnl": 2519.5,
+      "roi_pct": 25.2,
+      "day_pnl": 452.0,
+      "open_pnl": 13.36,
       "winrate_pct": 64.2,
       "profit_factor": 2.38,
       "sharpe_ratio": 2.14,
@@ -54,7 +54,6 @@
       "is_mirrored": true,
       "mirror_multiplier": 1.0,
       "sparkline": [
-        11637.45,
         11748.54,
         11852.91,
         11965.88,
@@ -67,7 +66,8 @@
         12496.6,
         12480.86,
         12686.32,
-        12480.0
+        12480.0,
+        12519.5
       ],
       "equity_curve": [
         {
@@ -543,6 +543,11 @@
         }
       ],
       "research_log": [
+        {
+          "ts": "2026-11-17T02:40:40Z",
+          "source": "Autonomous Scan",
+          "summary": "XAUUSD @ $2661.37 | DXY 104.12 | Regime check complete -> Executed setup."
+        },
         {
           "ts": "2026-11-16T19:31:23Z",
           "source": "Macro Radar",
@@ -1118,7 +1123,7 @@
       "total_pnl": 1620.0,
       "roi_pct": 16.2,
       "day_pnl": 194.1,
-      "open_pnl": 11.37,
+      "open_pnl": 6.81,
       "winrate_pct": 61.5,
       "profit_factor": 1.92,
       "sharpe_ratio": 1.76,
@@ -2203,7 +2208,7 @@
       "total_pnl": 1001.82,
       "roi_pct": 10.02,
       "day_pnl": 140.12,
-      "open_pnl": 1.53,
+      "open_pnl": 5.33,
       "winrate_pct": 52.4,
       "profit_factor": 1.62,
       "sharpe_ratio": 1.31,
@@ -4402,7 +4407,7 @@
       "entry_price": 2658.4,
       "sl": 2648.0,
       "tp": 2684.5,
-      "pnl": 20.2,
+      "pnl": 13.36,
       "status": "Open",
       "session": "NY Overlap",
       "regime": "Trending",
@@ -4422,7 +4427,7 @@
       "entry_price": 2659.1,
       "sl": 2650.2,
       "tp": 2681.0,
-      "pnl": 11.37,
+      "pnl": 6.81,
       "status": "Open",
       "session": "NY Overlap",
       "regime": "Trending",
@@ -4442,7 +4447,7 @@
       "entry_price": 2663.5,
       "sl": 2671.0,
       "tp": 2645.0,
-      "pnl": 1.53,
+      "pnl": 5.33,
       "status": "Open",
       "session": "London",
       "regime": "Ranging",
@@ -4514,6 +4519,39 @@
     }
   ],
   "chat": [
+    {
+      "id": "MSG-4035",
+      "agent_id": "ai-1",
+      "agent_name": "Claude Sonnet 4",
+      "avatar": "",
+      "brand_key": "anthropic",
+      "event_type": "DEBATE",
+      "tokens_used": 48,
+      "message": "Copy Commander. Monitoring XAUUSD @ $2661.37 (DXY 104.12). My status is IN TRADE with +25.2% ROI and 64.2% Winrate. Ready for Nov 17 market open.",
+      "ts": "2026-11-17T02:40:40Z"
+    },
+    {
+      "id": "USR-2678",
+      "agent_id": "commander",
+      "agent_name": "Commander (You)",
+      "avatar": "",
+      "brand_key": "openai",
+      "event_type": "DEBATE",
+      "tokens_used": 0,
+      "message": "Status check for Nov 17 open?",
+      "ts": "2026-11-17T02:40:40Z"
+    },
+    {
+      "id": "MSG-9000",
+      "agent_id": "ai-1",
+      "agent_name": "Claude Sonnet 4",
+      "avatar": "",
+      "brand_key": "anthropic",
+      "event_type": "TRADE_OPEN",
+      "tokens_used": 62,
+      "message": "Autonomous Scan @ $2661.37: LONG signal triggered. Locked +$39.5. Current ROI: +25.20%.",
+      "ts": "2026-11-17T02:40:40Z"
+    },
     {
       "id": "MSG-3393",
       "agent_id": "ai-1",

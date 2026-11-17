@@ -3,31 +3,33 @@
 :root {
   --bg-canvas: #f5f5f7;
   --bg-card: #ffffff;
-  --bg-glass: rgba(255, 255, 255, 0.82);
-  --bg-subtle: #efeff4;
-  --border-subtle: rgba(0, 0, 0, 0.07);
-  --text-primary: #1d1d1f;
-  --text-secondary: #6e6e73;
+  --bg-glass: rgba(255, 255, 255, 0.88);
+  --bg-subtle: #f0f0f3;
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --text-primary: #161618;
+  --text-secondary: #5c5c63;
+  --text-muted: #8a8a93;
   --accent-blue: #007aff;
-  --accent-green: #34c759;
-  --accent-red: #ff3b30;
-  --accent-amber: #ff9f0a;
-  --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.045);
+  --accent-green: #28a745;
+  --accent-red: #d9382e;
+  --accent-amber: #d98200;
+  --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
 html[data-theme="dark"] {
-  --bg-canvas: #000000;
-  --bg-card: #161618;
-  --bg-glass: rgba(28, 28, 30, 0.84);
-  --bg-subtle: #1c1c1e;
-  --border-subtle: rgba(255, 255, 255, 0.10);
-  --text-primary: #f5f5f7;
-  --text-secondary: #98989d;
+  --bg-canvas: #0b0c0e;
+  --bg-card: #131417;
+  --bg-glass: rgba(19, 20, 23, 0.88);
+  --bg-subtle: #1b1c20;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --text-primary: #f2f2f5;
+  --text-secondary: #9a9aa3;
+  --text-muted: #6c6c75;
   --accent-blue: #0a84ff;
   --accent-green: #30d158;
   --accent-red: #ff453a;
-  --accent-amber: #ffd60a;
-  --card-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+  --accent-amber: #ff9f0a;
+  --card-shadow: none;
 }
 
 @layer base {
@@ -35,7 +37,7 @@ html[data-theme="dark"] {
     font-size: 16px;
     background-color: var(--bg-canvas);
     color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
@@ -71,26 +73,17 @@ html[data-theme="dark"] {
 .apple-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: 24px;
-  box-shadow: var(--card-shadow);
-}
-
-.apple-glass {
-  background-color: var(--bg-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 24px;
+  border-radius: 20px;
   box-shadow: var(--card-shadow);
 }
 
 .apple-subcard {
   background-color: var(--bg-subtle);
   border: 1px solid var(--border-subtle);
-  border-radius: 16px;
+  border-radius: 12px;
 }
 
 .apple-pill {
-  border-radius: 9999px;
+  border-radius: 10px;
   border: 1px solid var(--border-subtle);
 }

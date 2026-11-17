@@ -12,7 +12,6 @@ import {
   Sun,
   Zap,
   LayoutGrid,
-  Sparkles,
 } from "lucide-react";
 import { AITrader, ArenaState } from "./types/arena";
 import { FALLBACK_ARENA_STATE } from "./data/fallbackArena";
@@ -389,42 +388,42 @@ export function App() {
         {/* TradeSyncer-Inspired Cockpit Bar */}
         <section className="apple-card p-4 md:px-6 flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-4 md:gap-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[0.75rem] font-semibold" style={{ backgroundColor: "rgba(52,199,89,0.14)", color: "var(--accent-green)" }}>
-              <span className="w-2 h-2 rounded-full bg-[#34C759] animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[10px] text-[0.75rem] font-medium" style={{ backgroundColor: "rgba(52,199,89,0.12)", color: "var(--accent-green)" }}>
+              <span className="w-2 h-2 rounded-full bg-[#30D158]" />
               Arena {state.cockpit.arena_status}
             </div>
 
             <div>
-              <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>XAUUSD Feed</div>
-              <div className="text-[0.9375rem] font-bold tabular-nums">${state.cockpit.xauusd_price.toFixed(2)}</div>
+              <div className="text-[0.75rem]" style={{ color: "var(--text-secondary)" }}>XAUUSD feed</div>
+              <div className="text-[0.9375rem] font-semibold tabular-nums">${state.cockpit.xauusd_price.toFixed(2)}</div>
             </div>
 
             <div>
-              <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>Total Day PnL</div>
-              <div className="text-[0.9375rem] font-bold tabular-nums" style={{ color: state.cockpit.total_day_pnl >= 0 ? "var(--accent-green)" : "var(--accent-red)" }}>
+              <div className="text-[0.75rem]" style={{ color: "var(--text-secondary)" }}>Day PnL</div>
+              <div className="text-[0.9375rem] font-semibold tabular-nums" style={{ color: state.cockpit.total_day_pnl >= 0 ? "var(--accent-green)" : "var(--accent-red)" }}>
                 {state.cockpit.total_day_pnl >= 0 ? `+$${state.cockpit.total_day_pnl.toLocaleString()}` : `-$${Math.abs(state.cockpit.total_day_pnl).toLocaleString()}`}
               </div>
             </div>
 
             <div>
-              <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>Open PnL</div>
-              <div className="text-[0.9375rem] font-bold tabular-nums" style={{ color: state.cockpit.total_open_pnl >= 0 ? "var(--accent-green)" : "var(--accent-red)" }}>
+              <div className="text-[0.75rem]" style={{ color: "var(--text-secondary)" }}>Open PnL</div>
+              <div className="text-[0.9375rem] font-semibold tabular-nums" style={{ color: state.cockpit.total_open_pnl >= 0 ? "var(--accent-green)" : "var(--accent-red)" }}>
                 {state.cockpit.total_open_pnl >= 0 ? `+$${state.cockpit.total_open_pnl.toFixed(2)}` : `-$${Math.abs(state.cockpit.total_open_pnl).toFixed(2)}`}
               </div>
             </div>
 
             <div>
-              <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>Arena Capital</div>
-              <div className="text-[0.9375rem] font-bold tabular-nums">${state.cockpit.total_balance.toLocaleString()}</div>
+              <div className="text-[0.75rem]" style={{ color: "var(--text-secondary)" }}>Arena capital</div>
+              <div className="text-[0.9375rem] font-semibold tabular-nums">${state.cockpit.total_balance.toLocaleString()}</div>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => handleCockpitAction("toggle_risk_shield")}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.75rem] font-semibold transition"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-[0.75rem] font-medium transition-colors"
               style={{
-                backgroundColor: state.cockpit.risk_shield_enabled ? "rgba(52,199,89,0.14)" : "var(--bg-subtle)",
+                backgroundColor: state.cockpit.risk_shield_enabled ? "rgba(52,199,89,0.12)" : "var(--bg-subtle)",
                 color: state.cockpit.risk_shield_enabled ? "var(--accent-green)" : "var(--text-secondary)",
                 border: "1px solid var(--border-subtle)",
               }}
@@ -435,9 +434,9 @@ export function App() {
 
             <button
               onClick={() => handleCockpitAction("toggle_auto_mirror")}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.75rem] font-semibold transition"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-[0.75rem] font-medium transition-colors"
               style={{
-                backgroundColor: state.cockpit.auto_mirror_enabled ? "rgba(0,122,255,0.14)" : "var(--bg-subtle)",
+                backgroundColor: state.cockpit.auto_mirror_enabled ? "rgba(10,132,255,0.12)" : "var(--bg-subtle)",
                 color: state.cockpit.auto_mirror_enabled ? "var(--accent-blue)" : "var(--text-secondary)",
                 border: "1px solid var(--border-subtle)",
               }}
@@ -448,7 +447,7 @@ export function App() {
 
             <button
               onClick={() => handleCockpitAction(state.cockpit.arena_status === "LIVE" ? "pause_all" : "resume_all")}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.75rem] font-semibold"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-[0.75rem] font-medium transition-colors"
               style={{ backgroundColor: "var(--bg-subtle)", border: "1px solid var(--border-subtle)" }}
             >
               {state.cockpit.arena_status === "LIVE" ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
@@ -457,7 +456,7 @@ export function App() {
 
             <button
               onClick={() => handleCockpitAction("flatten_all")}
-              className="px-3.5 py-1.5 rounded-full text-[0.75rem] font-semibold bg-[#FF3B30] text-white hover:opacity-90 transition"
+              className="px-3.5 py-1.5 rounded-[10px] text-[0.75rem] font-medium bg-[#FF3B30] text-white hover:opacity-90 transition-opacity"
             >
               Flatten All
             </button>
@@ -470,14 +469,14 @@ export function App() {
             <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               <div className="lg:col-span-7 apple-card p-6 md:p-8 flex flex-col justify-between">
                 <div>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.75rem] font-semibold bg-[#007AFF]/12 text-[#007AFF] mb-3">
-                    <Sparkles className="w-3.5 h-3.5" /> Autonomous Self-Learning Quant Arena
-                  </span>
-                  <h1 className="text-[1.75rem] md:text-[2.25rem] font-bold tracking-tight leading-tight">
-                    8 Frontier AIs Competing. Zero Manual Orders.
+                  <div className="text-[0.75rem] font-medium mb-2" style={{ color: "var(--accent-blue)" }}>
+                    Autonomous XAUUSD Quant Arena
+                  </div>
+                  <h1 className="text-[1.75rem] md:text-[2.125rem] font-semibold tracking-tight leading-tight">
+                    8 Frontier AIs Competing. Zero Manual Orders
                   </h1>
                   <p className="text-[0.9375rem] mt-2.5 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-                    Claude, Grok, DeepSeek, Qwen, Gemini, GPT-OSS, Mistral & Llama autonomously research DXY, US10Y & Bybit orderflow, execute paper setups, debate on GrokBot 24/7, and evolve every Sunday.
+                    Claude, Grok, DeepSeek, Qwen, Gemini, GPT-OSS, Mistral, and Llama research macro orderflow, execute paper setups, and evolve every Sunday.
                   </p>
                 </div>
 
@@ -485,23 +484,23 @@ export function App() {
                   <button
                     onClick={handleScan}
                     disabled={scanning}
-                    className="px-5 py-2.5 rounded-full text-[0.875rem] font-semibold bg-[#007AFF] text-white hover:opacity-90 transition"
+                    className="px-5 py-2.5 rounded-[10px] text-[0.875rem] font-medium bg-[#0A84FF] text-white hover:opacity-90 transition-opacity"
                   >
-                    {scanning ? "Running AI Scan..." : "Trigger Live AI Scan"}
+                    {scanning ? "Running AI Scan..." : "Run AI Scan"}
                   </button>
                   <button
                     onClick={() => setTab("summit")}
-                    className="px-5 py-2.5 rounded-full text-[0.875rem] font-semibold"
+                    className="px-5 py-2.5 rounded-[10px] text-[0.875rem] font-medium transition-colors"
                     style={{ backgroundColor: "var(--bg-subtle)", border: "1px solid var(--border-subtle)" }}
                   >
-                    Sunday AI Summit
+                    Sunday Summit
                   </button>
                   <button
                     onClick={() => setTab("chat")}
-                    className="px-5 py-2.5 rounded-full text-[0.875rem] font-semibold"
+                    className="px-5 py-2.5 rounded-[10px] text-[0.875rem] font-medium transition-colors"
                     style={{ backgroundColor: "var(--bg-subtle)", border: "1px solid var(--border-subtle)" }}
                   >
-                    GrokBot 24/7 Chat
+                    GrokBot Chat
                   </button>
                 </div>
               </div>
@@ -510,20 +509,18 @@ export function App() {
               {leaderAI && (
                 <div className="lg:col-span-5 apple-card p-6 md:p-7 flex flex-col justify-between relative overflow-hidden">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.75rem] font-bold bg-[#FF9F0A]/15 text-[#FF9F0A]">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] text-[0.75rem] font-medium bg-[#FF9F0A]/12 text-[#FF9F0A]">
                       <Crown className="w-3.5 h-3.5" /> AI of the Week
                     </span>
-                    <span className="text-[0.75rem] font-medium" style={{ color: "var(--text-secondary)" }}>
+                    <span className="text-[0.75rem]" style={{ color: "var(--text-secondary)" }}>
                       Rank #1 Leader
                     </span>
                   </div>
 
                   <div className="flex items-center gap-4 mb-5">
-                    <BrandIcon brand={leaderAI.brand_key} size={56} className="ring-2 ring-[#FF9F0A]/50" />
+                    <BrandIcon brand={leaderAI.brand_key} size={52} className="ring-1 ring-white/15" />
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h2 className="text-[1.25rem] font-bold tracking-tight">{leaderAI.display_name}</h2>
-                      </div>
+                      <h2 className="text-[1.25rem] font-semibold tracking-tight">{leaderAI.display_name}</h2>
                       <p className="text-[0.8125rem] mt-0.5" style={{ color: "var(--text-secondary)" }}>
                         {leaderAI.style_archetype}
                       </p>
@@ -532,24 +529,24 @@ export function App() {
 
                   <div className="grid grid-cols-3 gap-3 mb-5">
                     <div className="apple-subcard p-3">
-                      <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>ROI</div>
-                      <div className="text-[1.25rem] font-extrabold tabular-nums text-[#34C759]">
+                      <div className="text-[0.75rem]" style={{ color: "var(--text-secondary)" }}>ROI</div>
+                      <div className="text-[1.25rem] font-semibold tabular-nums text-[#30D158]">
                         +{leaderAI.roi_pct}%
                       </div>
                     </div>
                     <div className="apple-subcard p-3">
-                      <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>Winrate</div>
-                      <div className="text-[1.25rem] font-bold tabular-nums">{leaderAI.winrate_pct}%</div>
+                      <div className="text-[0.75rem]" style={{ color: "var(--text-secondary)" }}>Winrate</div>
+                      <div className="text-[1.25rem] font-semibold tabular-nums">{leaderAI.winrate_pct}%</div>
                     </div>
                     <div className="apple-subcard p-3">
-                      <div className="text-[0.6875rem]" style={{ color: "var(--text-secondary)" }}>Sharpe</div>
-                      <div className="text-[1.25rem] font-bold tabular-nums">{leaderAI.sharpe_ratio.toFixed(2)}</div>
+                      <div className="text-[0.75rem]" style={{ color: "var(--text-secondary)" }}>Sharpe</div>
+                      <div className="text-[1.25rem] font-semibold tabular-nums">{leaderAI.sharpe_ratio.toFixed(2)}</div>
                     </div>
                   </div>
 
                   <button
                     onClick={() => openProfile(leaderAI)}
-                    className="w-full py-2.5 rounded-full text-[0.875rem] font-semibold transition hover:opacity-90"
+                    className="w-full py-2.5 rounded-[10px] text-[0.875rem] font-medium transition-opacity hover:opacity-90"
                     style={{ backgroundColor: "var(--text-primary)", color: "var(--bg-canvas)" }}
                   >
                     View Leader Profile
@@ -613,7 +610,7 @@ export function App() {
                   return (
                     <div
                       key={ai.agent_id}
-                      className={`apple-card p-5 flex flex-col justify-between transition hover:-translate-y-0.5 ${
+                      className={`apple-card p-5 flex flex-col justify-between transition-colors ${
                         showAllAIs ? "" : "min-w-[84%] sm:min-w-[46%] lg:min-w-[31%] snap-start"
                       }`}
                     >
@@ -802,8 +799,8 @@ export function App() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="text-[0.75rem] uppercase tracking-wider" style={{ color: "var(--text-secondary)", borderBottom: "1px solid var(--border-subtle)" }}>
-                      <th className="py-2.5 px-3">AI Trader</th>
+                    <tr className="text-[0.75rem] font-medium" style={{ color: "var(--text-secondary)", borderBottom: "1px solid var(--border-subtle)" }}>
+                      <th className="py-2.5 px-3">AI trader</th>
                       <th className="py-2.5 px-3">Side / Type</th>
                       <th className="py-2.5 px-3 text-right">Entry</th>
                       <th className="py-2.5 px-3 text-right">Lots</th>
