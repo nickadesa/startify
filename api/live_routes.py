@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import APIRouter, Header, HTTPException
 from fastapi.responses import HTMLResponse
 from pathlib import Path
-from live import engine, store, market
+from live import engine, store, market, presets
 
 router = APIRouter()
 PAGE = Path(__file__).resolve().parent.parent / "web_live" / "index.html"
@@ -108,9 +108,26 @@ def resume(x_admin_token: Optional[str] = Header(default=None)):
 def flatten(x_admin_token: Optional[str] = Header(default=None)):
     _admin(x_admin_token); return engine.flatten()
 
+@router.get("/api/live/presets")
+def list_presets():
+    return {"presets": presets.PRESETS}
+
 @router.post("/api/live/agent/{agent_id}/toggle")
 def toggle_agent(agent_id: str, body: dict, x_admin_token: Optional[str] = Header(default=None)):
     _admin(x_admin_token); return engine.set_agent_enabled(agent_id, bool(body.get("enabled", True)))
+
+@router.post("/api/live/agent/{agent_id}/config")
+def config_agent(agent_id: str, body: dict, x_admin_token: Optional[str] = Header(default=None)):
+    _admin(x_admin_token); return engine.set_agent_prefs(agent_id, body)
+
+@router.post("/api/live/agent/{agent_id}/reset")
+def reset_single_agent(agent_id: str, x_admin_token: Optional[str] = Header(default=None)):
+    _admin(x_admin_token); return engine.reset_agent(agent_id)
+
+@router.post("/api/live/leader")
+def set_leader(body: dict, x_admin_token: Optional[str] = Header(default=None)):
+    _admin(x_admin_token)
+    return engine.set_leader_config(body.get("leader_id"), body.get("consult_mode"))
 
 @router.post("/api/live/reset-season")
 def reset(x_admin_token: Optional[str] = Header(default=None)):

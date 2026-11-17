@@ -25,14 +25,27 @@ svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-l
 .g{color:var(--green)}.r{color:var(--red)}.m{color:var(--mut)}
 
 .app{display:flex;min-height:100%}
-aside{width:228px;background:var(--side);border-right:1px solid var(--line);padding:16px 12px;position:sticky;top:0;height:100vh;flex:none;transition:margin .22s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;gap:4px}
+aside{width:228px;background:var(--side);border-right:1px solid var(--line);padding:16px 12px;position:sticky;top:0;height:100vh;flex:none;transition:width .2s cubic-bezier(.2,.8,.2,1),margin .22s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;gap:4px;overflow-x:hidden}
 aside.hide{margin-left:-228px}
-.logo{display:flex;gap:10px;align-items:center;font-weight:700;font-size:17px;letter-spacing:-.02em;padding:6px 10px 18px}
-.logo-mark{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#2f5bff,#60a5fa);display:grid;place-items:center;color:#fff;box-shadow:0 4px 14px rgba(47,91,255,.35)}
-.nav{display:flex;align-items:center;gap:11px;width:100%;background:none;border:0;padding:10px 12px;border-radius:11px;color:var(--mut);font-weight:500;text-align:left;transition:background .15s,color .15s}
+aside.rail{width:64px;padding:16px 8px;align-items:center}
+aside.rail .logo-txt,aside.rail .nav span,aside.rail .side-foot,aside.rail .nav-chev,aside.rail .nav-tree{display:none}
+aside.rail .nav{justify-content:center;padding:10px}
+aside.rail .logo{justify-content:center;padding:6px 0 18px}
+.logo{display:flex;gap:8px;align-items:center;justify-content:space-between;font-weight:800;font-size:17px;letter-spacing:-.025em;padding:6px 10px 16px;color:var(--tx)}
+.rail-btn{background:none;border:0;color:var(--mut);padding:4px;border-radius:7px;display:grid;place-items:center}
+.rail-btn:hover{background:var(--hover);color:var(--tx)}
+.nav{display:flex;align-items:center;gap:11px;width:100%;background:none;border:0;padding:9px 11px;border-radius:10px;color:var(--mut);font-weight:500;font-size:13.5px;text-align:left;transition:background .15s,color .15s;position:relative}
 .nav.on{background:rgba(47,91,255,.15);color:var(--tx);font-weight:600}
 .nav:hover{background:var(--hover);color:var(--tx)}
-.side-foot{margin-top:auto;padding:12px 10px 4px;border-top:1px solid var(--line);font-size:12px;color:var(--mut);display:flex;align-items:center;justify-content:space-between}
+.nav .nav-chev{margin-left:auto;width:15px;height:15px;transition:transform .18s}
+.nav.open .nav-chev{transform:rotate(180deg)}
+.nav-tree{display:flex;flex-direction:column;gap:2px;margin:2px 0 4px 20px;padding-left:14px;border-left:1px solid var(--line)}
+.nav-tree[hidden]{display:none}
+.nav-sub{position:relative;background:none;border:0;text-align:left;padding:7px 10px;border-radius:8px;color:var(--mut);font-size:13px;font-weight:500;transition:background .15s,color .15s}
+.nav-sub:hover{background:var(--hover);color:var(--tx)}
+.nav-sub.on{background:var(--hover);color:var(--tx);font-weight:600}
+.nav-sub.on::before{content:"";position:absolute;left:-17.5px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--tx)}
+.side-foot{margin-top:auto;padding:12px 10px 4px;border-top:1px solid var(--line);font-size:12px;color:var(--mut);display:flex;align-items:center;justify-content:space-between;width:100%}
 
 .content{flex:1;min-width:0;padding:8px 22px 44px}
 .top{display:flex;align-items:center;gap:10px;padding:16px 0 12px;position:relative}
@@ -57,27 +70,27 @@ aside.hide{margin-left:-228px}
 .banner button{background:none;border:0;color:var(--mut);padding:4px;border-radius:8px}
 .banner button:hover{background:var(--hover);color:var(--tx)}
 
-.sym-row{display:flex;gap:8px;align-items:center;overflow-x:auto;margin-top:4px;margin-bottom:14px;padding-bottom:2px}
-.sym-pill{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:11px;background:var(--blue);color:#fff;font-weight:600;font-size:13.5px;min-height:40px;border:0;white-space:nowrap;flex:none}
+.sym-row{display:flex;gap:8px;align-items:center;overflow-x:auto;margin-top:4px;margin-bottom:12px;padding-bottom:2px}
+.sym-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;background:var(--blue);color:#fff;font-weight:600;font-size:13px;min-height:36px;border:0;white-space:nowrap;flex:none}
 .sym-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:9px;background:var(--card);border:1px solid var(--line);color:var(--mut);font-weight:600;font-size:12px;white-space:nowrap;flex:none;transition:all .15s}
 .sym-chip:hover{color:var(--tx);border-color:var(--blue2)}
 .sym-chip.on{border-color:var(--blue2);color:var(--blue2);background:rgba(76,120,255,.08)}
 .tabs{display:flex;gap:4px;overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:3px;flex:1;min-width:0}
-.tab{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:7px;border:1.5px solid transparent;background:none;color:var(--mut);font-weight:600;font-size:12px;white-space:nowrap;transition:all .15s}
+.tab{display:flex;align-items:center;gap:6px;padding:4px 9px;border-radius:7px;border:1.5px solid transparent;background:none;color:var(--mut);font-weight:600;font-size:12px;white-space:nowrap;transition:all .15s}
 .tab:hover{color:var(--tx);background:var(--hover)}
 .tab.on{border-color:var(--blue2);color:var(--blue2);background:rgba(76,120,255,.08)}
 .tab i{width:8px;height:8px;border-radius:50%;flex:none}
 
-.btns{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
-.mini-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:center}
-.mini-btn{display:inline-flex;align-items:center;justify-content:center;min-height:35px;padding:7px 12px;border-radius:10px;background:var(--btn);border:1px solid var(--line);color:var(--mut);transition:border-color .15s,color .15s,background .15s,transform .1s}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;position:relative}
+.mini-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;align-items:center}
+.mini-btn{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:5px 10px;border-radius:9px;background:var(--btn);border:1px solid var(--line);color:var(--mut);transition:border-color .15s,color .15s,background .15s,transform .1s}
 .mini-btn:hover{border-color:var(--blue2);color:var(--tx)}
 .mini-btn:active{transform:scale(.985)}
 .mini-btn.on{border-color:var(--blue2);color:var(--blue2);background:rgba(76,120,255,.1)}
 .mini-btn.blue{background:var(--blue);border-color:var(--blue);color:#fff}
 .mini-btn.blue:hover{background:#3b66ff;border-color:#3b66ff;color:#fff}
 .mini-btn svg{width:15px;height:15px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:7px 13px;border-radius:10px;background:var(--btn);border:1px solid var(--line);font-weight:500;font-size:13px;min-height:35px;transition:border-color .15s,background .15s,transform .1s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:5px 11px;border-radius:9px;background:var(--btn);border:1px solid var(--line);font-weight:500;font-size:12.5px;min-height:32px;transition:border-color .15s,background .15s,transform .1s}
 .btn:hover{border-color:var(--blue2)}
 .btn:active{transform:scale(.985)}
 .btn.red{background:var(--redbtn);border-color:var(--redbtn);color:#fff;font-weight:600}
@@ -86,6 +99,10 @@ aside.hide{margin-left:-228px}
 .btn.blue:hover{background:#3b66ff;border-color:#3b66ff}
 .btn.gold{color:var(--amber)}
 .btn.on{border-color:var(--blue2);color:var(--blue2);background:rgba(76,120,255,.08)}
+.sort-sel{background:var(--btn);border:1px solid var(--line);border-radius:9px;padding:5px 9px;color:var(--tx);font:inherit;font-size:12px;min-height:32px;outline:none}
+.dot-btn{background:none;border:0;color:var(--mut);padding:4px 6px;border-radius:7px;display:inline-grid;place-items:center}
+.dot-btn:hover{background:var(--hover);color:var(--tx)}
+.dot-btn svg{width:16px;height:16px}
 .sep{flex:1}
 
 .stats{display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:14px 4px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:14px}
@@ -254,23 +271,30 @@ tbody tr:hover td{background:var(--hover)}
 </style></head><body>
 <div class="app">
 <aside id="side">
-  <div class="logo"><div class="logo-mark"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff"><path d="M4 17l5-5 4 4 7-9"/><path d="M16 7h4v4"/></svg></div>Startify</div>
-  <button class="nav on" data-t="cockpit"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Cockpit</button>
-  <button class="nav" data-t="journal"><svg viewBox="0 0 24 24"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z"/><path d="M8 9h8M8 13h6"/></svg>Journal</button>
-  <button class="nav" data-t="calendar"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>Calendar</button>
-  <button class="nav" data-t="chat"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/></svg>AI Chat</button>
+  <div class="logo"><span class="logo-txt">TOPTIERclub</span><button class="rail-btn" id="railBtn" title="Collapse Sidebar"><i data-lucide="panel-left-close"></i></button></div>
+  <button class="nav on" data-t="cockpit" title="Cockpit"><i data-lucide="layout-dashboard"></i><span>Cockpit</span></button>
+  <button class="nav" data-t="journal" title="Journal"><i data-lucide="book-open"></i><span>Journal</span></button>
+  <button class="nav" data-t="calendar" title="Calendar"><i data-lucide="calendar"></i><span>Calendar</span></button>
+  <button class="nav" data-t="chat" title="AI Chat"><i data-lucide="message-square"></i><span>AI Chat</span></button>
+  <button class="nav" id="navSetTog" title="Settings"><i data-lucide="settings"></i><span>Settings</span><i data-lucide="chevron-down" class="nav-chev"></i></button>
+  <div class="nav-tree" id="navSetTree" hidden>
+    <button class="nav-sub on" data-st="general">General</button>
+    <button class="nav-sub" data-st="chart">Chart</button>
+    <button class="nav-sub" data-st="risk">Risk &amp; Arena</button>
+    <button class="nav-sub" data-st="notif">Notifications</button>
+  </div>
   <div class="side-foot"><span>XAUUSD Arena</span><span id="tokUsed" class="num">0 tok</span></div>
 </aside>
 
 <div class="content">
   <div class="top">
-    <button class="ib" id="tog" title="Toggle Menu"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button>
+    <button class="ib" id="tog" title="Toggle Menu"><i data-lucide="panel-left"></i></button>
     <h1 id="title">Cockpit</h1>
     <div class="rt">
       <div class="mk" id="mk"><b></b><span id="mkT">Connecting…</span></div>
-      <button class="ib" id="moon" title="Toggle Theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
-      <button class="ib" id="bell" title="Trade Alerts"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"/></svg><span class="rd" id="rd" hidden></span></button>
-      <button class="ib" id="help" title="Arena Rules &amp; Help"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg></button>
+      <button class="ib" id="moon" title="Toggle Theme"><i data-lucide="moon"></i></button>
+      <button class="ib" id="bell" title="Trade Alerts"><i data-lucide="bell"></i><span class="rd" id="rd" hidden></span></button>
+      <button class="ib" id="help" title="Arena Rules &amp; Help"><i data-lucide="help-circle"></i></button>
     </div>
     <div class="pop" id="popBell" hidden></div>
     <div class="pop" id="popHelp" hidden>
@@ -294,26 +318,44 @@ tbody tr:hover td{background:var(--hover)}
   </div>
 
   <div class="banner" id="banner">
-    <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div>
+    <div class="ic"><i data-lucide="info"></i></div>
     <span>Autonomous mode active: 17 AIs evaluate XAUUSD every 15m and execute real SL/TP exits every 5s. Click any model row for its equity curve &amp; journal.</span>
-    <button id="banX" title="Dismiss"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <button id="banX" title="Dismiss"><i data-lucide="x"></i></button>
   </div>
 
   <section id="t-cockpit">
     <div class="sym-row">
-      <button class="sym-pill" id="symPill"><svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M12 5v14M5 12h14"/></svg><span id="symPillT">Market</span></button>
+      <button class="sym-pill" id="symPill"><i data-lucide="plus" style="width:14px;height:14px"></i><span id="symPillT">Market</span></button>
       <div class="tabs" id="agTabs"></div>
     </div>
 
     <div class="btns">
-      <button class="btn" id="bDis"><svg viewBox="0 0 24 24"><path d="M12 2v10M18.4 6.6a9 9 0 1 1-12.8 0"/></svg><span id="bDisT">Dismiss All</span></button>
+      <button class="btn" id="bDis"><i data-lucide="power" style="width:14px;height:14px"></i><span id="bDisT">Dismiss All</span></button>
       <button class="btn red" id="bFlat">Flatten All</button>
-      <button class="btn gold" id="bLead"><svg viewBox="0 0 24 24"><path d="m3 7 4.5 4L12 4l4.5 7L21 7l-2 12H5z"/></svg>Leader</button>
+      <button class="btn gold" id="bLead"><i data-lucide="crown" style="width:14px;height:14px"></i><span id="bLeadT">Leader</span></button>
+      <select class="sort-sel" id="sortSel" title="Sort Models">
+        <option value="equity">Sort: Balance</option>
+        <option value="day_pnl">Sort: Day PnL</option>
+        <option value="roi_pct">Sort: ROI %</option>
+        <option value="winrate">Sort: Win Rate</option>
+        <option value="profit_factor">Sort: Profit Factor</option>
+      </select>
+      <button class="btn" id="bTop" title="Show only profitable AIs"><i data-lucide="trending-up" style="width:14px;height:14px"></i><span>Top Only</span></button>
       <span class="sep"></span>
       <div class="mini-btns">
-        <button class="mini-btn" id="bEye" title="Hide/Show Balances"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
-        <button class="mini-btn blue" id="bShare" title="Share Card"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
-        <button class="mini-btn" id="bSet" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.79 1 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+        <button class="mini-btn" id="bEye" title="Hide/Show Balances"><i data-lucide="eye"></i></button>
+        <button class="mini-btn blue" id="bShare" title="Share Card"><i data-lucide="camera"></i></button>
+        <button class="mini-btn" id="bSet" title="Cockpit Settings"><i data-lucide="settings"></i></button>
+      </div>
+      <div class="pop" id="popLeader" hidden style="left:0;right:auto;top:42px;width:320px">
+        <h4>Leader Consult Mode</h4>
+        <div class="m" style="font-size:12px;margin-bottom:10px">Follower AIs evaluate the Leader's signal against their own preset before entering (no 100% blind copy).</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <select class="set-sel" id="leadSel"></select>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="leadConsult"> Enable Consult Mode for Arena</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="leadFilter"> Filter table to Leader only</label>
+          <button class="btn blue" id="leadSave">Save Leader Setting</button>
+        </div>
       </div>
     </div>
 
@@ -323,7 +365,7 @@ tbody tr:hover td{background:var(--hover)}
       <div class="st inl"><small>Total Balance:</small><b class="num" id="kBal">—</b></div>
       <div class="st inl"><small>Open Positions:</small><b class="num" id="kPos">—</b></div>
       <div class="status">
-        <button class="risk-btn" id="bRisk" title="View Risk Rules"><svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></svg>Risk On</button>
+        <button class="risk-btn" id="bRisk" title="View Risk Rules"><i data-lucide="shield" style="width:15px;height:15px"></i>Risk On</button>
         <span id="px" class="num"></span>
       </div>
     </div>
@@ -331,7 +373,7 @@ tbody tr:hover td{background:var(--hover)}
     <div class="panel">
       <div class="scroll" id="acctWrap" style="max-height:360px">
         <table>
-          <thead><tr><th>Status</th><th>DISMISS</th><th>Model</th><th>Symbol</th><th>Position</th><th>Balance</th><th>Avg. Price</th><th>Day PnL</th><th>Open PnL</th><th>Qty</th><th>ROI</th><th>Brain</th></tr></thead>
+          <thead><tr><th>Status</th><th>DISMISS</th><th>Model</th><th>Symbol</th><th>Position</th><th>Balance</th><th>Avg. Price</th><th>Day PnL</th><th>Open PnL</th><th>Qty</th><th>ROI</th><th>Brain</th><th></th></tr></thead>
           <tbody id="rows"></tbody>
         </table>
       </div>
@@ -401,6 +443,33 @@ tbody tr:hover td{background:var(--hover)}
       </div>
     </div>
   </section>
+
+  <section id="t-settings" hidden>
+    <div class="panel" style="padding:20px;max-width:780px">
+      <div class="modal-hd" style="margin-bottom:8px">
+        <h3 id="setPageTitle">General Settings</h3>
+        <span class="m" style="font-size:12px">Synced with Cockpit Settings</span>
+      </div>
+      <div id="setPageBody">
+        <div class="set-row">
+          <div><b>Dark Mode</b><div class="m" style="font-size:12px">Change theme of the app</div></div>
+          <select class="set-sel" id="spTheme"><option value="dark">Dark Charcoal</option><option value="light">Light</option></select>
+        </div>
+        <div class="set-row">
+          <div><b>Language</b><div class="m" style="font-size:12px">Set display language</div></div>
+          <select class="set-sel" id="spLang"><option value="en">EN</option><option value="th">TH (Coming soon)</option></select>
+        </div>
+        <div class="set-row">
+          <div><b>Streamer Mode</b><div class="m" style="font-size:12px">Hide balances and PnL amounts behind *,***</div></div>
+          <button class="tg" id="spStream"></button>
+        </div>
+        <div class="set-row">
+          <div><b>Auto Refresh</b><div class="m" style="font-size:12px">Live state polling interval</div></div>
+          <select class="set-sel" id="spRate"><option value="2000">2s (Fast)</option><option value="5000">5s (Normal)</option><option value="10000">10s (Eco)</option></select>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 </div>
 
@@ -409,7 +478,7 @@ tbody tr:hover td{background:var(--hover)}
   <div class="drawer">
     <div class="drawer-hd">
       <h3>Markets &amp; Assets</h3>
-      <button class="ib" id="drClose" style="width:32px;height:32px"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <button class="ib" id="drClose" style="width:32px;height:32px"><i data-lucide="x"></i></button>
     </div>
     <input class="drawer-search" id="drSearch" placeholder="Search symbol or contract (e.g. XAUUSD, NQ, BTC)...">
     <div class="drawer-cats" id="drCats"></div>
@@ -417,12 +486,12 @@ tbody tr:hover td{background:var(--hover)}
   </div>
 </div>
 
-<!-- Settings Modal -->
+<!-- Settings Modal (Cockpit Quick Settings) -->
 <div class="modal-bg" id="setModal" hidden>
   <div class="modal" style="max-width:520px">
     <div class="modal-hd">
       <h3>Cockpit Settings</h3>
-      <button class="ib" id="setClose" style="width:34px;height:34px"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <button class="ib" id="setClose" style="width:34px;height:34px"><i data-lucide="x"></i></button>
     </div>
     <div>
       <div class="set-row">
@@ -455,6 +524,41 @@ tbody tr:hover td{background:var(--hover)}
   </div>
 </div>
 
+<!-- Per-AI 3-Dot Config Modal -->
+<div class="modal-bg" id="agentCfgModal" hidden>
+  <div class="modal" style="max-width:540px">
+    <div class="modal-hd">
+      <h3 id="acTitle">Configure AI</h3>
+      <button class="ib" id="acClose" style="width:34px;height:34px"><i data-lucide="x"></i></button>
+    </div>
+    <div>
+      <div class="set-row" style="flex-direction:column;align-items:stretch;gap:6px">
+        <div><b>Strategy Preset</b><div class="m" id="acPresetDesc" style="font-size:12px;margin-top:3px"></div></div>
+        <select class="set-sel" id="acPreset" style="width:100%"></select>
+      </div>
+      <div class="set-row">
+        <div><b>Daily Drawdown Limit ($)</b><div class="m" style="font-size:12px">Auto-pauses AI for the day if daily loss hits limit (0 = off)</div></div>
+        <input class="set-in num" id="acDd" type="number" min="0" step="50" style="width:120px" placeholder="1000">
+      </div>
+      <div class="set-row">
+        <div><b>Risk per Trade (%) &amp; Max Lot</b><div class="m" style="font-size:12px">Prop-firm sizing bounds</div></div>
+        <div style="display:flex;gap:8px">
+          <input class="set-in num" id="acRisk" type="number" min="0.1" max="5" step="0.1" style="width:78px" title="Risk %">
+          <input class="set-in num" id="acLot" type="number" min="0.01" max="10" step="0.05" style="width:82px" title="Max Lot">
+        </div>
+      </div>
+      <div class="set-row" style="flex-direction:column;align-items:stretch;gap:8px">
+        <div><b>Allowed Assets</b><div class="m" style="font-size:12px">Select markets this AI is allowed to trade</div></div>
+        <div class="chips" id="acAssets" style="padding:0"></div>
+      </div>
+      <div class="set-row">
+        <button class="btn red" id="acReset"><i data-lucide="rotate-ccw" style="width:14px;height:14px"></i>Reset to $10,000</button>
+        <button class="btn blue" id="acSave">Save Configuration</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Share Card Modal -->
 <div class="modal-bg" id="shareModal" hidden>
   <div class="modal">
@@ -481,11 +585,13 @@ tbody tr:hover td{background:var(--hover)}
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const icons=()=>{try{window.lucide?.createIcons()}catch{}};
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=(v,d=2)=>Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
-let hide=false;
+let hide=false,PRESETS=[],sortBy='equity',topOnly=false,cfgAgentId='';
 const mask=s=>s.replace(/\d/g,'*');
 const money=v=>{const s=(v<0?'-':'')+'$'+fmt(v);return hide?mask(s):s};
 const sgn=v=>{const t=(v>0?'+':v<0?'-':'')+'$'+fmt(v);return `<span class="${v>0?'g':v<0?'r':''}">${hide?mask(t):t}</span>`};
@@ -517,24 +623,41 @@ let calYear=nowUtc.getUTCFullYear(),calMonth=nowUtc.getUTCMonth();
 
 // ── Shell & Popovers
 ls.get('theme')==='light'&&document.documentElement.setAttribute('data-theme','light');
-const applyTheme=t=>{document.documentElement.setAttribute('data-theme',t);ls.set('theme',t);if($('#setTheme'))$('#setTheme').value=t};
+if(ls.get('rail')==='1')$('#side').classList.add('rail');
+const applyTheme=t=>{document.documentElement.setAttribute('data-theme',t);ls.set('theme',t);if($('#setTheme'))$('#setTheme').value=t;if($('#spTheme'))$('#spTheme').value=t};
 $('#moon').onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='light'?'dark':'light');
 $('#tog').onclick=()=>{const s=$('#side');innerWidth<=860?s.classList.toggle('show'):s.classList.toggle('hide')};
+$('#railBtn').onclick=()=>{const on=$('#side').classList.toggle('rail');ls.set('rail',on?'1':'0')};
 $('#banX').onclick=()=>{$('#banner').hidden=true;ls.set('ban','1')};ls.get('ban')&&($('#banner').hidden=true);
-const closePops=()=>{['popBell','popHelp','popRisk'].forEach(id=>$('#'+id).hidden=true)};
+const closePops=()=>{['popBell','popHelp','popRisk','popLeader'].forEach(id=>{const el=$('#'+id);if(el)el.hidden=true})};
 $('#help').onclick=e=>{e.stopPropagation();const h=$('#popHelp').hidden;closePops();$('#popHelp').hidden=!h};
 $('#bRisk').onclick=e=>{e.stopPropagation();const h=$('#popRisk').hidden;closePops();$('#popRisk').hidden=!h};
 $('#bell').onclick=async e=>{e.stopPropagation();const h=$('#popBell').hidden;closePops();$('#popBell').hidden=!h;if(h)await loadEvents(true)};
-document.addEventListener('click',e=>{if(!e.target.closest('.pop'))closePops();if(!e.target.closest('#fMenu')&&!e.target.closest('#bFilter'))$('#fMenu').hidden=true;if(!e.target.closest('.chat-comp'))$('#mPop').hidden=true});
+document.addEventListener('click',e=>{if(!e.target.closest('.pop')&&!e.target.closest('#bLead'))closePops();if(!e.target.closest('#fMenu')&&!e.target.closest('#bFilter'))$('#fMenu').hidden=true;if(!e.target.closest('.chat-comp'))$('#mPop').hidden=true});
 
-$$('.nav').forEach(b=>b.onclick=()=>{
-  tab=b.dataset.t;
-  $$('.nav').forEach(x=>x.classList.toggle('on',x===b));
-  $('#title').textContent=b.textContent.trim();
-  ['cockpit','journal','calendar','chat'].forEach(x=>$('#t-'+x).hidden=x!==tab);
+function switchTab(t,label){
+  tab=t;
+  $$('.nav[data-t]').forEach(x=>x.classList.toggle('on',x.dataset.t===t));
+  $('#title').textContent=label||t[0].toUpperCase()+t.slice(1);
+  ['cockpit','journal','calendar','chat','settings'].forEach(x=>{const el=$('#t-'+x);if(el)el.hidden=x!==tab});
   $('#side').classList.remove('show');
   ({journal:loadJournal,calendar:loadCal,chat:()=>{lastChat=0;$('#chat').innerHTML='';loadChat()}})[tab]?.();
+}
+$$('.nav[data-t]').forEach(b=>b.onclick=()=>switchTab(b.dataset.t,b.textContent.trim()));
+$('#navSetTog').onclick=()=>{
+  const tr=$('#navSetTree'),h=tr.hidden;tr.hidden=!h;
+  $('#navSetTog').classList.toggle('open',!tr.hidden);
+  if(h)switchTab('settings','Settings');
+};
+$$('.nav-sub').forEach(b=>b.onclick=()=>{
+  $$('.nav-sub').forEach(x=>x.classList.toggle('on',x===b));
+  const titles={general:'General Settings',chart:'Chart Settings',risk:'Risk & Arena Settings',notif:'Notification Settings'};
+  $('#setPageTitle').textContent=titles[b.dataset.st]||'Settings';
+  switchTab('settings','Settings');
 });
+if($('#spTheme')){$('#spTheme').value=document.documentElement.getAttribute('data-theme')==='light'?'light':'dark';$('#spTheme').onchange=e=>applyTheme(e.target.value)}
+if($('#spRate')){$('#spRate').value=String(rateMs);$('#spRate').onchange=e=>{rateMs=+e.target.value;ls.set('rate',rateMs);if($('#setRate'))$('#setRate').value=e.target.value;startPoll()}}
+if($('#spStream'))$('#spStream').onclick=()=>{hide=!hide;$('#bEye').classList.toggle('on',hide);$('#spStream').classList.toggle('on',hide);renderAll()};
 
 // ── Multi-Asset Drawer & Quotes
 async function loadAssets(){
@@ -624,10 +747,79 @@ $('#setReset').onclick=async()=>{if(confirm('Reset the entire season back to $10
 // ── Cockpit Controls
 $('#bDis').onclick=async()=>{await admin(S?.paused?'/api/live/resume':'/api/live/pause');loadState()};
 $('#bFlat').onclick=async()=>{if(!S?.open_positions)return alert('No open positions to flatten.');if(confirm(`Close ${S.open_positions} open position(s) at the live price?`)){await admin('/api/live/flatten');loadState()}};
-$('#bLead').onclick=()=>{leaderOnly=!leaderOnly;$('#bLead').classList.toggle('on',leaderOnly);if(leaderOnly)selAg='';renderAll()};
-$('#bEye').onclick=()=>{hide=!hide;$('#bEye').classList.toggle('on',hide);renderAll()};
+$('#bLead').onclick=e=>{
+  e.stopPropagation();
+  const h=$('#popLeader').hidden;closePops();
+  if(h&&S){
+    const lc=S.leader_config||{};
+    $('#leadSel').innerHTML=S.agents.map(a=>`<option value="${a.agent_id}">${esc(a.short)} (${a.roi_pct>=0?'+':''}${a.roi_pct.toFixed(2)}%)</option>`).join('');
+    $('#leadSel').value=lc.leader_id||S.agents[0]?.agent_id||'';
+    $('#leadConsult').checked=!!lc.consult_mode;
+    $('#leadFilter').checked=leaderOnly;
+  }
+  $('#popLeader').hidden=!h;
+};
+$('#leadSave').onclick=async()=>{
+  const leader_id=$('#leadSel').value,consult_mode=$('#leadConsult').checked;
+  leaderOnly=$('#leadFilter').checked;
+  $('#bLead').classList.toggle('on',leaderOnly||consult_mode);
+  if(leaderOnly)selAg='';
+  await admin('/api/live/leader',{leader_id,consult_mode});
+  $('#popLeader').hidden=true;
+  loadState();
+};
+$('#sortSel').onchange=e=>{sortBy=e.target.value;renderAcc()};
+$('#bTop').onclick=()=>{topOnly=!topOnly;$('#bTop').classList.toggle('on',topOnly);renderAcc()};
+$('#bEye').onclick=()=>{hide=!hide;$('#bEye').classList.toggle('on',hide);if($('#spStream'))$('#spStream').classList.toggle('on',hide);renderAll()};
+
+async function loadPresets(){
+  try{const d=await get('/api/live/presets');PRESETS=d.presets||[]}catch{}
+}
+function openAgentCfg(aid){
+  const a=agents[aid];if(!a)return;
+  cfgAgentId=aid;
+  $('#acTitle').textContent=`Configure ${a.short}`;
+  const sel=$('#acPreset');
+  sel.innerHTML=(PRESETS.length?PRESETS:[{id:'davinick',name:'DAVINICK STRATEGY',desc:''}]).map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+  sel.value=a.preset||'davinick';
+  const updDesc=()=>{const p=PRESETS.find(x=>x.id===sel.value);$('#acPresetDesc').textContent=p?p.desc:''};
+  sel.onchange=updDesc;updDesc();
+  $('#acDd').value=a.daily_dd_limit||0;
+  $('#acRisk').value=a.risk_pct??1.0;
+  $('#acLot').value=a.max_lot??2.0;
+  const allowed=new Set(a.allowed_assets||['XAUUSD']);
+  const syms=ASSETS.length?ASSETS.map(x=>x.symbol):['XAUUSD'];
+  $('#acAssets').innerHTML=syms.map(s=>`<button type="button" class="chip ${allowed.has(s)?'on':''}" data-acs="${s}">${s}</button>`).join('');
+  $('#agentCfgModal').hidden=false;
+  icons();
+}
+$('#acClose').onclick=()=>$('#agentCfgModal').hidden=true;
+$('#agentCfgModal').onclick=e=>{if(e.target===$('#agentCfgModal'))$('#agentCfgModal').hidden=true};
+$('#acAssets').onclick=e=>{const b=e.target.closest('[data-acs]');if(b)b.classList.toggle('on')};
+$('#acSave').onclick=async()=>{
+  if(!cfgAgentId)return;
+  const allowed_assets=$$('#acAssets .chip.on').map(x=>x.dataset.acs);
+  await admin(`/api/live/agent/${cfgAgentId}/config`,{
+    preset:$('#acPreset').value,
+    daily_dd_limit:Math.max(0,+$('#acDd').value||0),
+    risk_pct:Math.max(0.1,Math.min(5,+$('#acRisk').value||1)),
+    max_lot:Math.max(0.01,Math.min(10,+$('#acLot').value||2)),
+    allowed_assets:allowed_assets.length?allowed_assets:['XAUUSD'],
+  });
+  $('#agentCfgModal').hidden=true;loadState();
+};
+$('#acReset').onclick=async()=>{
+  if(!cfgAgentId)return;
+  const a=agents[cfgAgentId];
+  if(confirm(`Reset ${a?.short||cfgAgentId} back to $10,000 and clear its trades?`)){
+    await admin(`/api/live/agent/${cfgAgentId}/reset`);
+    $('#agentCfgModal').hidden=true;loadState();
+  }
+};
 
 $('#acctWrap').onclick=async e=>{
+  const cfg=e.target.closest('[data-cfg]');
+  if(cfg){e.stopPropagation();openAgentCfg(cfg.dataset.cfg);return}
   const tg=e.target.closest('.tg');
   if(tg){e.stopPropagation();await admin(`/api/live/agent/${tg.dataset.id}/toggle`,{enabled:!tg.classList.contains('on')});loadState();return}
   const tr=e.target.closest('tr[data-aid]');
@@ -707,13 +899,18 @@ $('#bExp').onclick=()=>{
 };
 
 function renderAcc(){
-  let list=S.agents;
-  if(leaderOnly)list=list.slice(0,1);
+  let list=[...S.agents];
+  list.sort((a,b)=>(b[sortBy]??0)-(a[sortBy]??0));
+  if(topOnly)list=list.filter(a=>a.equity>10000||a.day_pnl>0);
+  if(leaderOnly){
+    const ld=S.agents.find(x=>x.is_leader)||S.agents[0];
+    list=ld?list.filter(a=>a.agent_id===ld.agent_id):[];
+  }
   if(selAg)list=list.filter(a=>a.agent_id===selAg);
-  $('#rows').innerHTML=list.map(a=>`<tr class="click" data-aid="${a.agent_id}" title="${esc(a.note)}">
-    <td><span class="dot" style="background:${a.status==='IN TRADE'?'var(--green)':a.status==='SCANNING'?'var(--amber)':'var(--red)'}"></span></td>
+  $('#rows').innerHTML=list.length?list.map(a=>`<tr class="click" data-aid="${a.agent_id}" title="${esc(a.note)}${a.preset_name?' · '+esc(a.preset_name):''}">
+    <td><span class="dot" style="background:${a.dd_locked?'var(--red)':a.status==='IN TRADE'?'var(--green)':a.status==='SCANNING'?'var(--amber)':'var(--red)'}"></span></td>
     <td><button class="tg ${a.disabled?'':'on'}" data-id="${a.agent_id}" title="${a.disabled?'Enable':'Disable'} ${esc(a.short)}"></button></td>
-    <td><span class="mcell"><span class="crown-slot">${a.rank===1?'<svg viewBox="0 0 24 24" style="width:17px;height:17px;stroke:var(--amber);fill:rgba(245,184,61,.2)"><path d="m3 7 4.5 4L12 4l4.5 7L21 7l-2 12H5z"/></svg>':''}</span>${ico(a.agent_id,a.color)}<b style="color:var(--tx)">${esc(a.short)}</b></span></td>
+    <td><span class="mcell"><span class="crown-slot">${a.rank===1?'<svg viewBox="0 0 24 24" style="width:17px;height:17px;stroke:var(--amber);fill:rgba(245,184,61,.2)"><path d="m3 7 4.5 4L12 4l4.5 7L21 7l-2 12H5z"/></svg>':''}</span>${ico(a.agent_id,a.color)}<b style="color:var(--tx)">${esc(a.short)}</b>${a.is_leader?'<span class="badge b-a" style="font-size:10px;padding:1px 6px">LEADER</span>':''}${a.dd_locked?'<span class="badge" style="font-size:10px;padding:1px 6px;background:rgba(239,68,68,.15);color:var(--red)">DD LOCKED</span>':''}</span></td>
     <td>${a.symbol}</td>
     <td class="num">${a.position==='-'?'<span class="m">-</span>':`<span class="${a.position.startsWith('BUY')?'g':'r'}">${a.position}</span>`}</td>
     <td class="num">${money(a.equity)}</td>
@@ -722,8 +919,10 @@ function renderAcc(){
     <td class="num">${a.position==='-'?'<span class="m">-</span>':sgn(a.open_pnl)}</td>
     <td class="num">${a.qty??'<span class="m">-</span>'}</td>
     <td class="num"><span class="${a.roi_pct>0?'g':a.roi_pct<0?'r':''}">${a.roi_pct>0?'+':''}${a.roi_pct.toFixed(2)}%</span></td>
-    <td><span class="badge ${a.mode==='llm'?'b-b':'b-a'}">${a.mode==='llm'?'LLM':'rules'}</span></td>
-  </tr>`).join('');
+    <td><span class="badge ${a.mode==='llm'?'b-b':'b-a'}" title="${esc(a.preset_name||'')}">${a.mode==='llm'?'LLM':'rules'}</span></td>
+    <td><button class="dot-btn" data-cfg="${a.agent_id}" title="Configure ${esc(a.short)}"><i data-lucide="more-vertical"></i></button></td>
+  </tr>`).join(''):'<tr><td colspan="13" class="empty">No matching AI accounts.</td></tr>';
+  icons();
 }
 
 function renderTabs(){
@@ -987,6 +1186,6 @@ function startPoll(){
   if(pollT)clearInterval(pollT);
   pollT=setInterval(loadState,rateMs);
 }
-loadAssets();loadState();loadEvents(false);startPoll();
+loadAssets();loadPresets();loadState();loadEvents(false);startPoll();icons();
 setInterval(()=>{loadEvents(false);if(tab==='chat')loadChat().catch(()=>{});if(tab==='journal')loadJournal().catch(()=>{});if(tab==='calendar')loadCal().catch(()=>{})},5000);
 </script></body></html>

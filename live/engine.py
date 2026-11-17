@@ -11,12 +11,63 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import yaml
-from . import store, market, llm, discord
+from . import store, market, llm, discord, presets
 
 BASE = Path(__file__).resolve().parent.parent
 LOCK = threading.RLock()
 CFG: Dict[str, Any] = {}
 CONTRACT = 100.0   # oz per 1.00 lot
+
+
+def get_agent_prefs(agent_id: str) -> Dict[str, Any]:
+    r = cfg()["risk_rules"]
+    all_p = store.kv_get("agent_configs") or {}
+    p = dict(all_p.get(agent_id) or {})
+    return {
+        "preset": p.get("preset", "davinick"),
+        "daily_dd_limit": float(p.get("daily_dd_limit", 0.0) or 0.0),
+        "allowed_assets": list(p.get("allowed_assets") or ["XAUUSD"]),
+        "risk_pct": float(p.get("risk_pct", r.get("default_risk_pct", 1.0))),
+        "max_lot": float(p.get("max_lot", r.get("max_lot", 2.0))),
+    }
+
+
+def set_agent_prefs(agent_id: str, patch: Dict[str, Any]) -> Dict[str, Any]:
+    with LOCK:
+        all_p = store.kv_get("agent_configs") or {}
+        cur = get_agent_prefs(agent_id)
+        if "preset" in patch and patch["preset"] in presets.PRESET_MAP:
+            cur["preset"] = patch["preset"]
+        if "daily_dd_limit" in patch:
+            cur["daily_dd_limit"] = max(0.0, round(float(patch["daily_dd_limit"] or 0.0), 2))
+        if "allowed_assets" in patch and isinstance(patch["allowed_assets"], list) and patch["allowed_assets"]:
+            cur["allowed_assets"] = [str(s).upper().strip() for s in patch["allowed_assets"] if str(s).strip()]
+        if "risk_pct" in patch:
+            cur["risk_pct"] = max(0.1, min(5.0, round(float(patch["risk_pct"] or 1.0), 2)))
+        if "max_lot" in patch:
+            cur["max_lot"] = max(0.01, min(10.0, round(float(patch["max_lot"] or 2.0), 2)))
+        all_p[agent_id] = cur
+        store.kv_set("agent_configs", all_p)
+        return {"ok": True, "agent_id": agent_id, "prefs": cur}
+
+
+def get_leader_config() -> Dict[str, Any]:
+    lc = store.kv_get("leader_config") or {}
+    return {
+        "leader_id": str(lc.get("leader_id", "")),
+        "consult_mode": bool(lc.get("consult_mode", False)),
+    }
+
+
+def set_leader_config(leader_id: Optional[str] = None, consult_mode: Optional[bool] = None) -> Dict[str, Any]:
+    with LOCK:
+        cur = get_leader_config()
+        if leader_id is not None:
+            cur["leader_id"] = str(leader_id).strip()
+        if consult_mode is not None:
+            cur["consult_mode"] = bool(consult_mode)
+        store.kv_set("leader_config", cur)
+        return {"ok": True, **cur}
 
 def now() -> datetime: return datetime.now(timezone.utc)
 def iso(d: Optional[datetime] = None) -> str: return (d or now()).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -190,14 +241,22 @@ SYSTEM = ("You are an autonomous XAUUSD (gold) day trader in a competition again
 def _context(a: Dict[str, Any], ag: Dict[str, Any], px: float, bars: List[Dict[str, float]]) -> str:
     last = bars[-24:]
     rows = "\n".join(f"{datetime.fromtimestamp(b['t'], timezone.utc).strftime('%d %H:%M')} O{b['o']:.1f} H{b['h']:.1f} L{b['l']:.1f} C{b['c']:.1f}" for b in last)
-    others = []
+    prefs = get_agent_prefs(a["agent_id"])
+    pr_obj = presets.get_preset(prefs["preset"])
+    lc = get_leader_config()
+    others, leader_note = [], ""
     for o in store.trades(status="Open", limit=50):
         if o["agent_id"] != a["agent_id"]:
             others.append(f"{agent_cfg(o['agent_id'])['short_name']} {o['side']} @ {o['entry']}")
-    return (f"Your style: {ag['style_archetype']}.\nPrice now: {px}\nATR(14, M15): {market.atr(bars):.2f}\n"
+            if lc["consult_mode"] and lc["leader_id"] and o["agent_id"] == lc["leader_id"]:
+                leader_note = (f"\n[LEADER CONSULT SIGNAL] Leader {agent_cfg(o['agent_id'])['short_name']} is {o['side']} @ {o['entry']} "
+                               f"(SL {o['sl']}, TP {o['tp']}, Thesis: {o.get('thesis','')}). "
+                               f"Analyze this signal against your own strategy — do NOT blind-copy 100%; confirm confluence before entering.")
+    return (f"Your style: {ag['style_archetype']}.\nActive Preset ({pr_obj['name']}): {pr_obj['prompt']}\n"
+            f"Price now: {px}\nATR(14, M15): {market.atr(bars):.2f}\n"
             f"Session: {market.session(now().hour)} (UTC {now().strftime('%H:%M')})\nM15 candles (last 24):\n{rows}\n"
             f"Your equity: ${a['equity']:.2f} (day {a['equity']-a['day_start_equity']:+.2f}), losses in a row: {a['consecutive_losses']}\n"
-            f"Your own recent lessons: {a['lessons'][:3] or 'none yet'}\nOther AIs' open trades: {others or 'none'}")
+            f"Your own recent lessons: {a['lessons'][:3] or 'none yet'}\nOther AIs' open trades: {others or 'none'}{leader_note}")
 
 # Different style params so rule-mode agents don't all behave the same
 RULE_PARAMS = {"ai-1": (20, 50, 1.4), "ai-2": (9, 21, 1.2), "ai-3": (14, 34, 1.5), "ai-4": (12, 26, 1.3),
@@ -220,9 +279,13 @@ def _rule_decision(agent_id: str, px: float, bars: List[Dict[str, float]]) -> Di
 
 def _risk_gate(a: Dict[str, Any]) -> Optional[str]:
     r = cfg()["risk_rules"]
+    prefs = get_agent_prefs(a["agent_id"])
     if store.kv_get("paused"): return "arena paused"
     if a.get("cooldown_until") and iso() < a["cooldown_until"]: return "tilt cooldown"
     if a["trades_today"] >= r["max_trades_per_day"]: return "daily trade cap"
+    day_pnl = a["equity"] + a.get("open_pnl", 0.0) - a["day_start_equity"]
+    if prefs["daily_dd_limit"] > 0 and day_pnl <= -prefs["daily_dd_limit"]:
+        return f"daily DD limit (${prefs['daily_dd_limit']:.0f})"
     if (a["equity"] - a["day_start_equity"]) / a["day_start_equity"] * 100 <= -r["max_daily_loss_pct"]: return "daily loss limit"
     if (a["equity"] - a["week_start_equity"]) / a["week_start_equity"] * 100 <= -r["max_weekly_loss_pct"]: return "weekly loss limit"
     return None
@@ -261,7 +324,8 @@ def decide(force: bool = False) -> List[str]:
                 a["last_note"] = d.get("thesis", "Holding cash"); store.acct_put(a); continue
             spread = float(cfg()["paper"]["base_spread_usd"])
             entry = round(px + spread / 2 if d["action"] == "BUY" else px - spread / 2, 2)
-            lots = _lots(a["equity"], entry, float(d["sl"]), float(cfg()["risk_rules"]["default_risk_pct"]))
+            prefs = get_agent_prefs(a["agent_id"])
+            lots = min(prefs["max_lot"], _lots(a["equity"], entry, float(d["sl"]), prefs["risk_pct"]))
             t = {"id": "T-" + uuid.uuid4().hex[:8].upper(), "agent_id": a["agent_id"], "status": "Open", "side": d["action"],
                  "lots": lots, "entry": entry, "sl": round(float(d["sl"]), 2), "sl_initial": round(float(d["sl"]), 2), "tp": round(float(d["tp"]), 2),
                  "opened_at": iso(), "session": market.session(now().hour), "thesis": str(d.get("thesis", ""))[:240],
@@ -453,6 +517,27 @@ def set_agent_enabled(agent_id: str, enabled: bool) -> Dict[str, Any]:
         store.acct_put(a)
         return {"ok": True, "disabled": a["disabled"]}
 
+def reset_agent(agent_id: str) -> Dict[str, Any]:
+    """Reset an individual AI's account back to initial $10,000."""
+    with LOCK:
+        a = store.acct_get(agent_id)
+        if not a: return {"ok": False}
+        pr = store.kv_get("price") or {}
+        for t in store.trades(status="Open", agent_id=agent_id, limit=50):
+            _close(t, pr.get("price") or t["entry"], "RESET")
+        init_eq = float(a.get("initial_equity", 10000.0))
+        a["equity"] = init_eq
+        a["open_pnl"] = 0.0
+        a["day_start_equity"] = init_eq
+        a["week_start_equity"] = init_eq
+        a["trades_today"] = 0
+        a["consecutive_losses"] = 0
+        a["cooldown_until"] = None
+        a["last_note"] = f"Account reset to ${init_eq:,.0f}"
+        store.acct_put(a)
+        store.equity_add(iso(), agent_id, init_eq)
+        return {"ok": True, "agent_id": agent_id, "equity": init_eq}
+
 # ───────────────────────── read models for the UI ─────────────────────────
 def calendar(agent_id: Optional[str] = None, month: Optional[str] = None) -> Dict[str, Any]:
     days: Dict[str, Dict[str, Any]] = {}
@@ -476,23 +561,33 @@ def snapshot() -> Dict[str, Any]:
     px = store.kv_get("price") or {}
     accts = store.acct_all()
     opens = store.trades(status="Open", limit=500)
+    lc = get_leader_config()
     rows = []
     for a in accts:
         ag = agent_cfg(a["agent_id"]); o = [t for t in opens if t["agent_id"] == a["agent_id"]]
+        prefs = get_agent_prefs(a["agent_id"])
+        pr_obj = presets.get_preset(prefs["preset"])
         eq = a["equity"] + a.get("open_pnl", 0.0)
+        day_pnl = round(a["equity"] - a["day_start_equity"] + a.get("open_pnl", 0.0), 2)
+        dd_locked = prefs["daily_dd_limit"] > 0 and day_pnl <= -prefs["daily_dd_limit"]
+        st = "DISABLED" if a.get("disabled") else "DD LOCKED" if dd_locked else "COOLDOWN" if a.get("cooldown_until") and iso() < a["cooldown_until"] else ("IN TRADE" if o else "SCANNING")
         rows.append({"agent_id": a["agent_id"], "name": ag["display_name"], "short": ag["short_name"], "provider": ag["provider"],
                      "color": ag["color"], "avatar": ag.get("avatar", ""), "style": ag["style_archetype"], "mode": a["mode"],
                      "balance": round(eq, 2), "equity": round(eq, 2), "roi_pct": round((eq / a["initial_equity"] - 1) * 100, 2),
-                     "day_pnl": round(a["equity"] - a["day_start_equity"] + a.get("open_pnl", 0.0), 2), "open_pnl": a.get("open_pnl", 0.0),
+                     "day_pnl": day_pnl, "open_pnl": a.get("open_pnl", 0.0),
                      "position": (f"{o[0]['side']} {o[0]['lots']}" if o else "-"), "avg_price": o[0]["entry"] if o else None,
                      "disabled": bool(a.get("disabled")), "symbol": "XAUUSD", "qty": o[0]["lots"] if o else None,
-                     "status": "DISABLED" if a.get("disabled") else "COOLDOWN" if a.get("cooldown_until") and iso() < a["cooldown_until"] else ("IN TRADE" if o else "SCANNING"),
+                     "status": st, "dd_locked": dd_locked, "preset": prefs["preset"], "preset_name": pr_obj["name"],
+                     "daily_dd_limit": prefs["daily_dd_limit"], "allowed_assets": prefs["allowed_assets"],
+                     "risk_pct": prefs["risk_pct"], "max_lot": prefs["max_lot"],
+                     "is_leader": bool(lc["leader_id"] and lc["leader_id"] == a["agent_id"]),
                      "note": a.get("last_note", ""), **stats(a["agent_id"])})
     rows.sort(key=lambda r: r["equity"], reverse=True)
     for i, r in enumerate(rows): r["rank"] = i + 1
     tok = store.kv_get("tokens", {"used": 0})
     return {"ts": iso(), "price": px.get("price"), "price_source": px.get("source"), "price_ts": px.get("ts"),
-            "paused": bool(store.kv_get("paused")), "total_balance": round(sum(r["equity"] for r in rows), 2),
+            "paused": bool(store.kv_get("paused")), "leader_config": lc,
+            "total_balance": round(sum(r["equity"] for r in rows), 2),
             "total_day_pnl": round(sum(r["day_pnl"] for r in rows), 2), "total_open_pnl": round(sum(r["open_pnl"] for r in rows), 2),
             "open_positions": len(opens), "tokens_used": tok.get("used", 0), "agents": rows,
             "open_trades": opens, "recent_trades": store.trades(limit=300)}
