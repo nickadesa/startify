@@ -397,7 +397,7 @@ def snapshot() -> Dict[str, Any]:
         eq = a["equity"] + a.get("open_pnl", 0.0)
         rows.append({"agent_id": a["agent_id"], "name": ag["display_name"], "short": ag["short_name"], "provider": ag["provider"],
                      "color": ag["color"], "avatar": ag.get("avatar", ""), "style": ag["style_archetype"], "mode": a["mode"],
-                     "balance": a["equity"], "equity": round(eq, 2), "roi_pct": round((eq / a["initial_equity"] - 1) * 100, 2),
+                     "balance": round(eq, 2), "equity": round(eq, 2), "roi_pct": round((eq / a["initial_equity"] - 1) * 100, 2),
                      "day_pnl": round(a["equity"] - a["day_start_equity"] + a.get("open_pnl", 0.0), 2), "open_pnl": a.get("open_pnl", 0.0),
                      "position": (f"{o[0]['side']} {o[0]['lots']}" if o else "-"), "avg_price": o[0]["entry"] if o else None,
                      "disabled": bool(a.get("disabled")), "symbol": "XAUUSD", "qty": o[0]["lots"] if o else None,
