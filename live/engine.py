@@ -69,6 +69,39 @@ def set_leader_config(leader_id: Optional[str] = None, consult_mode: Optional[bo
         store.kv_set("leader_config", cur)
         return {"ok": True, **cur}
 
+
+def batch_apply_preset(preset: str, agent_ids: List[str]) -> Dict[str, Any]:
+    if preset not in presets.PRESET_MAP:
+        return {"ok": False, "reason": "unknown preset"}
+    valid = {a["agent_id"] for a in agents()}
+    targets = [aid for aid in (agent_ids or []) if aid in valid]
+    if not targets:
+        return {"ok": False, "reason": "no valid agents selected"}
+    for aid in targets:
+        set_agent_prefs(aid, {"preset": preset})
+    return {"ok": True, "preset": preset, "updated": targets}
+
+
+def get_ai_analysis_assets() -> List[str]:
+    saved = store.kv_get("ai_analysis_assets")
+    if saved is not None:
+        return list(saved)
+    favs = store.kv_get("fav_assets")
+    if favs is not None:
+        return list(favs)
+    return [a["symbol"] for a in market.ASSETS if a.get("fav")]
+
+
+def set_ai_analysis_assets(symbols: List[str]) -> Dict[str, Any]:
+    valid = {a["symbol"] for a in market.ASSETS}
+    clean = []
+    for s in (symbols or []):
+        sym = str(s).upper().strip()
+        if sym in valid and sym not in clean:
+            clean.append(sym)
+    store.kv_set("ai_analysis_assets", clean)
+    return {"ok": True, "symbols": clean}
+
 def now() -> datetime: return datetime.now(timezone.utc)
 def iso(d: Optional[datetime] = None) -> str: return (d or now()).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -357,6 +390,9 @@ def decide(force: bool = False) -> List[str]:
                 a["last_note"] = f"{d.get('action','?')} rejected: {why}"; store.acct_put(a); continue
             if d["action"] == "HOLD":
                 a["last_note"] = d.get("thesis", "Holding cash"); store.acct_put(a); continue
+            if store.kv_get("trade_paused"):
+                a["last_note"] = f"[Analysis Only] {d['action']}: {d.get('thesis', '')}"[:240]
+                store.acct_put(a); continue
             spread = float(cfg()["paper"]["base_spread_usd"])
             entry = round(px + spread / 2 if d["action"] == "BUY" else px - spread / 2, 2)
             prefs = get_agent_prefs(a["agent_id"])
@@ -432,7 +468,7 @@ def converse(force: bool = False) -> Optional[int]:
         return cid
 
 def user_chat(message: str, image: Optional[str] = None, mentions: Optional[List[str]] = None) -> Dict[str, Any]:
-    """Save commander message (with optional image & @mentions) and get natural AI replies."""
+    """Save commander message (with optional image & @mentions) and get conversational, data-backed AI replies."""
     msg = (message or "").strip()[:1000]
     if not msg and not image:
         return {"ok": False, "reason": "empty message"}
@@ -458,34 +494,70 @@ def user_chat(message: str, image: Optional[str] = None, mentions: Optional[List
         accts = {x["agent_id"]: x for x in store.acct_all()}
         board = sorted(accts.values(), key=lambda x: x["equity"], reverse=True)
         px = (store.kv_get("price") or {}).get("price")
+        # Live market analysis context for conversational replies
+        bars = market.candles("15m", "2d", "XAUUSD") or []
+        closes = [b["c"] for b in bars]
+        ema20 = market.ema(closes[-60:], 20) if len(closes) >= 25 else None
+        ema50 = market.ema(closes[-100:], 50) if len(closes) >= 55 else None
+        atr14 = market.atr(bars) if len(bars) >= 16 else None
+        vp = market.volume_profile(bars[-48:]) if len(bars) >= 20 else None
+        trend_lbl = ("Bullish" if ema20 > ema50 else "Bearish") if (ema20 and ema50) else "Neutral"
+        sess = market.session(now().hour)
+        recent_msgs = store.chat(limit=5)
+        recent_ctx = "\n".join(
+            f"{'Commander' if m['agent_id'] == 'user' else agent_cfg(m['agent_id'])['short_name'] if m['agent_id'] in accts else m['agent_id']}: {m['text']}"
+            for m in recent_msgs[:-1]
+        ) or "(none)"
+        mkt_ctx = (
+            f"XAUUSD live: {px} | Session: {sess} | M15 Trend: {trend_lbl}"
+            + (f" (EMA20 {ema20:.1f} vs EMA50 {ema50:.1f})" if ema20 and ema50 else "")
+            + (f" | ATR14: ${atr14:.2f}" if atr14 else "")
+            + (f" | VP POC {vp['poc']}, VAH {vp['vah']}, VAL {vp['val']}" if vp else "")
+        )
         replies = []
         for ag in picked:
             rank = [x["agent_id"] for x in board].index(ag["agent_id"]) + 1
             me = accts[ag["agent_id"]]
+            prefs = get_agent_prefs(ag["agent_id"])
+            pr_obj = presets.get_preset(prefs["preset"])
             mine = store.trades(status="Open", agent_id=ag["agent_id"])
-            pos_txt = f"{mine[0]['side']} {mine[0]['lots']} lot @ {mine[0]['entry']} (SL {mine[0]['sl']}, TP {mine[0]['tp']})" if mine else "flat"
+            pos_txt = f"{mine[0]['side']} {mine[0]['lots']} lot @ {mine[0]['entry']} (SL {mine[0]['sl']}, TP {mine[0]['tp']})" if mine else "flat (no open trade)"
             text, tokens = None, 0
-            if llm.has_key(ag) and _tokens_ok(350):
+            if llm.has_key(ag) and _tokens_ok(500):
                 res = llm.ask(
                     ag,
-                    f"You are {ag['short_name']}, a real gold trader ({ag['style_archetype']}) on a live desk. "
-                    "The user (desk commander) just messaged you. Reply naturally like a real human trader in 1-3 short sentences — no robotic boilerplate, no disclaimers.",
-                    f"XAUUSD: {px}. Your rank: #{rank}, equity ${me['equity']:.2f}, position: {pos_txt}.\nCommander says: {msg or '(attached a chart image)'}",
-                    160,
+                    f"You are {ag['short_name']}, a sharp AI gold trader ({ag['style_archetype']}, active strategy preset: {pr_obj['name']}) chatting directly with the desk commander. "
+                    "Think through the live price action, key levels (EMA/VP/ATR), and your current position before answering. "
+                    "Respond naturally like a real conversational analyst/chatbot (like Grok) in 2-4 crisp, insightful sentences. "
+                    "Answer the commander's exact question directly; if they speak Thai, reply in Thai.",
+                    f"{mkt_ctx}\nYour rank: #{rank}, equity ${me['equity']:.2f}, position: {pos_txt}, last note: {me.get('last_note','')}\n"
+                    f"Recent chat:\n{recent_ctx}\n\nCommander asks: {msg or '(attached a chart image)'}",
+                    280,
                     image_data_url=image,
                 )
                 if res:
                     text, tokens = res[0].strip().strip('"'), res[1]; _tokens_add(tokens)
             if not text:
+                lvl = f"POC {vp['poc']} (VAL {vp['val']} / VAH {vp['vah']})" if vp else f"~{px}"
+                ema_txt = f"EMA20 ({ema20:.1f}) {'>' if trend_lbl == 'Bullish' else '<'} EMA50 ({ema50:.1f})" if ema20 and ema50 else trend_lbl
+                atr_txt = f"ATR14 ~${atr14:.1f}" if atr14 else ""
                 if image and not msg:
-                    text = f"Looking at your chart around {px} — I'm {pos_txt} right now. If {px} holds structure, I'll stick to my plan."
+                    text = (f"Reading your chart with XAUUSD at {px} ({trend_lbl}, {ema_txt}). "
+                            f"Key structure sits at {lvl} ({atr_txt}). I'm currently {pos_txt} at #{rank} (${me['equity']:,.0f}) using {pr_obj['name']}.")
+                elif any(k in msg.lower() for k in ("buy", "sell", "เข้า", "เทรด", "ทิศ", "แนวโน้ม", "trend", "ทอง", "gold", "วิเคราะห์", "analyze", "plan", "แผน")):
+                    bias = "long bias above VAL/EMA20" if trend_lbl == "Bullish" else "short bias below VAH/EMA20"
+                    text = (f"XAUUSD @ {px} in {sess}: M15 structure is {trend_lbl} ({ema_txt}, {atr_txt}). "
+                            f"Volume Profile {lvl} gives a {bias} under my {pr_obj['name']} preset. "
+                            f"Right now I'm {pos_txt} (#{rank}, ${me['equity']:,.0f}).")
                 elif mine:
-                    text = f"On it — I'm currently {pos_txt} with gold at {px}. Watching how price reacts around my invalidation."
+                    text = (f"Currently {pos_txt} while gold trades at {px} ({trend_lbl}, {ema_txt}). "
+                            f"Watching {lvl} and keeping my stop respected at {mine[0]['sl']} ({atr_txt}).")
                 else:
-                    text = f"Copy that. Sitting flat at #{rank} (${me['equity']:.0f}) with XAUUSD at {px} — waiting for a clean 2R+ setup before pulling the trigger."
+                    text = (f"Rank #{rank} (${me['equity']:,.0f}) on {pr_obj['name']} — sitting flat at {px}. "
+                            f"M15 is {trend_lbl} ({ema_txt}, {atr_txt}); watching {lvl} for a clean 2R+ setup.")
             rts = iso()
-            rid = store.chat_add(rts, ag["agent_id"], "CHAT", text[:420], tokens, uid)
-            discord.notify_chat(ag, text[:420], rts, msg[:120] if msg else "Shared an image")
+            rid = store.chat_add(rts, ag["agent_id"], "CHAT", text[:480], tokens, uid)
+            discord.notify_chat(ag, text[:480], rts, msg[:120] if msg else "Shared an image")
             replies.append(rid)
         return {"ok": True, "user_msg_id": uid, "reply_ids": replies}
 
@@ -621,7 +693,8 @@ def snapshot() -> Dict[str, Any]:
     for i, r in enumerate(rows): r["rank"] = i + 1
     tok = store.kv_get("tokens", {"used": 0})
     return {"ts": iso(), "price": px.get("price"), "price_source": px.get("source"), "price_ts": px.get("ts"),
-            "paused": bool(store.kv_get("paused")), "leader_config": lc,
+            "paused": bool(store.kv_get("paused")), "trade_paused": bool(store.kv_get("trade_paused")),
+            "ai_analysis_assets": get_ai_analysis_assets(), "leader_config": lc,
             "total_balance": round(sum(r["equity"] for r in rows), 2),
             "total_day_pnl": round(sum(r["day_pnl"] for r in rows), 2), "total_open_pnl": round(sum(r["open_pnl"] for r in rows), 2),
             "open_positions": len(opens), "tokens_used": tok.get("used", 0), "agents": rows,

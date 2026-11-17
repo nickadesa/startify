@@ -48,12 +48,23 @@ def assets():
     favs = store.kv_get("fav_assets")
     if favs is None:
         favs = [a["symbol"] for a in market.ASSETS if a.get("fav")]
-    return {"assets": market.ASSETS, "active": active, "favs": favs}
+    return {"assets": market.ASSETS, "active": active, "favs": favs, "analysis": engine.get_ai_analysis_assets()}
 
 @router.get("/api/live/quote")
 def quote(symbol: str = "XAUUSD"):
     q = market.quote(symbol)
     return {"ok": bool(q), "quote": q}
+
+@router.get("/api/live/quotes")
+def quotes(symbols: Optional[str] = None):
+    from concurrent.futures import ThreadPoolExecutor
+    syms = [s.strip().upper() for s in symbols.split(",") if s.strip()] if symbols else [a["symbol"] for a in market.ASSETS]
+    out = {}
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        for sym, q in zip(syms, ex.map(market.quote, syms)):
+            if q:
+                out[sym] = q
+    return {"quotes": out}
 
 @router.post("/api/live/assets/toggle")
 def toggle_asset(body: dict):
@@ -104,6 +115,14 @@ def pause(x_admin_token: Optional[str] = Header(default=None)):
 def resume(x_admin_token: Optional[str] = Header(default=None)):
     _admin(x_admin_token); store.kv_set("paused", False); return {"paused": False}
 
+@router.post("/api/live/trade-pause")
+def trade_pause(body: dict = {}, x_admin_token: Optional[str] = Header(default=None)):
+    _admin(x_admin_token)
+    cur = bool(store.kv_get("trade_paused"))
+    nxt = bool(body.get("paused", not cur)) if isinstance(body, dict) and "paused" in body else (not cur)
+    store.kv_set("trade_paused", nxt)
+    return {"trade_paused": nxt}
+
 @router.post("/api/live/flatten")
 def flatten(x_admin_token: Optional[str] = Header(default=None)):
     _admin(x_admin_token); return engine.flatten()
@@ -111,6 +130,16 @@ def flatten(x_admin_token: Optional[str] = Header(default=None)):
 @router.get("/api/live/presets")
 def list_presets():
     return {"presets": presets.PRESETS}
+
+@router.post("/api/live/presets/batch")
+def batch_presets(body: dict, x_admin_token: Optional[str] = Header(default=None)):
+    _admin(x_admin_token)
+    return engine.batch_apply_preset(str(body.get("preset", "")), list(body.get("agent_ids") or []))
+
+@router.post("/api/live/assets/analysis")
+def set_analysis_assets(body: dict, x_admin_token: Optional[str] = Header(default=None)):
+    _admin(x_admin_token)
+    return engine.set_ai_analysis_assets(list(body.get("symbols") or []))
 
 @router.post("/api/live/agent/{agent_id}/toggle")
 def toggle_agent(agent_id: str, body: dict, x_admin_token: Optional[str] = Header(default=None)):
