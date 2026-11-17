@@ -19,7 +19,7 @@ CREATE INDEX IF NOT EXISTS ix_trades_agent ON trades(agent_id, status);
 CREATE TABLE IF NOT EXISTS journal(
   id INTEGER PRIMARY KEY AUTOINCREMENT, ts TEXT, agent_id TEXT, trade_id TEXT, data TEXT);
 CREATE TABLE IF NOT EXISTS chat(
-  id INTEGER PRIMARY KEY AUTOINCREMENT, ts TEXT, agent_id TEXT, kind TEXT, reply_to INTEGER, text TEXT, tokens INTEGER);
+  id INTEGER PRIMARY KEY AUTOINCREMENT, ts TEXT, agent_id TEXT, kind TEXT, reply_to INTEGER, text TEXT, tokens INTEGER, media TEXT);
 CREATE TABLE IF NOT EXISTS equity(ts TEXT, agent_id TEXT, equity REAL);
 CREATE INDEX IF NOT EXISTS ix_equity ON equity(agent_id, ts);
 """
@@ -38,6 +38,9 @@ def conn() -> sqlite3.Connection:
             _conn.row_factory = sqlite3.Row
             _conn.execute("PRAGMA journal_mode=WAL")
             _conn.executescript(SCHEMA)
+            cols = {r["name"] for r in _conn.execute("PRAGMA table_info(chat)").fetchall()}
+            if "media" not in cols:
+                _conn.execute("ALTER TABLE chat ADD COLUMN media TEXT")
         return _conn
 
 def reset_for_tests(path: str) -> None:
@@ -98,9 +101,9 @@ def journal(limit: int = 200, agent_id: Optional[str] = None) -> List[Dict[str, 
         return [{"id": r["id"], "ts": r["ts"], "agent_id": r["agent_id"], "trade_id": r["trade_id"], **json.loads(r["data"])}
                 for r in conn().execute(q, a)]
 
-def chat_add(ts: str, agent_id: str, kind: str, text: str, tokens: int = 0, reply_to: Optional[int] = None) -> int:
+def chat_add(ts: str, agent_id: str, kind: str, text: str, tokens: int = 0, reply_to: Optional[int] = None, media: Optional[str] = None) -> int:
     with _lock:
-        c = conn().execute("INSERT INTO chat(ts,agent_id,kind,reply_to,text,tokens) VALUES(?,?,?,?,?,?)", (ts, agent_id, kind, reply_to, text, tokens))
+        c = conn().execute("INSERT INTO chat(ts,agent_id,kind,reply_to,text,tokens,media) VALUES(?,?,?,?,?,?,?)", (ts, agent_id, kind, reply_to, text, tokens, media))
         return int(c.lastrowid)
 
 def chat(limit: int = 80, after_id: int = 0) -> List[Dict[str, Any]]:

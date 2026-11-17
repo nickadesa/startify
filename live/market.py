@@ -1,11 +1,48 @@
 """Real market data only. If every feed fails the engine simply skips the tick —
 it never invents a price."""
 from __future__ import annotations
-import json, os, time, urllib.request
+import json, time, urllib.parse, urllib.request
 from typing import Any, Dict, List, Optional
 
 UA = {"User-Agent": "Mozilla/5.0 Startify/3.0"}
 _cache: Dict[str, Any] = {}
+
+ASSETS: List[Dict[str, Any]] = [
+    # Commodities
+    {"symbol": "XAUUSD", "ticker": "GC=F", "name": "GC Perpetual Future", "category": "Commodities", "fav": True, "decimals": 2},
+    {"symbol": "SILVER", "ticker": "SI=F", "name": "SI Silver Future", "category": "Commodities", "fav": True, "decimals": 3},
+    {"symbol": "OIL", "ticker": "CL=F", "name": "CL Crude Oil Future", "category": "Commodities", "fav": True, "decimals": 2},
+    {"symbol": "NG", "ticker": "NG=F", "name": "NG Natural Gas Future", "category": "Commodities", "fav": False, "decimals": 3},
+    {"symbol": "COPPER", "ticker": "HG=F", "name": "HG Copper Future", "category": "Commodities", "fav": False, "decimals": 4},
+    # Indices
+    {"symbol": "NQ", "ticker": "NQ=F", "name": "NQ E-Mini Nasdaq Future", "category": "Indices", "fav": True, "decimals": 2},
+    {"symbol": "ES", "ticker": "ES=F", "name": "ES E-Mini S&P 500 Future", "category": "Indices", "fav": True, "decimals": 2},
+    {"symbol": "YM", "ticker": "YM=F", "name": "YM E-Mini Dow Future", "category": "Indices", "fav": False, "decimals": 0},
+    {"symbol": "DXY", "ticker": "DX-Y.NYB", "name": "US Dollar Index", "category": "Indices", "fav": False, "decimals": 3},
+    # Forex
+    {"symbol": "EURUSD", "ticker": "EURUSD=X", "name": "EUR/USD Spot", "category": "Forex", "fav": True, "decimals": 5},
+    {"symbol": "GBPUSD", "ticker": "GBPUSD=X", "name": "GBP/USD Spot", "category": "Forex", "fav": False, "decimals": 5},
+    {"symbol": "USDJPY", "ticker": "USDJPY=X", "name": "USD/JPY Spot", "category": "Forex", "fav": False, "decimals": 3},
+    {"symbol": "AUDUSD", "ticker": "AUDUSD=X", "name": "AUD/USD Spot", "category": "Forex", "fav": False, "decimals": 5},
+    {"symbol": "USDCAD", "ticker": "USDCAD=X", "name": "USD/CAD Spot", "category": "Forex", "fav": False, "decimals": 5},
+    # Crypto
+    {"symbol": "BTCUSD", "ticker": "BTC-USD", "name": "BTC Perpetual", "category": "Crypto", "fav": True, "decimals": 2},
+    {"symbol": "ETHUSD", "ticker": "ETH-USD", "name": "ETH Perpetual", "category": "Crypto", "fav": False, "decimals": 2},
+    {"symbol": "SOLUSD", "ticker": "SOL-USD", "name": "SOL Perpetual", "category": "Crypto", "fav": False, "decimals": 2},
+    {"symbol": "XRPUSD", "ticker": "XRP-USD", "name": "XRP Perpetual", "category": "Crypto", "fav": False, "decimals": 4},
+    # Stocks
+    {"symbol": "NVDA", "ticker": "NVDA", "name": "NVIDIA Corp.", "category": "Stock", "fav": False, "decimals": 2},
+    {"symbol": "AAPL", "ticker": "AAPL", "name": "Apple Inc.", "category": "Stock", "fav": False, "decimals": 2},
+    {"symbol": "TSLA", "ticker": "TSLA", "name": "Tesla Inc.", "category": "Stock", "fav": False, "decimals": 2},
+    {"symbol": "MSFT", "ticker": "MSFT", "name": "Microsoft Corp.", "category": "Stock", "fav": False, "decimals": 2},
+    {"symbol": "META", "ticker": "META", "name": "Meta Platforms", "category": "Stock", "fav": False, "decimals": 2},
+    # ETFs
+    {"symbol": "SPY", "ticker": "SPY", "name": "SPDR S&P 500 ETF", "category": "ETFs", "fav": False, "decimals": 2},
+    {"symbol": "QQQ", "ticker": "QQQ", "name": "Invesco QQQ Trust", "category": "ETFs", "fav": False, "decimals": 2},
+    {"symbol": "GLD", "ticker": "GLD", "name": "SPDR Gold Shares", "category": "ETFs", "fav": False, "decimals": 2},
+    {"symbol": "TLT", "ticker": "TLT", "name": "iShares 20+ Year Treasury", "category": "ETFs", "fav": False, "decimals": 2},
+]
+_ASSET_MAP = {a["symbol"]: a for a in ASSETS}
 
 def _get(url: str, timeout: float = 5.0) -> Any:
     req = urllib.request.Request(url, headers=UA)
@@ -18,9 +55,9 @@ def price() -> Optional[Dict[str, Any]]:
     if hook:
         return hook()
     feeds = [
-        ("yahoo GC=F", lambda: float(_get("https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=1m&range=1d")["chart"]["result"][0]["meta"]["regularMarketPrice"])),
-        ("binance PAXG", lambda: float(_get("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT")["price"])),
-        ("bybit PAXG", lambda: float(_get("https://api.bybit.com/v5/market/tickers?category=linear&symbol=PAXGUSDT")["result"]["list"][0]["lastPrice"])),
+        ("GC Perpetual Future", lambda: float(_get("https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=1m&range=1d")["chart"]["result"][0]["meta"]["regularMarketPrice"])),
+        ("PAXG Perpetual", lambda: float(_get("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT")["price"])),
+        ("PAXG Linear", lambda: float(_get("https://api.bybit.com/v5/market/tickers?category=linear&symbol=PAXGUSDT")["result"]["list"][0]["lastPrice"])),
     ]
     for name, fn in feeds:
         try:
@@ -30,6 +67,28 @@ def price() -> Optional[Dict[str, Any]]:
         except Exception:
             continue
     return None
+
+def quote(symbol: str) -> Optional[Dict[str, Any]]:
+    """Fetch real live quote for any asset in ASSETS (10s cache, returns None if unavailable)."""
+    sym = symbol.upper().strip()
+    meta = _ASSET_MAP.get(sym)
+    if not meta:
+        return None
+    ck = f"q:{sym}"
+    hit = _cache.get(ck)
+    if hit and time.time() - hit[0] < 10:
+        return hit[1]
+    try:
+        tkr = urllib.parse.quote(meta["ticker"])
+        j = _get(f"https://query1.finance.yahoo.com/v8/finance/chart/{tkr}?interval=1m&range=1d", 5.0)
+        px = float(j["chart"]["result"][0]["meta"]["regularMarketPrice"])
+        if px > 0:
+            res = {"symbol": sym, "name": meta["name"], "category": meta["category"], "price": round(px, meta["decimals"]), "decimals": meta["decimals"]}
+            _cache[ck] = (time.time(), res)
+            return res
+    except Exception:
+        pass
+    return hit[1] if hit else None
 
 def candles(interval: str = "15m", rng: str = "5d") -> List[Dict[str, float]]:
     key = f"c:{interval}"

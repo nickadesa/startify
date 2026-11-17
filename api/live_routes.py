@@ -4,10 +4,11 @@ from typing import Optional
 from fastapi import APIRouter, Header, HTTPException
 from fastapi.responses import HTMLResponse
 from pathlib import Path
-from live import engine, store
+from live import engine, store, market
 
 router = APIRouter()
 PAGE = Path(__file__).resolve().parent.parent / "web_live" / "index.html"
+DEFAULT_ACTIVE_ASSETS = ["XAUUSD", "NQ", "ES", "EURUSD", "BTCUSD", "OIL", "SILVER"]
 
 def _admin(x_admin_token: Optional[str]):
     want = os.getenv("ADMIN_TOKEN", "").strip()
@@ -26,8 +27,61 @@ def chat(after_id: int = 0, limit: int = 80):
     rows = store.chat(limit, after_id)
     ids = {a["agent_id"]: a for a in engine.agents()}
     for r in rows:
-        a = ids.get(r["agent_id"]); r["name"] = a["short_name"] if a else r["agent_id"]; r["color"] = a["color"] if a else "#888"
+        if r["agent_id"] == "user":
+            r["name"] = "You"
+            r["color"] = "#2f5bff"
+        else:
+            a = ids.get(r["agent_id"])
+            r["name"] = a["short_name"] if a else r["agent_id"]
+            r["color"] = a["color"] if a else "#888"
     return {"messages": rows}
+
+@router.post("/api/live/chat/send")
+def chat_send(body: dict):
+    return engine.user_chat(body.get("message", ""), body.get("image"), body.get("mentions"))
+
+@router.get("/api/live/assets")
+def assets():
+    active = store.kv_get("active_assets")
+    if active is None:
+        active = list(DEFAULT_ACTIVE_ASSETS)
+    favs = store.kv_get("fav_assets")
+    if favs is None:
+        favs = [a["symbol"] for a in market.ASSETS if a.get("fav")]
+    return {"assets": market.ASSETS, "active": active, "favs": favs}
+
+@router.get("/api/live/quote")
+def quote(symbol: str = "XAUUSD"):
+    q = market.quote(symbol)
+    return {"ok": bool(q), "quote": q}
+
+@router.post("/api/live/assets/toggle")
+def toggle_asset(body: dict):
+    sym = str(body.get("symbol", "")).upper().strip()
+    if not any(a["symbol"] == sym for a in market.ASSETS):
+        raise HTTPException(404, "unknown symbol")
+    kind = body.get("kind", "active")
+    if kind == "fav":
+        favs = store.kv_get("fav_assets")
+        if favs is None:
+            favs = [a["symbol"] for a in market.ASSETS if a.get("fav")]
+        enabled = bool(body.get("enabled", sym not in favs))
+        if enabled and sym not in favs:
+            favs.append(sym)
+        elif not enabled and sym in favs:
+            favs = [s for s in favs if s != sym]
+        store.kv_set("fav_assets", favs)
+        return {"ok": True, "favs": favs}
+    active = store.kv_get("active_assets")
+    if active is None:
+        active = list(DEFAULT_ACTIVE_ASSETS)
+    enabled = bool(body.get("enabled", sym not in active))
+    if enabled and sym not in active:
+        active.append(sym)
+    elif not enabled and sym in active and len(active) > 1:
+        active = [s for s in active if s != sym]
+    store.kv_set("active_assets", active)
+    return {"ok": True, "active": active}
 
 @router.get("/api/live/calendar")
 def calendar(agent_id: Optional[str] = None, month: Optional[str] = None):

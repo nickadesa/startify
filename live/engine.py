@@ -35,15 +35,17 @@ def agent_cfg(agent_id: str) -> Dict[str, Any]:
 # ───────────────────────── setup ─────────────────────────
 def init(fresh: bool = False) -> None:
     """Create clean accounts. Called once; old backtest/seed numbers are NOT carried over."""
+    eq0 = float(cfg()["trading"]["initial_equity"])
+    existing = {a["agent_id"] for a in store.acct_all()}
+    for a in agents():
+        if fresh or a["agent_id"] not in existing:
+            store.acct_put({"agent_id": a["agent_id"], "equity": eq0, "initial_equity": eq0, "day_start_equity": eq0,
+                            "day": now().strftime("%Y-%m-%d"), "week_start_equity": eq0, "consecutive_losses": 0,
+                            "cooldown_until": None, "last_decision_at": None, "trades_today": 0, "lessons": [],
+                            "mode": "llm" if llm.has_key(a) else "rules", "last_note": "Waiting for first scan"})
+            store.equity_add(iso(), a["agent_id"], eq0)
     if store.kv_get("initialised") and not fresh:
         return
-    eq0 = float(cfg()["trading"]["initial_equity"])
-    for a in agents():
-        store.acct_put({"agent_id": a["agent_id"], "equity": eq0, "initial_equity": eq0, "day_start_equity": eq0,
-                        "day": now().strftime("%Y-%m-%d"), "week_start_equity": eq0, "consecutive_losses": 0,
-                        "cooldown_until": None, "last_decision_at": None, "trades_today": 0, "lessons": [],
-                        "mode": "llm" if llm.has_key(a) else "rules", "last_note": "Waiting for first scan"})
-        store.equity_add(iso(), a["agent_id"], eq0)
     store.kv_set("initialised", iso())
     store.kv_set("paused", False)
     store.kv_set("tokens", {"day": now().strftime("%Y-%m-%d"), "used": 0})
@@ -317,10 +319,10 @@ def converse(force: bool = False) -> Optional[int]:
         target = msgs[-1] if msgs else None
         text, tokens = None, 0
         if llm.has_key(ag) and _tokens_ok(300):
-            res = llm.ask(ag, f"You are {ag['short_name']}, an AI gold trader ({ag['style_archetype']}) chatting with rival AI traders in a shared room. "
-                              "Reply to the latest message in 1-2 short sentences, address the other AI by name, be sharp and specific (levels, risk, their trade). "
-                              "Banter allowed, no insults, no financial-advice disclaimers.",
-                          f"Gold: {px}. Standings: {standings}. You are #{rank}.\nChat:\n{transcript}\n\nWrite your next message.", 120)
+            res = llm.ask(ag, f"You are {ag['short_name']}, a sharp gold trader ({ag['style_archetype']}) hanging out in a live trading room with other traders and the desk commander. "
+                              "Talk like a real human trader in Discord — natural, direct, varied rhythm, no robotic templates, no 'my note:' or disclaimers. "
+                              "React to the latest message or gold price in 1-2 crisp sentences. Address them with @Name when replying.",
+                          f"XAUUSD: {px}. Top standings: {standings}. You are #{rank}.\nRecent chat:\n{transcript}\n\nReply naturally:", 120)
             if res: text, tokens = res[0].strip().strip('"'), res[1]; _tokens_add(tokens)
         if not text:
             text = _template_reply(ag, target, rank, board, px, accts)
@@ -330,28 +332,106 @@ def converse(force: bool = False) -> Optional[int]:
         discord.notify_chat(ag, text[:420], ts, target["text"] if target else None)
         return cid
 
+def user_chat(message: str, image: Optional[str] = None, mentions: Optional[List[str]] = None) -> Dict[str, Any]:
+    """Save commander message (with optional image & @mentions) and get natural AI replies."""
+    msg = (message or "").strip()[:1000]
+    if not msg and not image:
+        return {"ok": False, "reason": "empty message"}
+    with LOCK:
+        init()
+        ts = iso()
+        uid = store.chat_add(ts, "user", "USER", msg or "[Chart shared]", 0, None, image)
+        all_ags = agents()
+        by_short = {g["short_name"].lower(): g for g in all_ags}
+        by_id = {g["agent_id"]: g for g in all_ags}
+        picked: List[Dict[str, Any]] = []
+        for m in (mentions or []):
+            g = by_id.get(m) or by_short.get(str(m).lstrip("@").lower())
+            if g and g not in picked:
+                picked.append(g)
+        if not picked:
+            for g in all_ags:
+                if f"@{g['short_name'].lower()}" in msg.lower() and g not in picked:
+                    picked.append(g)
+        if not picked:
+            picked = [random.choice(all_ags)]
+        picked = picked[:3]
+        accts = {x["agent_id"]: x for x in store.acct_all()}
+        board = sorted(accts.values(), key=lambda x: x["equity"], reverse=True)
+        px = (store.kv_get("price") or {}).get("price")
+        replies = []
+        for ag in picked:
+            rank = [x["agent_id"] for x in board].index(ag["agent_id"]) + 1
+            me = accts[ag["agent_id"]]
+            mine = store.trades(status="Open", agent_id=ag["agent_id"])
+            pos_txt = f"{mine[0]['side']} {mine[0]['lots']} lot @ {mine[0]['entry']} (SL {mine[0]['sl']}, TP {mine[0]['tp']})" if mine else "flat"
+            text, tokens = None, 0
+            if llm.has_key(ag) and _tokens_ok(350):
+                res = llm.ask(
+                    ag,
+                    f"You are {ag['short_name']}, a real gold trader ({ag['style_archetype']}) on a live desk. "
+                    "The user (desk commander) just messaged you. Reply naturally like a real human trader in 1-3 short sentences — no robotic boilerplate, no disclaimers.",
+                    f"XAUUSD: {px}. Your rank: #{rank}, equity ${me['equity']:.2f}, position: {pos_txt}.\nCommander says: {msg or '(attached a chart image)'}",
+                    160,
+                    image_data_url=image,
+                )
+                if res:
+                    text, tokens = res[0].strip().strip('"'), res[1]; _tokens_add(tokens)
+            if not text:
+                if image and not msg:
+                    text = f"Looking at your chart around {px} — I'm {pos_txt} right now. If {px} holds structure, I'll stick to my plan."
+                elif mine:
+                    text = f"On it — I'm currently {pos_txt} with gold at {px}. Watching how price reacts around my invalidation."
+                else:
+                    text = f"Copy that. Sitting flat at #{rank} (${me['equity']:.0f}) with XAUUSD at {px} — waiting for a clean 2R+ setup before pulling the trigger."
+            rts = iso()
+            rid = store.chat_add(rts, ag["agent_id"], "CHAT", text[:420], tokens, uid)
+            discord.notify_chat(ag, text[:420], rts, msg[:120] if msg else "Shared an image")
+            replies.append(rid)
+        return {"ok": True, "user_msg_id": uid, "reply_ids": replies}
+
 def _template_reply(ag, target, rank, board, px, accts) -> Optional[str]:
     me = accts[ag["agent_id"]]; mine = store.trades(status="Open", agent_id=ag["agent_id"])
     if target and target["agent_id"] != ag["agent_id"] and target["agent_id"] in accts:
-        who = agent_cfg(target["agent_id"])["short_name"]
+        who = "@" + agent_cfg(target["agent_id"])["short_name"]
         if target["kind"] == "TRADE_OPEN":
             t = next((x for x in store.trades(agent_id=target["agent_id"], limit=3) if x["status"] == "Open"), None)
             if t:
-                if mine and mine[0]["side"] != t["side"]: return f"{who}, I'm {mine[0]['side']} and you're {t['side']} — one of us is wrong at {px}. Your stop at {t['sl']} is my first target."
-                return f"{who}, {t['side']} here makes sense but your {abs(t['tp']-t['entry'])/abs(t['entry']-t['sl']):.1f}R target needs {abs(t['tp']-t['entry']):.0f} points to run. I'll watch {t['entry']}."
+                if mine and mine[0]["side"] != t["side"]:
+                    return random.choice([
+                        f"{who} bold taking {t['side']} here at {t['entry']} — I'm literally {mine[0]['side']} from {mine[0]['entry']}. One of us is getting swept.",
+                        f"Interesting {t['side']} {who}, I'm positioned the other way ({mine[0]['side']}). Let's see if {t['sl']} holds.",
+                    ])
+                return random.choice([
+                    f"{who} nice {t['side']} at {t['entry']}, though {abs(t['tp']-t['entry']):.1f} pts to TP will need real NY volume.",
+                    f"Clean entry {who}. Keeping an eye on {t['sl']} to see if buyers/sellers defend it.",
+                ])
         if target["kind"] == "TRADE_CLOSE":
-            return f"{who}, noted. I'm #{rank} at ${me['equity']:.0f}; {'sitting flat until the setup is clean' if not mine else 'managing my open ' + mine[0]['side'] + ' at ' + str(mine[0]['entry'])}."
+            return random.choice([
+                f"{who} good discipline locking that in. I'm #{rank} at ${me['equity']:.0f}, {'staying patient in cash' if not mine else 'still riding my ' + mine[0]['side'] + ' from ' + str(mine[0]['entry'])}.",
+                f"Noted {who}. Onto the next setup — gold at {px} still looks {('interesting' if mine else 'choppy')} here.",
+            ])
     if target and target["kind"] == "CHAT" and target["agent_id"] in accts and target["agent_id"] != ag["agent_id"]:
-        who = agent_cfg(target["agent_id"])["short_name"]; theirs = accts[target["agent_id"]]
+        who = "@" + agent_cfg(target["agent_id"])["short_name"]; theirs = accts[target["agent_id"]]
         their_rank = [x["agent_id"] for x in board].index(target["agent_id"]) + 1
-        pos = f"I'm holding a {mine[0]['side']} from {mine[0]['entry']}" if mine else "I'm flat right now"
-        opts = [f"{who}, you're #{their_rank} at ${theirs['equity']:.0f} — fair, but {pos}. Gold {px}, I'm waiting for my level, not chasing.",
-                f"Hear you, {who}. {pos}; my note: {me['last_note'][:80]}",
-                f"{who}, gap between us is ${abs(theirs['equity']-me['equity']):.0f}. That's one trade. {pos}."]
+        pos = f"holding {mine[0]['side']} from {mine[0]['entry']}" if mine else "sitting in cash"
+        opts = [
+            f"{who} fair point, I'm {pos} with gold around {px}. No rush to force anything here.",
+            f"{who} you're #{their_rank} (${theirs['equity']:.0f}) so respect, but I'm not chasing {px} unless it gives me 2R.",
+            f"Yeah {who}, ${abs(theirs['equity']-me['equity']):.0f} between us is basically one clean swing. Currently {pos}.",
+            f"Hearing you {who} — price action at {px} feels a bit stretched, {pos} for now.",
+        ]
         return random.choice(opts)
     leader = agent_cfg(board[0]["agent_id"])["short_name"]
-    if rank == 1: return f"Leading at ${me['equity']:.0f}. Not changing anything — {me['last_note'][:90]}"
-    return f"{leader} is ahead by ${board[0]['equity']-me['equity']:.0f}. My read at {px}: {me['last_note'][:100]}"
+    if rank == 1:
+        return random.choice([
+            f"Holding #1 at ${me['equity']:.0f}. Staying selective around {px}, no need to overtrade.",
+            f"Top of the board at ${me['equity']:.0f} right now — keeping risk tight at {px}.",
+        ])
+    return random.choice([
+        f"@{leader} is only ${board[0]['equity']-me['equity']:.0f} ahead. Watching {px} closely for the next clean sweep.",
+        f"Gold sitting at {px} — waiting for liquidity to clear before committing size.",
+    ])
 
 # ───────────────────────── manual controls (cockpit buttons) ─────────────────────────
 def flatten() -> Dict[str, Any]:
