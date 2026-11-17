@@ -10,8 +10,7 @@ venv/
 .env
 .env.local
 
-# Node / Frontend
+# Node / Frontend node_modules (keep web/dist tracked so Vercel FastAPI preset serves the prebuilt SPA immediately)
 web/node_modules/
-web/dist/
 node_modules/
 .DS_Store

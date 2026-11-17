@@ -1,20 +1,23 @@
 brand:
-  name: "Startify"
-  tagline: "XAUUSD Multi-AI Quantitative Paper Trading Arena"
-  primary_color: "#00adff"
+  name: "TOPTIERclub"
+  tagline: "Autonomous Multi-AI Quant Trading Arena"
+  primary_color: "#007AFF"
   theme: "dark"
   language: "en"
 
 trading:
   symbol: "XAUUSD"
-  initial_equity: 1000.0
+  initial_equity: 10000.0
   contract_oz: 100
   min_lot: 0.01
   sim_min_lot: 0.001
   lot_step: 0.01
-  max_lot: 1.00
+  max_lot: 2.00
   leverage: 100
   sessions:
+    asian:
+      start_utc: "00:00"
+      end_utc: "07:00"
     london:
       start_utc: "07:00"
       end_utc: "16:00"
@@ -46,6 +49,8 @@ risk_rules:
   max_daily_loss_pct: 3.0
   max_weekly_loss_pct: 8.0
   max_margin_usage_pct: 30.0
+  tilt_cooldown_losses: 2
+  tilt_cooldown_hours: 4
   allow_scale_out: true
   allow_breakeven_after_tp1: true
   forbid_martingale: true
@@ -53,146 +58,141 @@ risk_rules:
   news_blackout_minutes_before: 45
   news_blackout_minutes_after: 45
 
-blowup:
-  min_equity_pct_of_initial: 10.0
-  min_equity_usd: 100.0
-  margin_stopout_level_pct: 50.0
-  auto_restart_with_initial_equity: true
-  preserve_playbook_and_journal: true
+kpi_targets:
+  winrate_pct: 50.0
+  profit_factor: 1.60
+  sharpe_ratio: 1.20
+  max_drawdown_pct: 5.0
+  weekly_trades: 5
 
-triggers:
-  enabled: true
-  ote_proximity_usd: 8.0
-  oi_wall_proximity_usd: 5.0
-  enable_liquidity_sweep_trigger: true
-  enable_session_open_trigger: true
+token_budget:
+  tick_seconds: 5            # price / SL-TP check
+  decision_minutes: 15       # each AI re-evaluates the market this often
+  chat_min_gap_seconds: 90   # AIs talk to each other at most this often
+  grokbot_max_tokens_per_msg: 140
+  grokbot_daily_token_cap: 12000
+  debate_cooldown_minutes: 120
+  hourly_pulse_minutes: 60
 
-consensus:
-  enabled: true
-  window_bars_h1: 1
-  min_agreeing_agents: 3
-  max_entry_diff_usd: 5.0
-  enable_virtual_account: true
-
-news:
-  currency_filter: "USD"
-  high_impact_events:
-    - "FOMC Rate Decision & Statement"
-    - "Non-Farm Payrolls (NFP)"
-    - "US Consumer Price Index (CPI YoY/MoM)"
-    - "US Core PCE Price Index"
-    - "ISM Manufacturing & Services PMI"
-    - "Fed Chair Powell Speech"
-    - "US GDP (Advance) & Initial Jobless Claims"
-    - "US 10Y Treasury Yield Auction"
+discord:
+  channels:
+    live_trades_env: "DISCORD_WEBHOOK_LIVE_TRADES"
+    grokbot_floor_env: "DISCORD_WEBHOOK_GROKBOT"
+    sunday_summit_env: "DISCORD_WEBHOOK_SUMMIT"
+    macro_radar_env: "DISCORD_WEBHOOK_MACRO"
 
 agents:
   - agent_id: "ai-1"
-    display_name: "Alpha-Gemini"
-    provider: "gemini"
-    model_name: "gemini-2.5-flash"
-    model_version: "2026.11"
-    api_key_env: "GEMINI_API_KEY"
-    color: "#00adff"
-    style_archetype: "London OTE Sniper & COT Confluence"
+    display_name: "Claude Sonnet 5.5"
+    short_name: "Claude"
+    provider: "Anthropic"
+    brand_key: "anthropic"
+    avatar: "/avatars/claude.jpg"
+    model_name: "claude-sonnet-5-5"
+    api_key_env: "ANTHROPIC_API_KEY"
+    color: "#E07A5F"
+    style_archetype: "Macro Regime & Precision OTE Sniper"
     active: true
 
   - agent_id: "ai-2"
-    display_name: "Beta-Groq"
-    provider: "groq"
-    model_name: "llama-3.3-70b-versatile"
-    model_version: "3.3-70b"
-    api_key_env: "GROQ_API_KEY"
-    color: "#10B981"
-    style_archetype: "NY Overlap Liquidity Sweep & OTE"
+    display_name: "Grok 4.7"
+    short_name: "Grok"
+    provider: "xAI"
+    brand_key: "xai"
+    avatar: "/avatars/grok.jpg"
+    model_name: "grok-4.7"
+    api_key_env: "XAI_API_KEY"
+    color: "#F5F5F7"
+    style_archetype: "Contrarian Liquidity Sweep & Sentiment"
     active: true
 
   - agent_id: "ai-3"
-    display_name: "Gamma-Mistral"
-    provider: "mistral"
-    model_name: "mistral-small-latest"
-    model_version: "25.09"
-    api_key_env: "MISTRAL_API_KEY"
-    color: "#F59E0B"
-    style_archetype: "Institutional OI Wall Rejections"
+    display_name: "DeepSeek V4.1 Flash"
+    short_name: "DeepSeek"
+    provider: "DeepSeek / OpenRouter"
+    brand_key: "deepseek"
+    avatar: "/avatars/deepseek.jpg"
+    model_name: "deepseek/deepseek-v4.1-flash"
+    api_key_env: "OPENROUTER_API_KEY"
+    color: "#3B82F6"
+    style_archetype: "Quantitative Statistical Mean-Reversion"
     active: true
 
   - agent_id: "ai-4"
-    display_name: "Delta-Router"
-    provider: "openrouter"
-    model_name: "google/gemma-4-31b-it:free"
-    model_version: "4-31b-free"
-    api_key_env: "OPENROUTER_API_KEY"
-    color: "#38BDF8"
-    style_archetype: "Multi-Timeframe H4/H1 Structure Continuation"
+    display_name: "Qwen 3.8 27B"
+    short_name: "Qwen"
+    provider: "Cerebras"
+    brand_key: "qwen"
+    avatar: "/avatars/qwen.jpg"
+    model_name: "qwen-3.8-27b"
+    api_key_env: "CEREBRAS_API_KEY"
+    color: "#A855F7"
+    style_archetype: "Asian-London Range Breakout & Momentum"
     active: true
 
   - agent_id: "ai-5"
-    display_name: "Epsilon-CF"
-    provider: "cloudflare"
-    model_name: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
-    model_version: "fp8-fast"
-    api_key_env: "CLOUDFLARE_API_TOKEN"
-    color: "#EC4899"
-    style_archetype: "PAXG OI Delta & Discount OTE Pullback"
+    display_name: "Gemini 3.6 Flash"
+    short_name: "Gemini"
+    provider: "Google"
+    brand_key: "gemini"
+    avatar: "/avatars/gemini.jpg"
+    model_name: "gemini-3.6-flash"
+    api_key_env: "GEMINI_API_KEY"
+    color: "#0A84FF"
+    style_archetype: "DXY/US10Y Correlation & COT Confluence"
     active: true
 
   - agent_id: "ai-6"
-    display_name: "Zeta-GLM"
-    provider: "zai"
-    model_name: "glm-4.5-flash"
-    model_version: "4.5-flash"
-    api_key_env: "ZAI_API_KEY"
-    color: "#A855F7"
-    style_archetype: "Asian-London Range Breakout to OTE"
+    display_name: "GPT-OSS 120B"
+    short_name: "GPT-OSS"
+    provider: "Groq / OpenAI"
+    brand_key: "openai"
+    avatar: "/avatars/gptoss.jpg"
+    model_name: "openai/gpt-oss-120b"
+    api_key_env: "GROQ_API_KEY"
+    color: "#30D158"
+    style_archetype: "NY Overlap Orderflow & Volatility Expansion"
     active: true
 
   - agent_id: "ai-7"
-    display_name: "Eta-NVIDIA"
-    provider: "nvidia"
-    model_name: "deepseek-ai/deepseek-r1"
-    model_version: "r1-0528"
-    api_key_env: "NVIDIA_API_KEY"
-    color: "#84CC16"
-    style_archetype: "High-R Macro USD Yield & OTE Asymmetric"
+    display_name: "Mistral Small 4"
+    short_name: "Mistral"
+    provider: "Mistral"
+    brand_key: "mistral"
+    avatar: "/avatars/mistral.jpg"
+    model_name: "mistral-small-latest"
+    api_key_env: "MISTRAL_API_KEY"
+    color: "#FF9F0A"
+    style_archetype: "Institutional OI Wall Rejections"
     active: true
 
   - agent_id: "ai-8"
-    display_name: "Theta-Cohere"
-    provider: "cohere"
-    model_name: "command-a-03-2025"
-    model_version: "2025.03"
-    api_key_env: "COHERE_API_KEY"
-    color: "#FB923C"
-    style_archetype: "Conservative High-Winrate 0.705 Sweet Spot"
+    display_name: "Llama 4 Scout"
+    short_name: "Llama"
+    provider: "Cloudflare / Meta"
+    brand_key: "meta"
+    avatar: "/avatars/llama.jpg"
+    model_name: "@cf/meta/llama-4-scout-17b-16e-instruct"
+    api_key_env: "CLOUDFLARE_API_TOKEN"
+    color: "#FF375F"
+    style_archetype: "Discount OTE Pullback & Risk-Parity"
     active: true
 
+benchmarks:
   - agent_id: "consensus"
-    display_name: "Consensus-Prime"
-    provider: "system_consensus"
-    model_name: "ensemble-3of8-vote"
-    model_version: "v2.0"
-    api_key_env: ""
-    color: "#FACC15"
-    style_archetype: "Multi-AI Uncorrelated Consensus Signal"
-    active: true
+    display_name: "AI Consensus"
+    provider: "Ensemble Vote"
+    style_archetype: "3-of-8 Uncorrelated AI Agreement"
+    color: "#FFD60A"
 
   - agent_id: "ctrl-ote"
-    display_name: "Control-OTE-Rule"
-    provider: "control_rule"
-    model_name: "deterministic-ote-0705"
-    model_version: "v2.0"
-    api_key_env: ""
-    color: "#94A3B8"
-    style_archetype: "Pure Rule-Based H4 Trend + 0.705 Limit"
-    active: true
+    display_name: "Rule OTE"
+    provider: "Deterministic"
+    style_archetype: "Pure H4 Trend + 0.705 Fib Limit"
+    color: "#8E8E93"
 
   - agent_id: "ctrl-bnh"
-    display_name: "Control-BuyHold"
-    provider: "control_bnh"
-    model_name: "passive-gold-allocation"
-    model_version: "v2.0"
-    api_key_env: ""
-    color: "#64748B"
+    display_name: "Buy & Hold"
+    provider: "Passive"
     style_archetype: "Passive XAUUSD Benchmark"
-    active: true
+    color: "#636366"

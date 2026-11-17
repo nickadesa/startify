@@ -1,9 +1,14 @@
 {
   "version": 2,
-  "buildCommand": "npm --prefix web install && npm --prefix web run build",
-  "outputDirectory": "web/dist",
+  "crons": [
+    {
+      "path": "/api/cron/scan",
+      "schedule": "0 13 * * *"
+    }
+  ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/main.py" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/(.*)", "destination": "/api/main.py?__api=$1" },
+    { "source": "/assets/(.*)", "destination": "/api/main.py?__asset=$1" },
+    { "source": "/(.*)", "destination": "/api/main.py?__path=$1" }
   ]
 }
