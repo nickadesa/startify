@@ -230,3 +230,54 @@ def macro_context() -> Dict[str, Any]:
     _cache["macro_ctx"] = (time.time(), ctx)
     return ctx
 
+
+def killzone_utc4(utc_dt=None) -> Dict[str, Any]:
+    """ICT Killzone schedule in New York (UTC-4) fixed offset per user spec."""
+    from datetime import datetime, timedelta, timezone
+    now_utc = utc_dt or datetime.now(timezone.utc)
+    ny = now_utc - timedelta(hours=4)
+    hm = ny.hour * 60 + ny.minute
+    windows = [
+        ("Asian Killzone", 18 * 60, 21 * 60, "18:00-21:00 UTC-4"),
+        ("London Killzone", 2 * 60, 5 * 60, "02:00-05:00 UTC-4"),
+        ("New York AM Killzone", 7 * 60, 10 * 60, "07:00-10:00 UTC-4"),
+        ("New York PM Session", 12 * 60, 16 * 60, "12:00-16:00 UTC-4"),
+    ]
+    for name, s, e, lbl in windows:
+        if s <= hm < e:
+            return {"active": True, "name": name, "window": lbl, "ny_time": ny.strftime("%H:%M"), "ny_hour": ny.hour}
+    return {"active": False, "name": "Off-Killzone", "window": "Outside KZ", "ny_time": ny.strftime("%H:%M"), "ny_hour": ny.hour}
+
+
+def open_interest(symbol: str = "XAUUSD") -> Dict[str, Any]:
+    """Fetch COMEX GC=F / GLD Options Open Interest snapshot (cached 5m)."""
+    ck = f"oi:{symbol}"
+    hit = _cache.get(ck)
+    if hit and time.time() - hit[0] < 300:
+        return hit[1]
+    out: Dict[str, Any] = {"symbol": symbol, "futures_oi": None, "options_call_oi": 0, "options_put_oi": 0, "pc_oi_ratio": None, "source": "unavailable"}
+    try:
+        j = _get("https://query1.finance.yahoo.com/v7/finance/quote?symbols=GC=F", 5.0)
+        res = (j.get("quoteResponse", {}).get("result") or [{}])[0]
+        if res.get("openInterest") is not None:
+            out["futures_oi"] = int(res["openInterest"])
+            out["source"] = "Yahoo GC=F"
+    except Exception:
+        pass
+    try:
+        opt = _get("https://query1.finance.yahoo.com/v7/finance/options/GLD", 5.0)
+        chain = (opt.get("optionChain", {}).get("result") or [{}])[0].get("options") or []
+        if chain:
+            c_oi = sum(int(x.get("openInterest") or 0) for x in chain[0].get("calls", []))
+            p_oi = sum(int(x.get("openInterest") or 0) for x in chain[0].get("puts", []))
+            if c_oi + p_oi > 0:
+                out["options_call_oi"] = c_oi
+                out["options_put_oi"] = p_oi
+                out["pc_oi_ratio"] = round(p_oi / max(c_oi, 1), 2)
+                out["source"] = (out["source"] + " + GLD Options OI").replace("unavailable + ", "")
+    except Exception:
+        pass
+    _cache[ck] = (time.time(), out)
+    return out
+
+

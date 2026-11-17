@@ -398,7 +398,7 @@ tbody tr:hover td{background:var(--hover)}
     <div class="panel">
       <div class="scroll" id="acctWrap" style="max-height:360px">
         <table>
-          <thead><tr><th>Status</th><th>Dimiss</th><th>Model</th><th>Symbol</th><th>Position</th><th>Balance</th><th>Avg. Price</th><th>Day PnL</th><th>Open PnL</th><th>Qty</th><th>ROI</th><th>Brain</th><th></th></tr></thead>
+          <thead><tr><th>Status</th><th>Dimiss</th><th>Model</th><th>Symbol</th><th>Position</th><th>Balance</th><th>Avg. Price</th><th>Day PnL</th><th>Open PnL</th><th>Qty</th><th>ROI</th><th></th></tr></thead>
           <tbody id="rows"></tbody>
         </table>
       </div>
@@ -1184,9 +1184,8 @@ function renderAcc(){
     <td class="num">${a.position==='-'?'<span class="m">-</span>':sgn(a.open_pnl)}</td>
     <td class="num">${a.qty??'<span class="m">-</span>'}</td>
     <td class="num"><span class="${a.roi_pct>0?'g':a.roi_pct<0?'r':''}">${a.roi_pct>0?'+':''}${a.roi_pct.toFixed(2)}%</span></td>
-    <td><span class="badge ${a.mode==='llm'?'b-b':'b-a'}" title="${esc(a.preset_name||'')}">${a.mode==='llm'?'LLM':'rules'}</span></td>
     <td><button class="dot-btn" data-cfg="${a.agent_id}" title="Configure ${esc(a.short)}"><i data-lucide="more-vertical"></i></button></td>
-  </tr>`).join(''):'<tr><td colspan="13" class="empty">No matching AI accounts.</td></tr>';
+  </tr>`).join(''):'<tr><td colspan="12" class="empty">No matching AI accounts.</td></tr>';
   icons();
 }
 
@@ -1553,7 +1552,7 @@ $('#profClose').onclick=()=>$('#profModal').hidden=true;
 $('#profModal').onclick=e=>{if(e.target===$('#profModal'))$('#profModal').hidden=true};
 async function openProfile(aid){
   const a=agents[aid];if(!a)return;
-  $('#profTitle').innerHTML=`<span class="mcell">${ico(a.agent_id,a.color)}<span>${esc(a.short)}</span> <span class="badge ${a.mode==='llm'?'b-b':'b-a'}">${a.mode==='llm'?'LLM':'rules'}</span></span>`;
+  $('#profTitle').innerHTML=`<span class="mcell">${ico(a.agent_id,a.color)}<span>${esc(a.short)}</span> <span class="badge b-b">${esc(a.preset_name||'Preset')}</span></span>`;
   $('#profBody').innerHTML='<div class="empty">Loading live equity &amp; journal…</div>';
   $('#profModal').hidden=false;
   const [eqRes,jRes]=await Promise.all([get('/api/live/equity/'+aid),get('/api/live/journal?limit=5&agent_id='+aid)]);

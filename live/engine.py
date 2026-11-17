@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import yaml
-from . import store, market, llm, discord, presets
+from . import store, market, llm, discord, presets, strategy_presets
 
 BASE = Path(__file__).resolve().parent.parent
 LOCK = threading.RLock()
@@ -126,7 +126,7 @@ def init(fresh: bool = False) -> None:
             store.acct_put({"agent_id": a["agent_id"], "equity": eq0, "initial_equity": eq0, "day_start_equity": eq0,
                             "day": now().strftime("%Y-%m-%d"), "week_start_equity": eq0, "consecutive_losses": 0,
                             "cooldown_until": None, "last_decision_at": None, "trades_today": 0, "lessons": [],
-                            "mode": "llm" if llm.has_key(a) else "rules", "last_note": "Waiting for first scan"})
+                            "mode": "llm" if llm.has_key(a) else "preset", "last_note": "Waiting for first scan"})
             store.equity_add(iso(), a["agent_id"], eq0)
     if store.kv_get("initialised") and not fresh:
         return
@@ -187,6 +187,20 @@ def tick() -> Dict[str, Any]:
         px = p["price"]
         store.kv_set("price", {"price": px, "source": p["source"], "ts": iso()})
         closed = []
+        for pt in store.trades(status="Pending", limit=500):
+            lim = float(pt.get("limit_price") or pt["entry"])
+            hit_lim = (px <= lim) if pt["side"] == "BUY" else (px >= lim)
+            if hit_lim:
+                pt["status"] = "Open"
+                pt["entry"] = round(px, 2)
+                pt["opened_at"] = iso()
+                store.trade_put(pt)
+                ag_acc = store.acct_get(pt["agent_id"])
+                if ag_acc:
+                    ag_acc["trades_today"] = ag_acc.get("trades_today", 0) + 1
+                    ag_acc["last_note"] = f"LIMIT filled @ {pt['entry']}: {pt.get('thesis','')}"[:240]
+                    store.acct_put(ag_acc)
+                    _announce(pt, ag_acc, opened=True)
         for t in store.trades(status="Open", limit=500):
             t["mfe"] = max(t.get("mfe", 0.0), _pnl(t["side"], t["entry"], px, t["lots"]))
             t["mae"] = min(t.get("mae", 0.0), _pnl(t["side"], t["entry"], px, t["lots"]))
@@ -215,11 +229,12 @@ def tick() -> Dict[str, Any]:
                         pst["tp1_hit"] = True
                         store.kv_set(pk, pst)
             reason = None
+            is_be = bool(pst.get("tp1_hit")) and abs(float(t["sl"]) - float(t["entry"])) < 0.05
             if t["side"] == "BUY":
-                if px <= t["sl"]: reason, fill = "SL", t["sl"]
+                if px <= t["sl"]: reason, fill = ("BE" if is_be else "SL"), t["sl"]
                 elif px >= t["tp"]: reason, fill = "TP", t["tp"]
             else:
-                if px >= t["sl"]: reason, fill = "SL", t["sl"]
+                if px >= t["sl"]: reason, fill = ("BE" if is_be else "SL"), t["sl"]
                 elif px <= t["tp"]: reason, fill = "TP", t["tp"]
             if reason:
                 _close(t, fill, reason); closed.append(t["id"])
@@ -287,15 +302,20 @@ def _write_journal(t: Dict[str, Any], a: Dict[str, Any]) -> Dict[str, Any]:
     store.journal_add(iso(), t["agent_id"], t["id"], entry)
     return entry
 
-# ───────────────────────── decide: AI opens trades ─────────────────────────
-SYSTEM = ("You are an autonomous XAUUSD (gold) day trader in a competition against other AIs. Capital is a simulated $10,000. "
-          "Rules: max 1 open position, SL and TP are mandatory, min reward:risk 2.0, SL distance between $3 and $40, no martingale, no averaging down. "
-          "Holding cash is a valid decision. Answer ONLY with JSON: "
-          "{\"action\":\"BUY|SELL|HOLD\",\"sl\":number,\"tp\":number,\"confidence\":0-100,\"thesis\":\"max 25 words, concrete, mention levels\"}.")
+# ───────────────────────── decide: Preset-Driven 6-Step Workflow ─────────────────────────
+SYSTEM = ("You are an autonomous XAUUSD (gold) day trader in a competition against other AIs. Capital is simulated $10,000. "
+          "Follow your active Strategy Preset strictly. Look at M5+ structure, ICT Killzone (UTC-4), and Open Interest. "
+          "Rules: max 1 open/pending position, SL and TP mandatory, min reward:risk 2.0, SL distance $3-$40, no martingale. "
+          "Entry modes: MARKET (enter now), LIMIT (stage limit_price), ZONE (wait without order). "
+          "Answer ONLY with JSON: "
+          "{\"action\":\"BUY|SELL|HOLD\",\"entry_mode\":\"MARKET|LIMIT|ZONE\",\"limit_price\":number_or_null,"
+          "\"sl\":number,\"tp\":number,\"confidence\":0-100,\"thesis\":\"max 25 words, concrete, mention levels\"}.")
 
-def _context(a: Dict[str, Any], ag: Dict[str, Any], px: float, bars: List[Dict[str, float]]) -> str:
-    last = bars[-24:]
-    rows = "\n".join(f"{datetime.fromtimestamp(b['t'], timezone.utc).strftime('%d %H:%M')} O{b['o']:.1f} H{b['h']:.1f} L{b['l']:.1f} C{b['c']:.1f}" for b in last)
+def _context(a: Dict[str, Any], ag: Dict[str, Any], px: float, m5: List[Dict[str, float]], m15: List[Dict[str, float]],
+             h1: List[Dict[str, float]], h4: List[Dict[str, float]], vp: Dict[str, float], macro: Dict[str, Any],
+             oi: Dict[str, Any], kz: Dict[str, Any]) -> str:
+    last_m5 = (m5 or m15)[-16:]
+    rows = "\n".join(f"{datetime.fromtimestamp(b['t'], timezone.utc).strftime('%d %H:%M')} O{b['o']:.1f} H{b['h']:.1f} L{b['l']:.1f} C{b['c']:.1f}" for b in last_m5)
     prefs = get_agent_prefs(a["agent_id"])
     pr_obj = presets.get_preset(prefs["preset"])
     lc = get_leader_config()
@@ -305,36 +325,21 @@ def _context(a: Dict[str, Any], ag: Dict[str, Any], px: float, bars: List[Dict[s
             others.append(f"{agent_cfg(o['agent_id'])['short_name']} {o['side']} @ {o['entry']}")
             if lc["consult_mode"] and lc["leader_id"] and o["agent_id"] == lc["leader_id"]:
                 leader_note = (f"\n[LEADER CONSULT SIGNAL] Leader {agent_cfg(o['agent_id'])['short_name']} is {o['side']} @ {o['entry']} "
-                               f"(SL {o['sl']}, TP {o['tp']}, Thesis: {o.get('thesis','')}). "
-                               f"Analyze this signal against your own strategy — do NOT blind-copy 100%; confirm confluence before entering.")
-    vp = market.volume_profile(bars[-48:])
+                               f"(SL {o['sl']}, TP {o['tp']}, Thesis: {o.get('thesis','')}). Confirm confluence with your preset.")
     vp_txt = f"Volume Profile (M15): POC {vp['poc']}, VAH {vp['vah']}, VAL {vp['val']}" if vp else ""
-    mc = market.macro_context()
-    mc_txt = f"Macro: DXY {mc.get('DXY','-')}, TLT {mc.get('TLT','-')}, Gold/Silver {mc.get('gold_silver_ratio','-')}" if mc else ""
+    mc_txt = f"Macro: DXY {macro.get('DXY','-')}, TLT {macro.get('TLT','-')}, Gold/Silver {macro.get('gold_silver_ratio','-')}" if macro else ""
+    oi_txt = f"Open Interest ({oi.get('source','-')}): Futures OI={oi.get('futures_oi') or '-'}, GLD Put/Call OI={oi.get('pc_oi_ratio') or '-'}"
+    t_m5 = strategy_presets._trend(m5, 8, 21)
+    t_m15 = strategy_presets._trend(m15, 9, 21)
+    t_h1 = strategy_presets._trend(h1, 9, 21)
+    t_h4 = strategy_presets._trend(h4, 9, 21)
     return (f"Your style: {ag['style_archetype']}.\nActive Preset ({pr_obj['name']}): {pr_obj['prompt']}\n"
-            f"Price now: {px}\nATR(14, M15): {market.atr(bars):.2f}\n{vp_txt}\n{mc_txt}\n"
-            f"Session: {market.session(now().hour)} (UTC {now().strftime('%H:%M')})\nM15 candles (last 24):\n{rows}\n"
+            f"Killzone (UTC-4): {kz['name']} ({kz['ny_time']} NY)\n"
+            f"Trend M5+: M5={t_m5} | M15={t_m15} | H1={t_h1} | H4={t_h4}\n"
+            f"Price now: {px} | ATR(14, M15): {market.atr(m15):.2f}\n{vp_txt}\n{mc_txt}\n{oi_txt}\n"
+            f"M5 candles (last 16):\n{rows}\n"
             f"Your equity: ${a['equity']:.2f} (day {a['equity']-a['day_start_equity']:+.2f}), losses in a row: {a['consecutive_losses']}\n"
-            f"Your own recent lessons: {a['lessons'][:3] or 'none yet'}\nOther AIs' open trades: {others or 'none'}{leader_note}")
-
-# Different style params so rule-mode agents don't all behave the same
-RULE_PARAMS = {"ai-1": (20, 50, 1.4), "ai-2": (9, 21, 1.2), "ai-3": (14, 34, 1.5), "ai-4": (12, 26, 1.3),
-               "ai-5": (21, 55, 1.6), "ai-6": (8, 18, 1.2), "ai-7": (16, 40, 1.4), "ai-8": (10, 30, 1.5)}
-
-def _rule_decision(agent_id: str, px: float, bars: List[Dict[str, float]]) -> Dict[str, Any]:
-    fast, slow, k = RULE_PARAMS.get(agent_id, (12, 30, 1.4))
-    closes = [b["c"] for b in bars]
-    if len(closes) < slow + 5: return {"action": "HOLD", "thesis": "Not enough candles yet."}
-    f, s, at = market.ema(closes[-slow*3:], fast), market.ema(closes[-slow*3:], slow), market.atr(bars)
-    if at <= 0: return {"action": "HOLD", "thesis": "No ATR."}
-    gap = (f - s) / at
-    if gap > 0.15 and px > f:
-        return {"action": "BUY", "sl": px - at * k, "tp": px + at * k * 2.2, "confidence": min(90, int(55 + gap * 40)),
-                "thesis": f"EMA{fast}>EMA{slow} uptrend, price above fast EMA; stop {k}×ATR below."}
-    if gap < -0.15 and px < f:
-        return {"action": "SELL", "sl": px + at * k, "tp": px - at * k * 2.2, "confidence": min(90, int(55 - gap * 40)),
-                "thesis": f"EMA{fast}<EMA{slow} downtrend, price below fast EMA; stop {k}×ATR above."}
-    return {"action": "HOLD", "thesis": "Trend filter flat, standing aside."}
+            f"Recent lessons: {a['lessons'][:3] or 'none yet'}\nOther AIs: {others or 'none'}{leader_note}")
 
 def _risk_gate(a: Dict[str, Any]) -> Optional[str]:
     r = cfg()["risk_rules"]
@@ -363,47 +368,103 @@ def decide(force: bool = False) -> List[str]:
     with LOCK:
         init()
         pr = store.kv_get("price")
-        bars = market.candles("15m")
-        if not pr or len(bars) < 60: return ["no data"]
+        m15 = market.candles("15m", "5d")
+        if not pr or len(m15) < 60: return ["no data"]
+        m5 = market.candles("5m", "2d") or m15
+        h1 = market.candles("1h", "1mo") or m15
+        h4 = market.candles("4h", "3mo") or h1
         px = pr["price"]
+        kz = market.killzone_utc4()
+        vp = market.volume_profile(m15[-48:])
+        macro = market.macro_context()
+        oi = market.open_interest("XAUUSD")
         interval = int(cfg()["token_budget"].get("decision_minutes", 15))
         for ag in agents():
             a = store.acct_get(ag["agent_id"]); _roll_day(a)
-            if a.get("disabled") or store.trades(status="Open", agent_id=a["agent_id"]):
+            if a.get("disabled"):
                 continue
             if a["last_decision_at"] and not force and now() - datetime.strptime(a["last_decision_at"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc) < timedelta(minutes=interval):
                 continue
             a["last_decision_at"] = iso()
+            prefs = get_agent_prefs(a["agent_id"])
+            preset_id = prefs["preset"]
+
+            # Step 1 & 3: Check existing Open or Pending LIMIT orders first
+            opens = store.trades(status="Open", agent_id=a["agent_id"])
+            if opens:
+                t_open = opens[0]
+                mg = strategy_presets.manage_open_by_preset(preset_id, t_open, px, m5, m15)
+                if mg["action"] == "CLOSE":
+                    _close(t_open, px, "AI_CLOSE")
+                    a = store.acct_get(a["agent_id"])
+                    a["last_note"] = mg["reason"][:240]
+                else:
+                    a["last_note"] = mg["reason"][:240]
+                store.acct_put(a); continue
+
+            pendings = store.trades(status="Pending", agent_id=a["agent_id"])
+            if pendings:
+                pt = pendings[0]
+                age_h = (now() - datetime.strptime(pt["opened_at"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)).total_seconds() / 3600.0
+                if age_h > 8:
+                    pt["status"] = "Cancelled"; pt["closed_at"] = iso(); pt["exit_reason"] = "TIMEOUT"
+                    store.trade_put(pt)
+                    a["last_note"] = f"LIMIT {pt['side']} @ {pt['entry']} expired after 8h"
+                else:
+                    a["last_note"] = f"Pending LIMIT {pt['side']} @ {pt['entry']} ({kz['name']})"
+                store.acct_put(a); continue
+
+            # Step 2: Check Killzone (UTC-4) & Risk Gate
+            if not kz["active"] and not force:
+                a["last_note"] = f"Outside Killzone ({kz['ny_time']} UTC-4)"
+                store.acct_put(a); continue
             blocked = _risk_gate(a)
             if blocked:
                 a["last_note"] = f"Standing down: {blocked}"; store.acct_put(a); continue
-            mode, d, tokens = "rules", None, 0
+
+            # Step 4 & 5: Analyze M5+ and execute Preset (LLM if key available, else Preset Engine)
+            mode, d, tokens = "preset", None, 0
             if llm.has_key(ag) and _tokens_ok(900):
-                res = llm.ask(ag, SYSTEM, _context(a, ag, px, bars), 350)
+                res = llm.ask(ag, SYSTEM, _context(a, ag, px, m5, m15, h1, h4, vp, macro, oi, kz), 350)
                 if res:
                     d = llm.parse_json(res[0]); tokens = res[1]; _tokens_add(tokens)
-                    mode = "llm" if d else "rules"
-            if not d: d = _rule_decision(ag["agent_id"], px, bars)
+                    mode = "llm" if d else "preset"
+            if not d:
+                d = strategy_presets.decide_by_preset(preset_id, ag["agent_id"], px, m5, m15, h1, h4, vp, macro, oi, kz, a.get("lessons", []))
             a["mode"] = mode
-            ok, why = _validate(d, px)
+
+            entry_mode = str(d.get("entry_mode", "MARKET")).upper()
+            if d.get("action") == "HOLD" or entry_mode == "ZONE":
+                a["last_note"] = d.get("thesis", f"ZONE: Monitoring {kz['name']}")[:240]
+                store.acct_put(a); continue
+
+            ref_px = float(d["limit_price"]) if (entry_mode == "LIMIT" and d.get("limit_price")) else px
+            ok, why = _validate(d, ref_px)
             if not ok:
                 a["last_note"] = f"{d.get('action','?')} rejected: {why}"; store.acct_put(a); continue
-            if d["action"] == "HOLD":
-                a["last_note"] = d.get("thesis", "Holding cash"); store.acct_put(a); continue
+
             if store.kv_get("trade_paused"):
-                a["last_note"] = f"[Analysis Only] {d['action']}: {d.get('thesis', '')}"[:240]
+                a["last_note"] = f"[Analysis Only] {entry_mode} {d['action']}: {d.get('thesis', '')}"[:240]
                 store.acct_put(a); continue
+
             spread = float(cfg()["paper"]["base_spread_usd"])
-            entry = round(px + spread / 2 if d["action"] == "BUY" else px - spread / 2, 2)
-            prefs = get_agent_prefs(a["agent_id"])
+            if entry_mode == "LIMIT":
+                entry = round(float(d["limit_price"]), 2)
+                status = "Pending"
+            else:
+                entry = round(px + spread / 2 if d["action"] == "BUY" else px - spread / 2, 2)
+                status = "Open"
             lots = min(prefs["max_lot"], _lots(a["equity"], entry, float(d["sl"]), prefs["risk_pct"]))
-            t = {"id": "T-" + uuid.uuid4().hex[:8].upper(), "agent_id": a["agent_id"], "status": "Open", "side": d["action"],
+            t = {"id": "T-" + uuid.uuid4().hex[:8].upper(), "agent_id": a["agent_id"], "status": status, "side": d["action"],
+                 "order_type": entry_mode, "limit_price": entry if entry_mode == "LIMIT" else None,
                  "lots": lots, "entry": entry, "sl": round(float(d["sl"]), 2), "sl_initial": round(float(d["sl"]), 2), "tp": round(float(d["tp"]), 2),
-                 "opened_at": iso(), "session": market.session(now().hour), "thesis": str(d.get("thesis", ""))[:240],
+                 "opened_at": iso(), "session": kz["name"], "thesis": str(d.get("thesis", ""))[:240],
                  "confidence": int(d.get("confidence", 60)), "mode": mode, "pnl": 0.0, "mfe": 0.0, "mae": 0.0}
-            a["trades_today"] += 1; a["last_note"] = t["thesis"]
+            if status == "Open":
+                a["trades_today"] += 1
+                _announce(t, a, opened=True)
+            a["last_note"] = f"[{entry_mode}] {t['thesis']}"[:240]
             store.trade_put(t); store.acct_put(a); out.append(t["id"])
-            _announce(t, a, opened=True)
     return out
 
 def _validate(d: Dict[str, Any], px: float):
