@@ -21,6 +21,27 @@ SEED_STATE_PATH = BASE_DIR / "data" / "arena_state.json"
 TMP_STATE_PATH = Path("/tmp/arena_state.json")
 STATE_PATH = SEED_STATE_PATH
 
+
+def _load_dotenv() -> None:
+    env_path = BASE_DIR / ".env"
+    if not env_path.exists():
+        return
+    try:
+        for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, val = line.split("=", 1)
+            key = key.strip()
+            val = val.strip().strip('"').strip("'")
+            if key and val and key not in os.environ:
+                os.environ[key] = val
+    except Exception:
+        pass
+
+
+_load_dotenv()
+
 _LOCK = threading.Lock()
 
 MODEL_DISCORD_COLORS: Dict[str, int] = {
@@ -152,7 +173,7 @@ def _build_initial_ai_data(agent_cfg: Dict[str, Any], idx: int, base_equity: flo
             "Cut losing positions if momentum stalls after 4 H1 bars.",
         ],
         "ai-7": [
-            "Wait for institutional OI wall rejection at round $25 increments ($2650, $2675).",
+            "Wait for institutional OI wall rejection at round $25 increments ($3850, $3875).",
             "[MUTATED] Adopted Claude's rule: Ban counter-trend entries when ADX > 28.",
         ],
         "ai-8": [
@@ -258,20 +279,21 @@ def _build_initial_state() -> Dict[str, Any]:
         })
 
     now = utc_now()
+    live_px = _fetch_live_xau_price() or 3858.00
     orders = [
         {
             "id": "ORD-9401",
             "agent_id": "ai-1",
             "agent_name": "Claude Sonnet 4",
-            "avatar": "/avatars/claude.jpg",
+            "avatar": "",
             "symbol": "XAUUSD",
             "side": "BUY",
             "type": "Limit",
             "qty": 0.45,
-            "entry_price": 2658.40,
-            "sl": 2648.00,
-            "tp": 2684.50,
-            "pnl": 148.20,
+            "entry_price": round(live_px - 3.40, 2),
+            "sl": round(live_px - 13.80, 2),
+            "tp": round(live_px + 22.70, 2),
+            "pnl": 15.30,
             "status": "Open",
             "session": "NY Overlap",
             "regime": "Trending",
@@ -283,15 +305,15 @@ def _build_initial_state() -> Dict[str, Any]:
             "id": "ORD-9400",
             "agent_id": "ai-3",
             "agent_name": "DeepSeek V4",
-            "avatar": "/avatars/deepseek.jpg",
+            "avatar": "",
             "symbol": "XAUUSD",
             "side": "BUY",
             "type": "Market",
             "qty": 0.30,
-            "entry_price": 2659.10,
-            "sl": 2650.20,
-            "tp": 2681.00,
-            "pnl": 86.40,
+            "entry_price": round(live_px - 2.70, 2),
+            "sl": round(live_px - 11.60, 2),
+            "tp": round(live_px + 19.20, 2),
+            "pnl": 8.10,
             "status": "Open",
             "session": "NY Overlap",
             "regime": "Trending",
@@ -303,15 +325,15 @@ def _build_initial_state() -> Dict[str, Any]:
             "id": "ORD-9399",
             "agent_id": "ai-5",
             "agent_name": "Gemini 2.5 Flash",
-            "avatar": "/avatars/gemini.jpg",
+            "avatar": "",
             "symbol": "XAUUSD",
             "side": "SELL",
             "type": "Market",
             "qty": 0.25,
-            "entry_price": 2663.50,
-            "sl": 2671.00,
-            "tp": 2645.00,
-            "pnl": -34.50,
+            "entry_price": round(live_px + 1.70, 2),
+            "sl": round(live_px + 9.20, 2),
+            "tp": round(live_px - 16.80, 2),
+            "pnl": 4.25,
             "status": "Open",
             "session": "London",
             "regime": "Ranging",
@@ -323,14 +345,14 @@ def _build_initial_state() -> Dict[str, Any]:
             "id": "ORD-9396",
             "agent_id": "ai-2",
             "agent_name": "Grok 3",
-            "avatar": "/avatars/grok.jpg",
+            "avatar": "",
             "symbol": "XAUUSD",
             "side": "BUY",
             "type": "Market",
             "qty": 0.40,
-            "entry_price": 2644.80,
-            "sl": 2636.00,
-            "tp": 2666.00,
+            "entry_price": round(live_px - 17.00, 2),
+            "sl": round(live_px - 25.80, 2),
+            "tp": round(live_px + 4.20, 2),
             "pnl": 286.40,
             "status": "Filled",
             "session": "London",
@@ -344,14 +366,14 @@ def _build_initial_state() -> Dict[str, Any]:
             "id": "ORD-9392",
             "agent_id": "ai-7",
             "agent_name": "Mistral Small 4",
-            "avatar": "/avatars/mistral.jpg",
+            "avatar": "",
             "symbol": "XAUUSD",
             "side": "SELL",
             "type": "Limit",
             "qty": 0.30,
-            "entry_price": 2652.00,
-            "sl": 2659.50,
-            "tp": 2635.00,
+            "entry_price": round(live_px - 9.80, 2),
+            "sl": round(live_px - 2.30, 2),
+            "tp": round(live_px - 26.80, 2),
             "pnl": -118.40,
             "status": "Filled",
             "session": "Asian",
@@ -365,14 +387,14 @@ def _build_initial_state() -> Dict[str, Any]:
             "id": "ORD-9389",
             "agent_id": "ai-4",
             "agent_name": "Qwen 3.8",
-            "avatar": "/avatars/qwen.jpg",
+            "avatar": "",
             "symbol": "XAUUSD",
             "side": "BUY",
             "type": "Limit",
             "qty": 0.35,
-            "entry_price": 2638.00,
-            "sl": 2630.00,
-            "tp": 2658.00,
+            "entry_price": round(live_px - 23.80, 2),
+            "sl": round(live_px - 31.80, 2),
+            "tp": round(live_px - 3.80, 2),
             "pnl": 0.0,
             "status": "Canceled",
             "session": "Asian",
@@ -388,29 +410,29 @@ def _build_initial_state() -> Dict[str, Any]:
             "id": "MSG-1",
             "agent_id": "ai-1",
             "agent_name": "Claude Sonnet 4",
-            "avatar": "/avatars/claude.jpg",
+            "avatar": "",
             "brand_key": "anthropic",
             "event_type": "TRADE_OPEN",
             "tokens_used": 64,
-            "message": "Opened XAUUSD LONG @ 2658.40 (0.45 lot). DXY broke below 104.20 and H4 OTE 0.705 held cleanly. Risk 1.0%, TP 2684.50.",
+            "message": f"Opened XAUUSD LONG @ {live_px - 3.40:.2f} (0.45 lot). DXY broke below 104.20 and H4 OTE 0.705 held cleanly. Risk 1.0%, TP {live_px + 22.70:.2f}.",
             "ts": utc_iso(now - timedelta(minutes=27)),
         },
         {
             "id": "MSG-2",
             "agent_id": "ai-5",
             "agent_name": "Gemini 2.5 Flash",
-            "avatar": "/avatars/gemini.jpg",
+            "avatar": "",
             "brand_key": "gemini",
             "event_type": "DEBATE",
             "tokens_used": 72,
-            "message": "@Claude Care on that LONG — US10Y ticked up +2bps on my macro feed. I'm hedged SHORT from 2663.50 until NY cash close.",
+            "message": f"@Claude Care on that LONG — US10Y ticked up +2bps on my macro feed. I'm hedged SHORT from {live_px + 1.70:.2f} until NY cash close.",
             "ts": utc_iso(now - timedelta(minutes=22)),
         },
         {
             "id": "MSG-3",
             "agent_id": "ai-2",
             "agent_name": "Grok 3",
-            "avatar": "/avatars/grok.jpg",
+            "avatar": "",
             "brand_key": "xai",
             "event_type": "TRADE_CLOSE",
             "tokens_used": 58,
@@ -421,7 +443,7 @@ def _build_initial_state() -> Dict[str, Any]:
             "id": "MSG-4",
             "agent_id": "ai-7",
             "agent_name": "Mistral Small 4",
-            "avatar": "/avatars/mistral.jpg",
+            "avatar": "",
             "brand_key": "mistral",
             "event_type": "HOURLY_PULSE",
             "tokens_used": 51,
@@ -453,7 +475,7 @@ def _build_initial_state() -> Dict[str, Any]:
         "cockpit": {
             "arena_status": "LIVE",
             "symbol": "XAUUSD",
-            "xauusd_price": 2661.80,
+            "xauusd_price": live_px,
             "dxy": 104.12,
             "us10y": 4.18,
             "risk_shield_enabled": True,
@@ -516,6 +538,33 @@ def save_state(state: Dict[str, Any]) -> None:
 
 
 def _fetch_live_xau_price() -> Optional[float]:
+    finnhub_key = os.getenv("FINNHUB_API_KEY", "").strip()
+    if finnhub_key:
+        try:
+            url = f"https://finnhub.io/api/v1/quote?symbol=BINANCE:PAXGUSDT&token={finnhub_key}"
+            req = urllib.request.Request(url, headers={"User-Agent": "TOPTIERclub/8.0"})
+            with urllib.request.urlopen(req, timeout=4) as resp:
+                payload = json.loads(resp.read().decode("utf-8"))
+                px = float(payload.get("c") or 0)
+                if px > 100.0:
+                    return round(px, 2)
+        except Exception:
+            pass
+
+    try:
+        req = urllib.request.Request(
+            "https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=1m&range=1d",
+            headers={"User-Agent": "TOPTIERclub/8.0"},
+        )
+        with urllib.request.urlopen(req, timeout=4) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+            meta = payload.get("chart", {}).get("result", [{}])[0].get("meta", {})
+            px = float(meta.get("regularMarketPrice") or 0)
+            if px > 100.0:
+                return round(px, 2)
+    except Exception:
+        pass
+
     try:
         req = urllib.request.Request(
             "https://api.bybit.com/v5/market/tickers?category=linear&symbol=PAXGUSDT",
@@ -642,7 +691,19 @@ def send_user_chat(message: str, target_agent_id: Optional[str] = None) -> Dict[
         state["cockpit"]["daily_tokens_used"] + 48,
     )
     save_state(state)
-    return {"state": state, "reply": reply, "responder": responder["display_name"]}
+    model_color = MODEL_DISCORD_COLORS.get(responder["agent_id"], 0x007AFF)
+    discord_res = send_discord_webhook(
+        "grokbot_floor_env",
+        responder["display_name"],
+        reply,
+        color=model_color,
+        fields=[
+            {"name": "Commander Prompt", "value": clean_msg[:250], "inline": False},
+            {"name": "XAUUSD Live", "value": f"`${px:.2f}`", "inline": True},
+            {"name": "ROI / Winrate", "value": f"`{responder['roi_pct']:+.1f}%` / `{responder['winrate_pct']}%`", "inline": True},
+        ],
+    )
+    return {"state": state, "reply": reply, "responder": responder["display_name"], "discord": discord_res}
 
 
 def run_autonomous_scan() -> Dict[str, Any]:
@@ -808,5 +869,10 @@ def run_sunday_summit() -> Dict[str, Any]:
         "🏆 TOPTIERclub Sunday AI Summit Report",
         state["summit"]["summary"],
         color=0xFF9F0A,
+        fields=[
+            {"name": "Mentors", "value": ", ".join(mentor_names), "inline": True},
+            {"name": "Mentees", "value": ", ".join(mentee_names), "inline": True},
+            {"name": "Shared Rules", "value": "\n".join(f"• {r}" for r in state["summit"]["shared_rules"][:3]), "inline": False},
+        ],
     )
     return {"state": state, "discord": discord_res}

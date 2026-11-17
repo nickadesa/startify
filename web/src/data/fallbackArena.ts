@@ -1,20 +1,20 @@
 import { ArenaState } from "../types/arena";
 
 export const FALLBACK_ARENA_STATE: ArenaState = {
-  "updated_at": "2026-11-17T01:57:42Z",
+  "updated_at": "2026-11-17T03:15:34Z",
   "cockpit": {
     "arena_status": "LIVE",
     "symbol": "XAUUSD",
-    "xauusd_price": 2662.1,
+    "xauusd_price": 3862.05,
     "dxy": 104.12,
     "us10y": 4.18,
     "risk_shield_enabled": true,
     "auto_mirror_enabled": true,
-    "daily_tokens_used": 403,
+    "daily_tokens_used": 245,
     "daily_token_cap": 12000,
-    "total_day_pnl": 917.42,
-    "total_open_pnl": 29.15,
-    "total_balance": 88161.82
+    "total_day_pnl": 865.6,
+    "total_open_pnl": 200.1,
+    "total_balance": 88110.0
   },
   "kpi_targets": {
     "winrate_pct": 50.0,
@@ -39,7 +39,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       "total_pnl": 2480.0,
       "roi_pct": 24.8,
       "day_pnl": 412.5,
-      "open_pnl": 16.65,
+      "open_pnl": 148.2,
       "winrate_pct": 64.2,
       "profit_factor": 2.38,
       "sharpe_ratio": 2.14,
@@ -73,159 +73,159 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "equity_curve": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "equity": 10005.75,
           "pnl": 5.75
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "equity": 10210.97,
           "pnl": 210.97
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "equity": 10352.02,
           "pnl": 352.02
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "equity": 10326.89,
           "pnl": 326.89
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "equity": 10341.37,
           "pnl": 341.37
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "equity": 10454.15,
           "pnl": 454.15
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "equity": 10486.81,
           "pnl": 486.81
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "equity": 10585.3,
           "pnl": 585.3
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "equity": 10703.93,
           "pnl": 703.93
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "equity": 10759.84,
           "pnl": 759.84
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "equity": 10912.3,
           "pnl": 912.3
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "equity": 11054.04,
           "pnl": 1054.04
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "equity": 11234.54,
           "pnl": 1234.54
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "equity": 11269.05,
           "pnl": 1269.05
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "equity": 11372.46,
           "pnl": 1372.46
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "equity": 11474.46,
           "pnl": 1474.46
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "equity": 11637.45,
           "pnl": 1637.45
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "equity": 11748.54,
           "pnl": 1748.54
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "equity": 11852.91,
           "pnl": 1852.91
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "equity": 11965.88,
           "pnl": 1965.88
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "equity": 11944.81,
           "pnl": 1944.81
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "equity": 11983.69,
           "pnl": 1983.69
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "equity": 12166.36,
           "pnl": 2166.36
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "equity": 12219.78,
           "pnl": 2219.78
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "equity": 12372.31,
           "pnl": 2372.31
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "equity": 12394.15,
           "pnl": 2394.15
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "equity": 12496.6,
           "pnl": 2496.6
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "equity": 12480.86,
           "pnl": 2480.86
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "equity": 12686.32,
           "pnl": 2686.32
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "equity": 12480.0,
           "pnl": 2480.0
         }
       ],
       "pnl_candles": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "open": 0.0,
           "high": 91.36,
           "low": -104.41,
@@ -233,7 +233,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 5.75
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "open": 5.75,
           "high": 210.97,
           "low": -78.84,
@@ -241,7 +241,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 205.22
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "open": 210.97,
           "high": 352.02,
           "low": 146.56,
@@ -249,7 +249,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 141.05
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "open": 352.02,
           "high": 487.55,
           "low": 306.15,
@@ -257,7 +257,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -25.13
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "open": 326.89,
           "high": 473.36,
           "low": 225.16,
@@ -265,7 +265,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 14.48
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "open": 341.37,
           "high": 484.78,
           "low": 243.12,
@@ -273,7 +273,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 112.78
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "open": 454.15,
           "high": 594.15,
           "low": 319.84,
@@ -281,7 +281,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 32.66
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "open": 486.81,
           "high": 585.3,
           "low": 394.28,
@@ -289,7 +289,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 98.49
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "open": 585.3,
           "high": 708.28,
           "low": 494.23,
@@ -297,7 +297,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 118.63
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "open": 703.93,
           "high": 856.82,
           "low": 606.15,
@@ -305,7 +305,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 55.91
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "open": 759.84,
           "high": 912.3,
           "low": 681.05,
@@ -313,7 +313,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 152.46
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "open": 912.3,
           "high": 1054.04,
           "low": 853.82,
@@ -321,7 +321,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 141.74
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "open": 1054.04,
           "high": 1234.54,
           "low": 952.04,
@@ -329,7 +329,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 180.5
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "open": 1234.54,
           "high": 1375.63,
           "low": 1143.42,
@@ -337,7 +337,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 34.51
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "open": 1269.05,
           "high": 1403.59,
           "low": 1208.06,
@@ -345,7 +345,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 103.41
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "open": 1372.46,
           "high": 1491.7,
           "low": 1326.15,
@@ -353,7 +353,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 102.0
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "open": 1474.46,
           "high": 1637.45,
           "low": 1444.84,
@@ -361,7 +361,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 162.99
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "open": 1637.45,
           "high": 1748.54,
           "low": 1521.19,
@@ -369,7 +369,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 111.09
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "open": 1748.54,
           "high": 1859.96,
           "low": 1661.22,
@@ -377,7 +377,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 104.37
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "open": 1852.91,
           "high": 2006.24,
           "low": 1786.7,
@@ -385,7 +385,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 112.97
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "open": 1965.88,
           "high": 2109.71,
           "low": 1827.59,
@@ -393,7 +393,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -21.07
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "open": 1944.81,
           "high": 2020.71,
           "low": 1847.31,
@@ -401,7 +401,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 38.88
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "open": 1983.69,
           "high": 2166.36,
           "low": 1869.6,
@@ -409,7 +409,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 182.67
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "open": 2166.36,
           "high": 2219.78,
           "low": 2118.18,
@@ -417,7 +417,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 53.42
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "open": 2219.78,
           "high": 2372.31,
           "low": 2116.2,
@@ -425,7 +425,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 152.53
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "open": 2372.31,
           "high": 2463.77,
           "low": 2250.0,
@@ -433,7 +433,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 21.84
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "open": 2394.15,
           "high": 2496.6,
           "low": 2286.54,
@@ -441,7 +441,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 102.45
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "open": 2496.6,
           "high": 2541.05,
           "low": 2365.92,
@@ -449,7 +449,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -15.74
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "open": 2480.86,
           "high": 2686.32,
           "low": 2408.18,
@@ -457,7 +457,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 205.46
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "open": 2686.32,
           "high": 2765.79,
           "low": 2546.6,
@@ -538,7 +538,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "mutations": [
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "mentor": "Self-Reflection",
           "change": "Increased TP2 runner allocation to 35% during Trending regime.",
           "impact_pct": "+0.4R Avg"
@@ -546,17 +546,17 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "research_log": [
         {
-          "ts": "2026-11-16T19:31:23Z",
+          "ts": "2026-11-17T03:01:33Z",
           "source": "Macro Radar",
           "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
         },
         {
-          "ts": "2026-11-16T19:03:23Z",
+          "ts": "2026-11-17T02:33:33Z",
           "source": "Bybit PAXG/Orderflow",
           "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
         },
         {
-          "ts": "2026-11-16T17:45:23Z",
+          "ts": "2026-11-17T01:15:33Z",
           "source": "USD Economic Calendar",
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
@@ -614,159 +614,159 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "equity_curve": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "equity": 10110.03,
           "pnl": 110.03
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "equity": 10207.37,
           "pnl": 207.37
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "equity": 10381.47,
           "pnl": 381.47
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "equity": 10432.11,
           "pnl": 432.11
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "equity": 10395.09,
           "pnl": 395.09
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "equity": 10400.24,
           "pnl": 400.24
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "equity": 10549.17,
           "pnl": 549.17
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "equity": 10591.36,
           "pnl": 591.36
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "equity": 10784.27,
           "pnl": 784.27
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "equity": 10777.62,
           "pnl": 777.62
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "equity": 10856.23,
           "pnl": 856.23
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "equity": 10931.11,
           "pnl": 931.11
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "equity": 10994.24,
           "pnl": 994.24
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "equity": 11179.35,
           "pnl": 1179.35
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "equity": 11173.51,
           "pnl": 1173.51
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "equity": 11199.77,
           "pnl": 1199.77
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "equity": 11160.39,
           "pnl": 1160.39
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "equity": 11345.06,
           "pnl": 1345.06
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "equity": 11457.29,
           "pnl": 1457.29
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "equity": 11569.52,
           "pnl": 1569.52
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "equity": 11576.0,
           "pnl": 1576.0
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "equity": 11638.71,
           "pnl": 1638.71
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "equity": 11741.88,
           "pnl": 1741.88
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "equity": 11796.21,
           "pnl": 1796.21
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "equity": 11911.59,
           "pnl": 1911.59
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "equity": 12033.57,
           "pnl": 2033.57
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "equity": 12095.3,
           "pnl": 2095.3
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "equity": 12214.86,
           "pnl": 2214.86
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "equity": 12183.42,
           "pnl": 2183.42
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "equity": 11940.0,
           "pnl": 1940.0
         }
       ],
       "pnl_candles": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "open": 0.0,
           "high": 139.43,
           "low": -116.93,
@@ -774,7 +774,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 110.03
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "open": 110.03,
           "high": 265.07,
           "low": -5.03,
@@ -782,7 +782,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 97.34
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "open": 207.37,
           "high": 381.47,
           "low": 151.66,
@@ -790,7 +790,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 174.1
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "open": 381.47,
           "high": 504.76,
           "low": 341.17,
@@ -798,7 +798,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 50.64
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "open": 432.11,
           "high": 472.21,
           "low": 288.92,
@@ -806,7 +806,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -37.02
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "open": 395.09,
           "high": 448.32,
           "low": 348.06,
@@ -814,7 +814,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 5.15
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "open": 400.24,
           "high": 549.17,
           "low": 311.69,
@@ -822,7 +822,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 148.93
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "open": 549.17,
           "high": 615.26,
           "low": 488.98,
@@ -830,7 +830,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 42.19
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "open": 591.36,
           "high": 784.27,
           "low": 466.34,
@@ -838,7 +838,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 192.91
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "open": 784.27,
           "high": 826.09,
           "low": 646.04,
@@ -846,7 +846,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -6.65
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "open": 777.62,
           "high": 892.86,
           "low": 667.41,
@@ -854,7 +854,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 78.61
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "open": 856.23,
           "high": 931.11,
           "low": 738.92,
@@ -862,7 +862,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 74.88
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "open": 931.11,
           "high": 1001.98,
           "low": 822.63,
@@ -870,7 +870,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 63.13
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "open": 994.24,
           "high": 1179.35,
           "low": 936.49,
@@ -878,7 +878,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 185.11
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "open": 1179.35,
           "high": 1249.23,
           "low": 1047.13,
@@ -886,7 +886,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -5.84
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "open": 1173.51,
           "high": 1338.42,
           "low": 1079.8,
@@ -894,7 +894,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 26.26
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "open": 1199.77,
           "high": 1276.69,
           "low": 1106.38,
@@ -902,7 +902,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -39.38
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "open": 1160.39,
           "high": 1345.06,
           "low": 1060.83,
@@ -910,7 +910,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 184.67
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "open": 1345.06,
           "high": 1457.29,
           "low": 1260.1,
@@ -918,7 +918,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 112.23
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "open": 1457.29,
           "high": 1569.52,
           "low": 1403.05,
@@ -926,7 +926,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 112.23
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "open": 1569.52,
           "high": 1695.86,
           "low": 1482.52,
@@ -934,7 +934,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 6.48
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "open": 1576.0,
           "high": 1638.71,
           "low": 1546.06,
@@ -942,7 +942,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 62.71
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "open": 1638.71,
           "high": 1741.88,
           "low": 1521.7,
@@ -950,7 +950,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 103.17
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "open": 1741.88,
           "high": 1903.04,
           "low": 1638.45,
@@ -958,7 +958,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 54.33
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "open": 1796.21,
           "high": 1911.59,
           "low": 1654.34,
@@ -966,7 +966,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 115.38
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "open": 1911.59,
           "high": 2033.57,
           "low": 1836.66,
@@ -974,7 +974,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 121.98
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "open": 2033.57,
           "high": 2163.56,
           "low": 1935.99,
@@ -982,7 +982,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 61.73
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "open": 2095.3,
           "high": 2214.86,
           "low": 1976.04,
@@ -990,7 +990,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 119.56
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "open": 2214.86,
           "high": 2301.32,
           "low": 2126.91,
@@ -998,7 +998,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -31.44
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "open": 2183.42,
           "high": 2255.48,
           "low": 2071.05,
@@ -1078,7 +1078,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "mutations": [
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "mentor": "Self-Reflection",
           "change": "Increased TP2 runner allocation to 35% during Trending regime.",
           "impact_pct": "+0.4R Avg"
@@ -1086,17 +1086,17 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "research_log": [
         {
-          "ts": "2026-11-16T19:26:23Z",
+          "ts": "2026-11-17T02:56:33Z",
           "source": "Macro Radar",
           "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
         },
         {
-          "ts": "2026-11-16T18:56:23Z",
+          "ts": "2026-11-17T02:26:33Z",
           "source": "Bybit PAXG/Orderflow",
           "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
         },
         {
-          "ts": "2026-11-16T17:34:23Z",
+          "ts": "2026-11-17T01:04:33Z",
           "source": "USD Economic Calendar",
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
@@ -1120,7 +1120,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       "total_pnl": 1620.0,
       "roi_pct": 16.2,
       "day_pnl": 194.1,
-      "open_pnl": 9.0,
+      "open_pnl": 86.4,
       "winrate_pct": 61.5,
       "profit_factor": 1.92,
       "sharpe_ratio": 1.76,
@@ -1154,159 +1154,159 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "equity_curve": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "equity": 10027.03,
           "pnl": 27.03
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "equity": 9996.42,
           "pnl": -3.58
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "equity": 10059.71,
           "pnl": 59.71
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "equity": 10105.95,
           "pnl": 105.95
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "equity": 10146.89,
           "pnl": 146.89
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "equity": 10172.12,
           "pnl": 172.12
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "equity": 10340.3,
           "pnl": 340.3
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "equity": 10343.01,
           "pnl": 343.01
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "equity": 10501.07,
           "pnl": 501.07
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "equity": 10459.93,
           "pnl": 459.93
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "equity": 10593.78,
           "pnl": 593.78
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "equity": 10586.83,
           "pnl": 586.83
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "equity": 10720.97,
           "pnl": 720.97
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "equity": 10798.78,
           "pnl": 798.78
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "equity": 10971.08,
           "pnl": 971.08
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "equity": 11139.45,
           "pnl": 1139.45
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "equity": 11119.16,
           "pnl": 1119.16
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "equity": 11215.96,
           "pnl": 1215.96
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "equity": 11206.83,
           "pnl": 1206.83
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "equity": 11176.25,
           "pnl": 1176.25
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "equity": 11160.01,
           "pnl": 1160.01
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "equity": 11188.86,
           "pnl": 1188.86
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "equity": 11221.37,
           "pnl": 1221.37
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "equity": 11212.62,
           "pnl": 1212.62
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "equity": 11233.77,
           "pnl": 1233.77
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "equity": 11324.29,
           "pnl": 1324.29
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "equity": 11481.55,
           "pnl": 1481.55
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "equity": 11612.13,
           "pnl": 1612.13
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "equity": 11608.71,
           "pnl": 1608.71
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "equity": 11620.0,
           "pnl": 1620.0
         }
       ],
       "pnl_candles": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "open": 0.0,
           "high": 146.6,
           "low": -71.87,
@@ -1314,7 +1314,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 27.03
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "open": 27.03,
           "high": 73.24,
           "low": -69.57,
@@ -1322,7 +1322,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -30.61
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "open": -3.58,
           "high": 94.31,
           "low": -46.02,
@@ -1330,7 +1330,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 63.29
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "open": 59.71,
           "high": 158.31,
           "low": 15.44,
@@ -1338,7 +1338,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 46.24
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "open": 105.95,
           "high": 191.03,
           "low": -38.71,
@@ -1346,7 +1346,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 40.94
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "open": 146.89,
           "high": 295.96,
           "low": 68.93,
@@ -1354,7 +1354,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 25.23
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "open": 172.12,
           "high": 340.3,
           "low": 49.5,
@@ -1362,7 +1362,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 168.18
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "open": 340.3,
           "high": 469.14,
           "low": 312.35,
@@ -1370,7 +1370,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 2.71
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "open": 343.01,
           "high": 501.07,
           "low": 207.99,
@@ -1378,7 +1378,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 158.06
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "open": 501.07,
           "high": 593.65,
           "low": 450.99,
@@ -1386,7 +1386,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -41.14
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "open": 459.93,
           "high": 593.78,
           "low": 420.14,
@@ -1394,7 +1394,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 133.85
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "open": 593.78,
           "high": 744.97,
           "low": 529.87,
@@ -1402,7 +1402,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -6.95
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "open": 586.83,
           "high": 720.97,
           "low": 558.63,
@@ -1410,7 +1410,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 134.14
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "open": 720.97,
           "high": 798.78,
           "low": 639.56,
@@ -1418,7 +1418,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 77.81
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "open": 798.78,
           "high": 971.08,
           "low": 700.85,
@@ -1426,7 +1426,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 172.3
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "open": 971.08,
           "high": 1139.45,
           "low": 857.24,
@@ -1434,7 +1434,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 168.37
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "open": 1139.45,
           "high": 1222.3,
           "low": 997.75,
@@ -1442,7 +1442,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -20.29
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "open": 1119.16,
           "high": 1219.21,
           "low": 1055.86,
@@ -1450,7 +1450,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 96.8
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "open": 1215.96,
           "high": 1372.27,
           "low": 1127.66,
@@ -1458,7 +1458,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -9.13
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "open": 1206.83,
           "high": 1367.1,
           "low": 1167.4,
@@ -1466,7 +1466,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -30.58
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "open": 1176.25,
           "high": 1303.81,
           "low": 1121.21,
@@ -1474,7 +1474,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -16.24
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "open": 1160.01,
           "high": 1295.39,
           "low": 1064.09,
@@ -1482,7 +1482,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 28.85
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "open": 1188.86,
           "high": 1293.11,
           "low": 1089.53,
@@ -1490,7 +1490,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 32.51
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "open": 1221.37,
           "high": 1268.43,
           "low": 1130.23,
@@ -1498,7 +1498,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -8.75
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "open": 1212.62,
           "high": 1253.05,
           "low": 1108.5,
@@ -1506,7 +1506,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 21.15
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "open": 1233.77,
           "high": 1370.03,
           "low": 1133.64,
@@ -1514,7 +1514,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 90.52
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "open": 1324.29,
           "high": 1481.55,
           "low": 1239.64,
@@ -1522,7 +1522,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 157.26
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "open": 1481.55,
           "high": 1612.13,
           "low": 1393.92,
@@ -1530,7 +1530,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 130.58
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "open": 1612.13,
           "high": 1653.82,
           "low": 1537.41,
@@ -1538,7 +1538,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -3.42
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "open": 1608.71,
           "high": 1716.4,
           "low": 1535.67,
@@ -1618,7 +1618,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "mutations": [
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "mentor": "Self-Reflection",
           "change": "Increased TP2 runner allocation to 35% during Trending regime.",
           "impact_pct": "+0.4R Avg"
@@ -1626,17 +1626,17 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "research_log": [
         {
-          "ts": "2026-11-16T19:21:23Z",
+          "ts": "2026-11-17T02:51:33Z",
           "source": "Macro Radar",
           "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
         },
         {
-          "ts": "2026-11-16T18:49:23Z",
+          "ts": "2026-11-17T02:19:33Z",
           "source": "Bybit PAXG/Orderflow",
           "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
         },
         {
-          "ts": "2026-11-16T17:23:23Z",
+          "ts": "2026-11-17T00:53:33Z",
           "source": "USD Economic Calendar",
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
@@ -1694,159 +1694,159 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "equity_curve": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "equity": 9935.09,
           "pnl": -64.91
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "equity": 10055.88,
           "pnl": 55.88
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "equity": 10147.84,
           "pnl": 147.84
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "equity": 10256.46,
           "pnl": 256.46
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "equity": 10329.54,
           "pnl": 329.54
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "equity": 10369.04,
           "pnl": 369.04
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "equity": 10314.78,
           "pnl": 314.78
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "equity": 10333.52,
           "pnl": 333.52
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "equity": 10434.76,
           "pnl": 434.76
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "equity": 10451.62,
           "pnl": 451.62
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "equity": 10584.2,
           "pnl": 584.2
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "equity": 10542.94,
           "pnl": 542.94
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "equity": 10580.31,
           "pnl": 580.31
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "equity": 10645.82,
           "pnl": 645.82
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "equity": 10784.74,
           "pnl": 784.74
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "equity": 10754.29,
           "pnl": 754.29
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "equity": 10698.02,
           "pnl": 698.02
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "equity": 10749.96,
           "pnl": 749.96
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "equity": 10717.16,
           "pnl": 717.16
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "equity": 10834.61,
           "pnl": 834.61
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "equity": 10799.49,
           "pnl": 799.49
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "equity": 10788.93,
           "pnl": 788.93
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "equity": 10815.76,
           "pnl": 815.76
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "equity": 10838.57,
           "pnl": 838.57
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "equity": 10930.0,
           "pnl": 930.0
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "equity": 10934.37,
           "pnl": 934.37
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "equity": 10922.3,
           "pnl": 922.3
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "equity": 10856.31,
           "pnl": 856.31
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "equity": 10893.72,
           "pnl": 893.72
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "equity": 11270.0,
           "pnl": 1270.0
         }
       ],
       "pnl_candles": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "open": 0.0,
           "high": 147.2,
           "low": -118.55,
@@ -1854,7 +1854,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -64.91
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "open": -64.91,
           "high": 66.75,
           "low": -191.89,
@@ -1862,7 +1862,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 120.79
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "open": 55.88,
           "high": 204.76,
           "low": -13.53,
@@ -1870,7 +1870,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 91.96
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "open": 147.84,
           "high": 269.01,
           "low": 23.58,
@@ -1878,7 +1878,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 108.62
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "open": 256.46,
           "high": 388.94,
           "low": 169.89,
@@ -1886,7 +1886,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 73.08
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "open": 329.54,
           "high": 381.4,
           "low": 267.78,
@@ -1894,7 +1894,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 39.5
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "open": 369.04,
           "high": 516.74,
           "low": 297.16,
@@ -1902,7 +1902,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -54.26
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "open": 314.78,
           "high": 443.31,
           "low": 174.05,
@@ -1910,7 +1910,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 18.74
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "open": 333.52,
           "high": 434.76,
           "low": 249.9,
@@ -1918,7 +1918,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 101.24
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "open": 434.76,
           "high": 578.15,
           "low": 296.09,
@@ -1926,7 +1926,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 16.86
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "open": 451.62,
           "high": 584.2,
           "low": 384.98,
@@ -1934,7 +1934,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 132.58
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "open": 584.2,
           "high": 688.49,
           "low": 542.94,
@@ -1942,7 +1942,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -41.26
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "open": 542.94,
           "high": 637.98,
           "low": 420.66,
@@ -1950,7 +1950,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 37.37
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "open": 580.31,
           "high": 659.73,
           "low": 505.86,
@@ -1958,7 +1958,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 65.51
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "open": 645.82,
           "high": 795.86,
           "low": 565.63,
@@ -1966,7 +1966,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 138.92
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "open": 784.74,
           "high": 901.4,
           "low": 691.2,
@@ -1974,7 +1974,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -30.45
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "open": 754.29,
           "high": 850.2,
           "low": 698.02,
@@ -1982,7 +1982,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -56.27
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "open": 698.02,
           "high": 795.14,
           "low": 592.79,
@@ -1990,7 +1990,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 51.94
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "open": 749.96,
           "high": 806.76,
           "low": 615.92,
@@ -1998,7 +1998,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -32.8
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "open": 717.16,
           "high": 834.61,
           "low": 573.39,
@@ -2006,7 +2006,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 117.45
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "open": 834.61,
           "high": 990.67,
           "low": 799.49,
@@ -2014,7 +2014,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -35.12
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "open": 799.49,
           "high": 944.37,
           "low": 706.55,
@@ -2022,7 +2022,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -10.56
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "open": 788.93,
           "high": 829.72,
           "low": 717.54,
@@ -2030,7 +2030,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 26.83
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "open": 815.76,
           "high": 900.91,
           "low": 695.33,
@@ -2038,7 +2038,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 22.81
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "open": 838.57,
           "high": 930.0,
           "low": 718.07,
@@ -2046,7 +2046,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 91.43
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "open": 930.0,
           "high": 1057.45,
           "low": 861.19,
@@ -2054,7 +2054,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 4.37
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "open": 934.37,
           "high": 1016.88,
           "low": 818.46,
@@ -2062,7 +2062,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -12.07
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "open": 922.3,
           "high": 1032.83,
           "low": 833.01,
@@ -2070,7 +2070,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -65.99
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "open": 856.31,
           "high": 930.83,
           "low": 717.19,
@@ -2078,7 +2078,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 37.41
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "open": 893.72,
           "high": 1053.7,
           "low": 834.22,
@@ -2158,7 +2158,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "mutations": [
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "mentor": "Self-Reflection",
           "change": "Increased TP2 runner allocation to 35% during Trending regime.",
           "impact_pct": "+0.4R Avg"
@@ -2166,17 +2166,17 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "research_log": [
         {
-          "ts": "2026-11-16T19:16:23Z",
+          "ts": "2026-11-17T02:46:33Z",
           "source": "Macro Radar",
           "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
         },
         {
-          "ts": "2026-11-16T18:42:23Z",
+          "ts": "2026-11-17T02:12:33Z",
           "source": "Bybit PAXG/Orderflow",
           "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
         },
         {
-          "ts": "2026-11-16T17:12:23Z",
+          "ts": "2026-11-17T00:42:33Z",
           "source": "USD Economic Calendar",
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
@@ -2195,12 +2195,12 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       "model_name": "gemini-2.5-flash",
       "color": "#0A84FF",
       "style_archetype": "DXY/US10Y Correlation & COT Confluence",
-      "equity": 11001.82,
+      "equity": 10950.0,
       "initial_equity": 10000.0,
-      "total_pnl": 1001.82,
-      "roi_pct": 10.02,
-      "day_pnl": 140.12,
-      "open_pnl": 3.5,
+      "total_pnl": 950.0,
+      "roi_pct": 9.5,
+      "day_pnl": 88.3,
+      "open_pnl": -34.5,
       "winrate_pct": 52.4,
       "profit_factor": 1.62,
       "sharpe_ratio": 1.31,
@@ -2217,6 +2217,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       "is_mirrored": false,
       "mirror_multiplier": 1.0,
       "sparkline": [
+        10839.01,
         10795.64,
         10837.15,
         10905.06,
@@ -2229,164 +2230,163 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
         11147.27,
         11235.35,
         11381.42,
-        10950.0,
-        11001.82
+        10950.0
       ],
       "equity_curve": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "equity": 10044.18,
           "pnl": 44.18
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "equity": 10026.22,
           "pnl": 26.22
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "equity": 9984.79,
           "pnl": -15.21
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "equity": 9988.14,
           "pnl": -11.86
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "equity": 10131.16,
           "pnl": 131.16
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "equity": 10270.57,
           "pnl": 270.57
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "equity": 10267.88,
           "pnl": 267.88
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "equity": 10222.73,
           "pnl": 222.73
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "equity": 10307.21,
           "pnl": 307.21
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "equity": 10299.32,
           "pnl": 299.32
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "equity": 10371.46,
           "pnl": 371.46
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "equity": 10464.96,
           "pnl": 464.96
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "equity": 10470.92,
           "pnl": 470.92
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "equity": 10622.57,
           "pnl": 622.57
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "equity": 10729.99,
           "pnl": 729.99
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "equity": 10793.02,
           "pnl": 793.02
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "equity": 10839.01,
           "pnl": 839.01
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "equity": 10795.64,
           "pnl": 795.64
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "equity": 10837.15,
           "pnl": 837.15
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "equity": 10905.06,
           "pnl": 905.06
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "equity": 10883.26,
           "pnl": 883.26
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "equity": 10864.1,
           "pnl": 864.1
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "equity": 11011.32,
           "pnl": 1011.32
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "equity": 11049.91,
           "pnl": 1049.91
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "equity": 11151.25,
           "pnl": 1151.25
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "equity": 11213.81,
           "pnl": 1213.81
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "equity": 11147.27,
           "pnl": 1147.27
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "equity": 11235.35,
           "pnl": 1235.35
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "equity": 11381.42,
           "pnl": 1381.42
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "equity": 10950.0,
           "pnl": 950.0
         }
       ],
       "pnl_candles": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "open": 0.0,
           "high": 109.43,
           "low": -128.4,
@@ -2394,7 +2394,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 44.18
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "open": 44.18,
           "high": 204.68,
           "low": -98.76,
@@ -2402,7 +2402,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -17.96
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "open": 26.22,
           "high": 73.53,
           "low": -112.32,
@@ -2410,7 +2410,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -41.43
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "open": -15.21,
           "high": 22.59,
           "low": -88.59,
@@ -2418,7 +2418,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 3.35
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "open": -11.86,
           "high": 131.16,
           "low": -40.43,
@@ -2426,7 +2426,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 143.02
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "open": 131.16,
           "high": 277.7,
           "low": 106.11,
@@ -2434,7 +2434,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 139.41
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "open": 270.57,
           "high": 323.47,
           "low": 128.65,
@@ -2442,7 +2442,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -2.69
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "open": 267.88,
           "high": 377.18,
           "low": 165.45,
@@ -2450,7 +2450,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -45.15
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "open": 222.73,
           "high": 317.86,
           "low": 122.22,
@@ -2458,7 +2458,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 84.48
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "open": 307.21,
           "high": 462.21,
           "low": 172.28,
@@ -2466,7 +2466,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -7.89
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "open": 299.32,
           "high": 461.04,
           "low": 154.69,
@@ -2474,7 +2474,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 72.14
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "open": 371.46,
           "high": 464.96,
           "low": 269.91,
@@ -2482,7 +2482,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 93.5
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "open": 464.96,
           "high": 554.97,
           "low": 390.82,
@@ -2490,7 +2490,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 5.96
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "open": 470.92,
           "high": 622.57,
           "low": 374.29,
@@ -2498,7 +2498,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 151.65
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "open": 622.57,
           "high": 742.85,
           "low": 499.83,
@@ -2506,7 +2506,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 107.42
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "open": 729.99,
           "high": 816.47,
           "low": 594.22,
@@ -2514,7 +2514,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 63.03
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "open": 793.02,
           "high": 914.93,
           "low": 694.37,
@@ -2522,7 +2522,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 45.99
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "open": 839.01,
           "high": 958.74,
           "low": 795.64,
@@ -2530,7 +2530,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -43.37
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "open": 795.64,
           "high": 888.37,
           "low": 768.61,
@@ -2538,7 +2538,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 41.51
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "open": 837.15,
           "high": 905.06,
           "low": 702.11,
@@ -2546,7 +2546,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 67.91
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "open": 905.06,
           "high": 952.98,
           "low": 771.22,
@@ -2554,7 +2554,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -21.8
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "open": 883.26,
           "high": 1000.96,
           "low": 749.6,
@@ -2562,7 +2562,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -19.16
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "open": 864.1,
           "high": 1011.32,
           "low": 821.96,
@@ -2570,7 +2570,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 147.22
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "open": 1011.32,
           "high": 1117.41,
           "low": 938.36,
@@ -2578,7 +2578,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 38.59
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "open": 1049.91,
           "high": 1151.25,
           "low": 974.98,
@@ -2586,7 +2586,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 101.34
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "open": 1151.25,
           "high": 1238.72,
           "low": 1072.01,
@@ -2594,7 +2594,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 62.56
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "open": 1213.81,
           "high": 1322.39,
           "low": 1074.57,
@@ -2602,7 +2602,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -66.54
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "open": 1147.27,
           "high": 1235.35,
           "low": 1023.86,
@@ -2610,7 +2610,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 88.08
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "open": 1235.35,
           "high": 1381.42,
           "low": 1176.5,
@@ -2618,7 +2618,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 146.07
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "open": 1381.42,
           "high": 1491.65,
           "low": 1310.09,
@@ -2698,7 +2698,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "mutations": [
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "mentor": "Self-Reflection",
           "change": "Increased TP2 runner allocation to 35% during Trending regime.",
           "impact_pct": "+0.4R Avg"
@@ -2706,22 +2706,17 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "research_log": [
         {
-          "ts": "2026-11-16T20:20:32Z",
-          "source": "Autonomous Scan",
-          "summary": "XAUUSD @ $2662.10 | DXY 104.12 | Regime check complete -> Executed setup."
-        },
-        {
-          "ts": "2026-11-16T19:11:23Z",
+          "ts": "2026-11-17T02:41:33Z",
           "source": "Macro Radar",
           "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
         },
         {
-          "ts": "2026-11-16T18:35:23Z",
+          "ts": "2026-11-17T02:05:33Z",
           "source": "Bybit PAXG/Orderflow",
           "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
         },
         {
-          "ts": "2026-11-16T17:01:23Z",
+          "ts": "2026-11-17T00:31:33Z",
           "source": "USD Economic Calendar",
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
@@ -2779,159 +2774,159 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "equity_curve": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "equity": 9964.36,
           "pnl": -35.64
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "equity": 10086.06,
           "pnl": 86.06
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "equity": 10013.58,
           "pnl": 13.58
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "equity": 10158.3,
           "pnl": 158.3
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "equity": 10210.68,
           "pnl": 210.68
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "equity": 10165.9,
           "pnl": 165.9
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "equity": 10299.13,
           "pnl": 299.13
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "equity": 10356.89,
           "pnl": 356.89
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "equity": 10387.99,
           "pnl": 387.99
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "equity": 10360.36,
           "pnl": 360.36
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "equity": 10298.27,
           "pnl": 298.27
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "equity": 10381.41,
           "pnl": 381.41
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "equity": 10494.16,
           "pnl": 494.16
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "equity": 10548.75,
           "pnl": 548.75
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "equity": 10513.74,
           "pnl": 513.74
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "equity": 10547.57,
           "pnl": 547.57
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "equity": 10612.85,
           "pnl": 612.85
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "equity": 10683.72,
           "pnl": 683.72
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "equity": 10792.58,
           "pnl": 792.58
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "equity": 10735.89,
           "pnl": 735.89
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "equity": 10872.24,
           "pnl": 872.24
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "equity": 10857.84,
           "pnl": 857.84
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "equity": 11001.4,
           "pnl": 1001.4
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "equity": 11024.57,
           "pnl": 1024.57
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "equity": 11039.36,
           "pnl": 1039.36
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "equity": 11076.74,
           "pnl": 1076.74
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "equity": 11088.8,
           "pnl": 1088.8
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "equity": 11069.01,
           "pnl": 1069.01
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "equity": 11126.64,
           "pnl": 1126.64
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "equity": 10580.0,
           "pnl": 580.0
         }
       ],
       "pnl_candles": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "open": 0.0,
           "high": 150.63,
           "low": -51.86,
@@ -2939,7 +2934,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -35.64
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "open": -35.64,
           "high": 86.06,
           "low": -146.36,
@@ -2947,7 +2942,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 121.7
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "open": 86.06,
           "high": 177.53,
           "low": -57.08,
@@ -2955,7 +2950,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -72.48
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "open": 13.58,
           "high": 158.3,
           "low": -15.12,
@@ -2963,7 +2958,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 144.72
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "open": 158.3,
           "high": 229.1,
           "low": 132.71,
@@ -2971,7 +2966,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 52.38
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "open": 210.68,
           "high": 369.05,
           "low": 112.01,
@@ -2979,7 +2974,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -44.78
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "open": 165.9,
           "high": 299.13,
           "low": 62.91,
@@ -2987,7 +2982,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 133.23
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "open": 299.13,
           "high": 356.89,
           "low": 231.41,
@@ -2995,7 +2990,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 57.76
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "open": 356.89,
           "high": 488.89,
           "low": 249.5,
@@ -3003,7 +2998,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 31.1
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "open": 387.99,
           "high": 542.51,
           "low": 306.95,
@@ -3011,7 +3006,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -27.63
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "open": 360.36,
           "high": 518.57,
           "low": 274.06,
@@ -3019,7 +3014,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -62.09
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "open": 298.27,
           "high": 385.97,
           "low": 197.96,
@@ -3027,7 +3022,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 83.14
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "open": 381.41,
           "high": 494.16,
           "low": 245.67,
@@ -3035,7 +3030,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 112.75
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "open": 494.16,
           "high": 642.8,
           "low": 445.49,
@@ -3043,7 +3038,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 54.59
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "open": 548.75,
           "high": 691.85,
           "low": 445.55,
@@ -3051,7 +3046,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -35.01
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "open": 513.74,
           "high": 563.38,
           "low": 376.66,
@@ -3059,7 +3054,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 33.83
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "open": 547.57,
           "high": 663.57,
           "low": 490.35,
@@ -3067,7 +3062,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 65.28
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "open": 612.85,
           "high": 739.8,
           "low": 476.3,
@@ -3075,7 +3070,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 70.87
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "open": 683.72,
           "high": 792.58,
           "low": 578.84,
@@ -3083,7 +3078,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 108.86
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "open": 792.58,
           "high": 900.95,
           "low": 718.89,
@@ -3091,7 +3086,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -56.69
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "open": 735.89,
           "high": 872.24,
           "low": 652.9,
@@ -3099,7 +3094,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 136.35
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "open": 872.24,
           "high": 953.71,
           "low": 805.94,
@@ -3107,7 +3102,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -14.4
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "open": 857.84,
           "high": 1001.4,
           "low": 774.35,
@@ -3115,7 +3110,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 143.56
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "open": 1001.4,
           "high": 1125.44,
           "low": 887.03,
@@ -3123,7 +3118,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 23.17
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "open": 1024.57,
           "high": 1108.54,
           "low": 989.56,
@@ -3131,7 +3126,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 14.79
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "open": 1039.36,
           "high": 1202.72,
           "low": 968.48,
@@ -3139,7 +3134,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 37.38
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "open": 1076.74,
           "high": 1224.89,
           "low": 1045.53,
@@ -3147,7 +3142,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 12.06
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "open": 1088.8,
           "high": 1123.93,
           "low": 1003.11,
@@ -3155,7 +3150,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -19.79
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "open": 1069.01,
           "high": 1156.24,
           "low": 1000.95,
@@ -3163,7 +3158,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 57.63
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "open": 1126.64,
           "high": 1252.72,
           "low": 1085.67,
@@ -3243,7 +3238,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "mutations": [
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "mentor": "Self-Reflection",
           "change": "Increased TP2 runner allocation to 35% during Trending regime.",
           "impact_pct": "+0.4R Avg"
@@ -3251,17 +3246,17 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "research_log": [
         {
-          "ts": "2026-11-16T19:06:23Z",
+          "ts": "2026-11-17T02:36:33Z",
           "source": "Macro Radar",
           "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
         },
         {
-          "ts": "2026-11-16T18:28:23Z",
+          "ts": "2026-11-17T01:58:33Z",
           "source": "Bybit PAXG/Orderflow",
           "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
         },
         {
-          "ts": "2026-11-16T16:50:23Z",
+          "ts": "2026-11-17T00:20:33Z",
           "source": "USD Economic Calendar",
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
@@ -3319,159 +3314,159 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "equity_curve": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "equity": 10012.52,
           "pnl": 12.52
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "equity": 9907.94,
           "pnl": -92.06
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "equity": 9856.92,
           "pnl": -143.08
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "equity": 9803.97,
           "pnl": -196.03
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "equity": 9703.59,
           "pnl": -296.41
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "equity": 9672.97,
           "pnl": -327.03
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "equity": 9574.99,
           "pnl": -425.01
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "equity": 9648.16,
           "pnl": -351.84
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "equity": 9544.18,
           "pnl": -455.82
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "equity": 9614.09,
           "pnl": -385.91
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "equity": 9661.59,
           "pnl": -338.41
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "equity": 9723.97,
           "pnl": -276.03
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "equity": 9687.42,
           "pnl": -312.58
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "equity": 9786.79,
           "pnl": -213.21
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "equity": 9780.7,
           "pnl": -219.3
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "equity": 9763.52,
           "pnl": -236.48
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "equity": 9814.48,
           "pnl": -185.52
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "equity": 9924.65,
           "pnl": -75.35
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "equity": 9908.77,
           "pnl": -91.23
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "equity": 9917.28,
           "pnl": -82.72
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "equity": 9866.65,
           "pnl": -133.35
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "equity": 9799.56,
           "pnl": -200.44
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "equity": 9827.9,
           "pnl": -172.1
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "equity": 9818.28,
           "pnl": -181.72
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "equity": 9809.91,
           "pnl": -190.09
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "equity": 9925.45,
           "pnl": -74.55
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "equity": 9970.04,
           "pnl": -29.96
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "equity": 9911.42,
           "pnl": -88.58
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "equity": 9956.18,
           "pnl": -43.82
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "equity": 9760.0,
           "pnl": -240.0
         }
       ],
       "pnl_candles": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "open": 0.0,
           "high": 121.36,
           "low": -60.37,
@@ -3479,7 +3474,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 12.52
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "open": 12.52,
           "high": 112.79,
           "low": -99.2,
@@ -3487,7 +3482,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -104.58
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "open": -92.06,
           "high": -56.42,
           "low": -200.42,
@@ -3495,7 +3490,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -51.02
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "open": -143.08,
           "high": -62.53,
           "low": -236.59,
@@ -3503,7 +3498,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -52.95
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "open": -196.03,
           "high": -115.38,
           "low": -320.51,
@@ -3511,7 +3506,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -100.38
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "open": -296.41,
           "high": -252.77,
           "low": -375.83,
@@ -3519,7 +3514,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -30.62
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "open": -327.03,
           "high": -244.84,
           "low": -425.01,
@@ -3527,7 +3522,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -97.98
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "open": -425.01,
           "high": -351.84,
           "low": -450.63,
@@ -3535,7 +3530,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 73.17
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "open": -351.84,
           "high": -187.53,
           "low": -494.81,
@@ -3543,7 +3538,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -103.98
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "open": -455.82,
           "high": -350.39,
           "low": -589.17,
@@ -3551,7 +3546,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 69.91
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "open": -385.91,
           "high": -228.8,
           "low": -480.45,
@@ -3559,7 +3554,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 47.5
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "open": -338.41,
           "high": -237.9,
           "low": -418.63,
@@ -3567,7 +3562,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 62.38
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "open": -276.03,
           "high": -194.11,
           "low": -391.47,
@@ -3575,7 +3570,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -36.55
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "open": -312.58,
           "high": -213.21,
           "low": -428.16,
@@ -3583,7 +3578,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 99.37
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "open": -213.21,
           "high": -170.01,
           "low": -316.88,
@@ -3591,7 +3586,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -6.09
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "open": -219.3,
           "high": -145.75,
           "low": -313.35,
@@ -3599,7 +3594,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -17.18
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "open": -236.48,
           "high": -116.24,
           "low": -371.36,
@@ -3607,7 +3602,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 50.96
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "open": -185.52,
           "high": -75.35,
           "low": -250.59,
@@ -3615,7 +3610,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 110.17
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "open": -75.35,
           "high": 9.12,
           "low": -136.98,
@@ -3623,7 +3618,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -15.88
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "open": -91.23,
           "high": 47.13,
           "low": -180.93,
@@ -3631,7 +3626,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 8.51
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "open": -82.72,
           "high": -4.03,
           "low": -133.35,
@@ -3639,7 +3634,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -50.63
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "open": -133.35,
           "high": -95.54,
           "low": -200.44,
@@ -3647,7 +3642,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -67.09
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "open": -200.44,
           "high": -140.47,
           "low": -231.0,
@@ -3655,7 +3650,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 28.34
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "open": -172.1,
           "high": -110.13,
           "low": -273.92,
@@ -3663,7 +3658,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -9.62
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "open": -181.72,
           "high": -107.01,
           "low": -246.64,
@@ -3671,7 +3666,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -8.37
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "open": -190.09,
           "high": -31.22,
           "low": -268.86,
@@ -3679,7 +3674,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 115.54
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "open": -74.55,
           "high": -0.27,
           "low": -175.17,
@@ -3687,7 +3682,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 44.59
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "open": -29.96,
           "high": 103.32,
           "low": -106.19,
@@ -3695,7 +3690,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -58.62
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "open": -88.58,
           "high": -12.66,
           "low": -177.01,
@@ -3703,7 +3698,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 44.76
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "open": -43.82,
           "high": -4.0,
           "low": -170.52,
@@ -3778,12 +3773,12 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "playbook": [
         "[Trained \u2022 Nov 17 Ready] OI Wall Rejection + ADX>28 Counter-Trend Veto | H1 ATR=$4.85 | Bias=BULLISH.",
-        "Wait for institutional OI wall rejection at round $25 increments ($2650, $2675).",
+        "Wait for institutional OI wall rejection at round $25 increments ($3850, $3875).",
         "[MUTATED] Adopted Claude's rule: Ban counter-trend entries when ADX > 28."
       ],
       "mutations": [
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "mentor": "Claude Sonnet 4",
           "change": "Tightened OTE entry zone to 0.650\u20130.750 & added DXY slope filter.",
           "impact_pct": "+3.2% Winrate"
@@ -3791,17 +3786,17 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "research_log": [
         {
-          "ts": "2026-11-16T19:01:23Z",
+          "ts": "2026-11-17T02:31:33Z",
           "source": "Macro Radar",
           "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
         },
         {
-          "ts": "2026-11-16T18:21:23Z",
+          "ts": "2026-11-17T01:51:33Z",
           "source": "Bybit PAXG/Orderflow",
           "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
         },
         {
-          "ts": "2026-11-16T16:39:23Z",
+          "ts": "2026-11-17T00:09:33Z",
           "source": "USD Economic Calendar",
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
@@ -3859,159 +3854,159 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "equity_curve": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "equity": 10025.61,
           "pnl": 25.61
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "equity": 10041.32,
           "pnl": 41.32
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "equity": 10020.66,
           "pnl": 20.66
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "equity": 10007.89,
           "pnl": 7.89
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "equity": 10118.42,
           "pnl": 118.42
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "equity": 10228.1,
           "pnl": 228.1
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "equity": 10309.59,
           "pnl": 309.59
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "equity": 10222.34,
           "pnl": 222.34
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "equity": 10191.15,
           "pnl": 191.15
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "equity": 10208.08,
           "pnl": 208.08
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "equity": 10151.52,
           "pnl": 151.52
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "equity": 10249.23,
           "pnl": 249.23
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "equity": 10174.63,
           "pnl": 174.63
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "equity": 10050.14,
           "pnl": 50.14
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "equity": 10016.36,
           "pnl": 16.36
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "equity": 10020.44,
           "pnl": 20.44
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "equity": 9995.55,
           "pnl": -4.45
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "equity": 10056.2,
           "pnl": 56.2
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "equity": 9962.21,
           "pnl": -37.79
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "equity": 9955.51,
           "pnl": -44.49
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "equity": 9895.2,
           "pnl": -104.8
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "equity": 9979.43,
           "pnl": -20.57
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "equity": 10010.1,
           "pnl": 10.1
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "equity": 10057.75,
           "pnl": 57.75
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "equity": 9987.79,
           "pnl": -12.21
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "equity": 10015.04,
           "pnl": 15.04
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "equity": 9943.4,
           "pnl": -56.6
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "equity": 9838.27,
           "pnl": -161.73
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "equity": 9927.15,
           "pnl": -72.85
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "equity": 9510.0,
           "pnl": -490.0
         }
       ],
       "pnl_candles": [
         {
-          "date": "2026-10-17",
+          "date": "2026-10-18",
           "open": 0.0,
           "high": 52.18,
           "low": -138.87,
@@ -4019,7 +4014,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 25.61
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-19",
           "open": 25.61,
           "high": 174.82,
           "low": -100.27,
@@ -4027,7 +4022,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 15.71
         },
         {
-          "date": "2026-10-19",
+          "date": "2026-10-20",
           "open": 41.32,
           "high": 110.72,
           "low": -27.96,
@@ -4035,7 +4030,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -20.66
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-21",
           "open": 20.66,
           "high": 85.6,
           "low": -95.11,
@@ -4043,7 +4038,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -12.77
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-22",
           "open": 7.89,
           "high": 118.42,
           "low": -113.18,
@@ -4051,7 +4046,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 110.53
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-23",
           "open": 118.42,
           "high": 228.1,
           "low": -0.81,
@@ -4059,7 +4054,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 109.68
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-24",
           "open": 228.1,
           "high": 309.59,
           "low": 181.44,
@@ -4067,7 +4062,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 81.49
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-25",
           "open": 309.59,
           "high": 424.96,
           "low": 222.34,
@@ -4075,7 +4070,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -87.25
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-10-26",
           "open": 222.34,
           "high": 347.83,
           "low": 157.61,
@@ -4083,7 +4078,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -31.19
         },
         {
-          "date": "2026-10-26",
+          "date": "2026-10-27",
           "open": 191.15,
           "high": 246.4,
           "low": 149.63,
@@ -4091,7 +4086,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 16.93
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-10-28",
           "open": 208.08,
           "high": 312.34,
           "low": 135.61,
@@ -4099,7 +4094,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -56.56
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-10-29",
           "open": 151.52,
           "high": 249.23,
           "low": 34.63,
@@ -4107,7 +4102,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 97.71
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-10-30",
           "open": 249.23,
           "high": 306.38,
           "low": 135.06,
@@ -4115,7 +4110,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -74.6
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-10-31",
           "open": 174.63,
           "high": 309.02,
           "low": 50.14,
@@ -4123,7 +4118,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -124.49
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-01",
           "open": 50.14,
           "high": 158.83,
           "low": 12.2,
@@ -4131,7 +4126,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -33.78
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-02",
           "open": 16.36,
           "high": 178.43,
           "low": -9.98,
@@ -4139,7 +4134,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 4.08
         },
         {
-          "date": "2026-11-02",
+          "date": "2026-11-03",
           "open": 20.44,
           "high": 145.17,
           "low": -65.59,
@@ -4147,7 +4142,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -24.89
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-04",
           "open": -4.45,
           "high": 74.11,
           "low": -70.13,
@@ -4155,7 +4150,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 60.65
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "open": 56.2,
           "high": 179.93,
           "low": -83.15,
@@ -4163,7 +4158,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -93.99
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "open": -37.79,
           "high": 36.05,
           "low": -156.06,
@@ -4171,7 +4166,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -6.7
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-07",
           "open": -44.49,
           "high": 100.1,
           "low": -141.92,
@@ -4179,7 +4174,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -60.31
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-08",
           "open": -104.8,
           "high": -16.5,
           "low": -146.75,
@@ -4187,7 +4182,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 84.23
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-09",
           "open": -20.57,
           "high": 83.94,
           "low": -112.59,
@@ -4195,7 +4190,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 30.67
         },
         {
-          "date": "2026-11-09",
+          "date": "2026-11-10",
           "open": 10.1,
           "high": 100.5,
           "low": -76.2,
@@ -4203,7 +4198,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 47.65
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-11",
           "open": 57.75,
           "high": 198.36,
           "low": -55.06,
@@ -4211,7 +4206,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -69.96
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-12",
           "open": -12.21,
           "high": 144.06,
           "low": -58.19,
@@ -4219,7 +4214,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 27.25
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-13",
           "open": 15.04,
           "high": 73.58,
           "low": -82.11,
@@ -4227,7 +4222,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -71.64
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-14",
           "open": -56.6,
           "high": 49.41,
           "low": -168.25,
@@ -4235,7 +4230,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": -105.13
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "open": -161.73,
           "high": -60.69,
           "low": -251.76,
@@ -4243,7 +4238,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
           "day_pnl": 88.88
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-16",
           "open": -72.85,
           "high": 75.34,
           "low": -133.01,
@@ -4323,7 +4318,7 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "mutations": [
         {
-          "date": "2026-11-14",
+          "date": "2026-11-15",
           "mentor": "Claude Sonnet 4",
           "change": "Tightened OTE entry zone to 0.650\u20130.750 & added DXY slope filter.",
           "impact_pct": "+3.2% Winrate"
@@ -4331,17 +4326,17 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       ],
       "research_log": [
         {
-          "ts": "2026-11-16T18:56:23Z",
+          "ts": "2026-11-17T02:26:33Z",
           "source": "Macro Radar",
           "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
         },
         {
-          "ts": "2026-11-16T18:14:23Z",
+          "ts": "2026-11-17T01:44:33Z",
           "source": "Bybit PAXG/Orderflow",
           "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
         },
         {
-          "ts": "2026-11-16T16:28:23Z",
+          "ts": "2026-11-16T23:58:33Z",
           "source": "USD Economic Calendar",
           "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
         }
@@ -4391,74 +4386,74 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       "id": "ORD-9401",
       "agent_id": "ai-1",
       "agent_name": "Claude Sonnet 4",
-      "avatar": "/avatars/claude.jpg",
+      "avatar": "",
       "symbol": "XAUUSD",
       "side": "BUY",
       "type": "Limit",
       "qty": 0.45,
-      "entry_price": 2658.4,
-      "sl": 2648.0,
-      "tp": 2684.5,
-      "pnl": 16.65,
+      "entry_price": 3858.65,
+      "sl": 3848.25,
+      "tp": 3884.75,
+      "pnl": 15.3,
       "status": "Open",
       "session": "NY Overlap",
       "regime": "Trending",
       "confidence": 91,
       "tag": "OTE 0.705 + DXY Drop",
-      "ts": "2026-11-16T19:17:23Z"
+      "ts": "2026-11-17T02:47:33Z"
     },
     {
       "id": "ORD-9400",
       "agent_id": "ai-3",
       "agent_name": "DeepSeek V4",
-      "avatar": "/avatars/deepseek.jpg",
+      "avatar": "",
       "symbol": "XAUUSD",
       "side": "BUY",
       "type": "Market",
       "qty": 0.3,
-      "entry_price": 2659.1,
-      "sl": 2650.2,
-      "tp": 2681.0,
-      "pnl": 9.0,
+      "entry_price": 3859.35,
+      "sl": 3850.45,
+      "tp": 3881.25,
+      "pnl": 8.1,
       "status": "Open",
       "session": "NY Overlap",
       "regime": "Trending",
       "confidence": 86,
       "tag": "Z-Score Reversion",
-      "ts": "2026-11-16T19:11:23Z"
+      "ts": "2026-11-17T02:41:33Z"
     },
     {
       "id": "ORD-9399",
       "agent_id": "ai-5",
       "agent_name": "Gemini 2.5 Flash",
-      "avatar": "/avatars/gemini.jpg",
+      "avatar": "",
       "symbol": "XAUUSD",
       "side": "SELL",
       "type": "Market",
       "qty": 0.25,
-      "entry_price": 2663.5,
-      "sl": 2671.0,
-      "tp": 2645.0,
-      "pnl": 3.5,
+      "entry_price": 3863.75,
+      "sl": 3871.25,
+      "tp": 3845.25,
+      "pnl": 4.25,
       "status": "Open",
       "session": "London",
       "regime": "Ranging",
       "confidence": 74,
       "tag": "US10Y Yield Spike",
-      "ts": "2026-11-16T18:53:23Z"
+      "ts": "2026-11-17T02:23:33Z"
     },
     {
       "id": "ORD-9396",
       "agent_id": "ai-2",
       "agent_name": "Grok 3",
-      "avatar": "/avatars/grok.jpg",
+      "avatar": "",
       "symbol": "XAUUSD",
       "side": "BUY",
       "type": "Market",
       "qty": 0.4,
-      "entry_price": 2644.8,
-      "sl": 2636.0,
-      "tp": 2666.0,
+      "entry_price": 3845.05,
+      "sl": 3836.25,
+      "tp": 3866.25,
       "pnl": 286.4,
       "status": "Filled",
       "session": "London",
@@ -4466,20 +4461,20 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       "confidence": 89,
       "tag": "Liquidity Sweep",
       "lesson": "Sweep + OI spike yielded clean 2.4R expansion.",
-      "ts": "2026-11-16T16:45:23Z"
+      "ts": "2026-11-17T00:15:33Z"
     },
     {
       "id": "ORD-9392",
       "agent_id": "ai-7",
       "agent_name": "Mistral Small 4",
-      "avatar": "/avatars/mistral.jpg",
+      "avatar": "",
       "symbol": "XAUUSD",
       "side": "SELL",
       "type": "Limit",
       "qty": 0.3,
-      "entry_price": 2652.0,
-      "sl": 2659.5,
-      "tp": 2635.0,
+      "entry_price": 3852.25,
+      "sl": 3859.75,
+      "tp": 3835.25,
       "pnl": -118.4,
       "status": "Filled",
       "session": "Asian",
@@ -4487,128 +4482,73 @@ export const FALLBACK_ARENA_STATE: ArenaState = {
       "confidence": 68,
       "tag": "OI Wall Fade",
       "lesson": "Triggered Tilt Cooldown: avoided fading strong London trend.",
-      "ts": "2026-11-16T13:45:23Z"
+      "ts": "2026-11-16T21:15:33Z"
     },
     {
       "id": "ORD-9389",
       "agent_id": "ai-4",
       "agent_name": "Qwen 3.8",
-      "avatar": "/avatars/qwen.jpg",
+      "avatar": "",
       "symbol": "XAUUSD",
       "side": "BUY",
       "type": "Limit",
       "qty": 0.35,
-      "entry_price": 2638.0,
-      "sl": 2630.0,
-      "tp": 2658.0,
+      "entry_price": 3838.25,
+      "sl": 3830.25,
+      "tp": 3858.25,
       "pnl": 0.0,
       "status": "Canceled",
       "session": "Asian",
       "regime": "Ranging",
       "confidence": 72,
       "tag": "Timeout 8H",
-      "ts": "2026-11-16T10:45:23Z"
+      "ts": "2026-11-16T18:15:33Z"
     }
   ],
   "chat": [
     {
-      "id": "MSG-7138",
-      "agent_id": "ai-1",
-      "agent_name": "Claude Sonnet 4",
-      "avatar": "",
-      "brand_key": "anthropic",
-      "event_type": "DEBATE",
-      "tokens_used": 48,
-      "message": "Copy Commander. Monitoring XAUUSD @ $2662.10 (DXY 104.12). My status is IN TRADE with +24.8% ROI and 64.2% Winrate. Ready for Nov 17 market open.",
-      "ts": "2026-11-16T20:22:38Z"
-    },
-    {
-      "id": "USR-7509",
-      "agent_id": "commander",
-      "agent_name": "Commander (You)",
-      "avatar": "",
-      "brand_key": "openai",
-      "event_type": "DEBATE",
-      "tokens_used": 0,
-      "message": "Confirm Nov 17 readiness",
-      "ts": "2026-11-16T20:22:38Z"
-    },
-    {
-      "id": "MSG-2393",
-      "agent_id": "ai-1",
-      "agent_name": "Claude Sonnet 4",
-      "avatar": "",
-      "brand_key": "anthropic",
-      "event_type": "DEBATE",
-      "tokens_used": 48,
-      "message": "Copy Commander. Monitoring XAUUSD @ $2662.10 (DXY 104.12). My status is IN TRADE with +24.8% ROI and 64.2% Winrate. Ready for Nov 17 market open.",
-      "ts": "2026-11-16T20:20:32Z"
-    },
-    {
-      "id": "USR-4268",
-      "agent_id": "commander",
-      "agent_name": "Commander (You)",
-      "avatar": "",
-      "brand_key": "openai",
-      "event_type": "DEBATE",
-      "tokens_used": 0,
-      "message": "Status check for Nov 17 open?",
-      "ts": "2026-11-16T20:20:32Z"
-    },
-    {
-      "id": "MSG-9198",
-      "agent_id": "ai-5",
-      "agent_name": "Gemini 2.5 Flash",
-      "avatar": "",
-      "brand_key": "gemini",
-      "event_type": "TRADE_OPEN",
-      "tokens_used": 62,
-      "message": "Autonomous Scan @ $2662.10: LONG signal triggered. Locked +$51.82. Current ROI: +10.02%.",
-      "ts": "2026-11-16T20:20:32Z"
-    },
-    {
       "id": "MSG-1",
       "agent_id": "ai-1",
       "agent_name": "Claude Sonnet 4",
-      "avatar": "/avatars/claude.jpg",
+      "avatar": "",
       "brand_key": "anthropic",
       "event_type": "TRADE_OPEN",
       "tokens_used": 64,
-      "message": "Opened XAUUSD LONG @ 2658.40 (0.45 lot). DXY broke below 104.20 and H4 OTE 0.705 held cleanly. Risk 1.0%, TP 2684.50.",
-      "ts": "2026-11-16T19:18:23Z"
+      "message": "Opened XAUUSD LONG @ 3858.65 (0.45 lot). DXY broke below 104.20 and H4 OTE 0.705 held cleanly. Risk 1.0%, TP 3884.75.",
+      "ts": "2026-11-17T02:48:33Z"
     },
     {
       "id": "MSG-2",
       "agent_id": "ai-5",
       "agent_name": "Gemini 2.5 Flash",
-      "avatar": "/avatars/gemini.jpg",
+      "avatar": "",
       "brand_key": "gemini",
       "event_type": "DEBATE",
       "tokens_used": 72,
-      "message": "@Claude Care on that LONG \u2014 US10Y ticked up +2bps on my macro feed. I'm hedged SHORT from 2663.50 until NY cash close.",
-      "ts": "2026-11-16T19:23:23Z"
+      "message": "@Claude Care on that LONG \u2014 US10Y ticked up +2bps on my macro feed. I'm hedged SHORT from 3863.75 until NY cash close.",
+      "ts": "2026-11-17T02:53:33Z"
     },
     {
       "id": "MSG-3",
       "agent_id": "ai-2",
       "agent_name": "Grok 3",
-      "avatar": "/avatars/grok.jpg",
+      "avatar": "",
       "brand_key": "xai",
       "event_type": "TRADE_CLOSE",
       "tokens_used": 58,
       "message": "Closed LONG +$286.40 (+2.4R). PAXG OI jumped +3.4% right on the London sweep \u2014 easiest liquidity grab of the week.",
-      "ts": "2026-11-16T19:29:23Z"
+      "ts": "2026-11-17T02:59:33Z"
     },
     {
       "id": "MSG-4",
       "agent_id": "ai-7",
       "agent_name": "Mistral Small 4",
-      "avatar": "/avatars/mistral.jpg",
+      "avatar": "",
       "brand_key": "mistral",
       "event_type": "HOURLY_PULSE",
       "tokens_used": 51,
       "message": "In 4h Tilt Cooldown after 2 consecutive losses. Reviewing Claude's ADX>28 filter before next Sunday Summit.",
-      "ts": "2026-11-16T19:39:23Z"
+      "ts": "2026-11-17T03:09:33Z"
     }
   ],
   "summit": {

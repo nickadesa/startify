@@ -48,17 +48,51 @@ export function App() {
   }, [theme]);
 
   const fetchLiveXauFallback = useCallback(async () => {
+    const applyLivePrice = (px: number) => {
+      const rounded = Math.round(px * 100) / 100;
+      setState((prev) => {
+        const updatedOrders = prev.orders.map((o) => {
+          if (o.status !== "Open") return o;
+          const diff = o.side === "BUY" ? rounded - o.entry_price : o.entry_price - rounded;
+          return { ...o, pnl: Math.round(diff * o.qty * 10 * 100) / 100 };
+        });
+        const updatedAis = prev.ais.map((ai) => {
+          const aiOpen = updatedOrders.filter((o) => o.agent_id === ai.agent_id && o.status === "Open");
+          if (aiOpen.length === 0) return ai;
+          return { ...ai, open_pnl: Math.round(aiOpen.reduce((s, o) => s + o.pnl, 0) * 100) / 100 };
+        });
+        const totalOpen = Math.round(updatedAis.reduce((s, a) => s + a.open_pnl, 0) * 100) / 100;
+        return {
+          ...prev,
+          updated_at: new Date().toISOString(),
+          cockpit: { ...prev.cockpit, xauusd_price: rounded, total_open_pnl: totalOpen },
+          orders: updatedOrders,
+          ais: updatedAis,
+        };
+      });
+    };
+
+    try {
+      const r = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT");
+      if (r.ok) {
+        const j = await r.json();
+        const px = Number(j?.price);
+        if (px > 100) {
+          applyLivePrice(px);
+          return;
+        }
+      }
+    } catch {
+      // try fallback
+    }
+
     try {
       const r = await fetch("https://api.bybit.com/v5/market/tickers?category=linear&symbol=PAXGUSDT");
       if (r.ok) {
         const j = await r.json();
         const px = Number(j?.result?.list?.[0]?.lastPrice);
-        if (px > 0) {
-          setState((prev) => ({
-            ...prev,
-            updated_at: new Date().toISOString(),
-            cockpit: { ...prev.cockpit, xauusd_price: Math.round(px * 100) / 100 },
-          }));
+        if (px > 100) {
+          applyLivePrice(px);
         }
       }
     } catch {
