@@ -1,0 +1,4661 @@
+import { ArenaState } from "../types/arena";
+
+export const FALLBACK_ARENA_STATE: ArenaState = {
+  "updated_at": "2026-11-17T01:57:42Z",
+  "cockpit": {
+    "arena_status": "LIVE",
+    "symbol": "XAUUSD",
+    "xauusd_price": 2662.1,
+    "dxy": 104.12,
+    "us10y": 4.18,
+    "risk_shield_enabled": true,
+    "auto_mirror_enabled": true,
+    "daily_tokens_used": 403,
+    "daily_token_cap": 12000,
+    "total_day_pnl": 917.42,
+    "total_open_pnl": 29.15,
+    "total_balance": 88161.82
+  },
+  "kpi_targets": {
+    "winrate_pct": 50.0,
+    "profit_factor": 1.6,
+    "sharpe_ratio": 1.2,
+    "max_drawdown_pct": 5.0,
+    "weekly_trades": 5
+  },
+  "ais": [
+    {
+      "agent_id": "ai-1",
+      "display_name": "Claude Sonnet 4",
+      "short_name": "Claude",
+      "provider": "Anthropic",
+      "brand_key": "anthropic",
+      "avatar": "/avatars/claude.jpg",
+      "model_name": "claude-sonnet-4-20250514",
+      "color": "#E07A5F",
+      "style_archetype": "Macro Regime & Precision OTE Sniper",
+      "equity": 12480.0,
+      "initial_equity": 10000.0,
+      "total_pnl": 2480.0,
+      "roi_pct": 24.8,
+      "day_pnl": 412.5,
+      "open_pnl": 16.65,
+      "winrate_pct": 64.2,
+      "profit_factor": 2.38,
+      "sharpe_ratio": 2.14,
+      "sortino_ratio": 2.74,
+      "calmar_ratio": 10.33,
+      "max_dd_pct": 2.4,
+      "expectancy_usd": 109.29,
+      "avg_rr": 2.26,
+      "kelly_pct": 18.0,
+      "weekly_trades": 28,
+      "status": "IN TRADE",
+      "consecutive_losses": 0,
+      "is_leader": true,
+      "is_mirrored": true,
+      "mirror_multiplier": 1.0,
+      "sparkline": [
+        11637.45,
+        11748.54,
+        11852.91,
+        11965.88,
+        11944.81,
+        11983.69,
+        12166.36,
+        12219.78,
+        12372.31,
+        12394.15,
+        12496.6,
+        12480.86,
+        12686.32,
+        12480.0
+      ],
+      "equity_curve": [
+        {
+          "date": "2026-10-17",
+          "equity": 10005.75,
+          "pnl": 5.75
+        },
+        {
+          "date": "2026-10-18",
+          "equity": 10210.97,
+          "pnl": 210.97
+        },
+        {
+          "date": "2026-10-19",
+          "equity": 10352.02,
+          "pnl": 352.02
+        },
+        {
+          "date": "2026-10-20",
+          "equity": 10326.89,
+          "pnl": 326.89
+        },
+        {
+          "date": "2026-10-21",
+          "equity": 10341.37,
+          "pnl": 341.37
+        },
+        {
+          "date": "2026-10-22",
+          "equity": 10454.15,
+          "pnl": 454.15
+        },
+        {
+          "date": "2026-10-23",
+          "equity": 10486.81,
+          "pnl": 486.81
+        },
+        {
+          "date": "2026-10-24",
+          "equity": 10585.3,
+          "pnl": 585.3
+        },
+        {
+          "date": "2026-10-25",
+          "equity": 10703.93,
+          "pnl": 703.93
+        },
+        {
+          "date": "2026-10-26",
+          "equity": 10759.84,
+          "pnl": 759.84
+        },
+        {
+          "date": "2026-10-27",
+          "equity": 10912.3,
+          "pnl": 912.3
+        },
+        {
+          "date": "2026-10-28",
+          "equity": 11054.04,
+          "pnl": 1054.04
+        },
+        {
+          "date": "2026-10-29",
+          "equity": 11234.54,
+          "pnl": 1234.54
+        },
+        {
+          "date": "2026-10-30",
+          "equity": 11269.05,
+          "pnl": 1269.05
+        },
+        {
+          "date": "2026-10-31",
+          "equity": 11372.46,
+          "pnl": 1372.46
+        },
+        {
+          "date": "2026-11-01",
+          "equity": 11474.46,
+          "pnl": 1474.46
+        },
+        {
+          "date": "2026-11-02",
+          "equity": 11637.45,
+          "pnl": 1637.45
+        },
+        {
+          "date": "2026-11-03",
+          "equity": 11748.54,
+          "pnl": 1748.54
+        },
+        {
+          "date": "2026-11-04",
+          "equity": 11852.91,
+          "pnl": 1852.91
+        },
+        {
+          "date": "2026-11-05",
+          "equity": 11965.88,
+          "pnl": 1965.88
+        },
+        {
+          "date": "2026-11-06",
+          "equity": 11944.81,
+          "pnl": 1944.81
+        },
+        {
+          "date": "2026-11-07",
+          "equity": 11983.69,
+          "pnl": 1983.69
+        },
+        {
+          "date": "2026-11-08",
+          "equity": 12166.36,
+          "pnl": 2166.36
+        },
+        {
+          "date": "2026-11-09",
+          "equity": 12219.78,
+          "pnl": 2219.78
+        },
+        {
+          "date": "2026-11-10",
+          "equity": 12372.31,
+          "pnl": 2372.31
+        },
+        {
+          "date": "2026-11-11",
+          "equity": 12394.15,
+          "pnl": 2394.15
+        },
+        {
+          "date": "2026-11-12",
+          "equity": 12496.6,
+          "pnl": 2496.6
+        },
+        {
+          "date": "2026-11-13",
+          "equity": 12480.86,
+          "pnl": 2480.86
+        },
+        {
+          "date": "2026-11-14",
+          "equity": 12686.32,
+          "pnl": 2686.32
+        },
+        {
+          "date": "2026-11-15",
+          "equity": 12480.0,
+          "pnl": 2480.0
+        }
+      ],
+      "pnl_candles": [
+        {
+          "date": "2026-10-17",
+          "open": 0.0,
+          "high": 91.36,
+          "low": -104.41,
+          "close": 5.75,
+          "day_pnl": 5.75
+        },
+        {
+          "date": "2026-10-18",
+          "open": 5.75,
+          "high": 210.97,
+          "low": -78.84,
+          "close": 210.97,
+          "day_pnl": 205.22
+        },
+        {
+          "date": "2026-10-19",
+          "open": 210.97,
+          "high": 352.02,
+          "low": 146.56,
+          "close": 352.02,
+          "day_pnl": 141.05
+        },
+        {
+          "date": "2026-10-20",
+          "open": 352.02,
+          "high": 487.55,
+          "low": 306.15,
+          "close": 326.89,
+          "day_pnl": -25.13
+        },
+        {
+          "date": "2026-10-21",
+          "open": 326.89,
+          "high": 473.36,
+          "low": 225.16,
+          "close": 341.37,
+          "day_pnl": 14.48
+        },
+        {
+          "date": "2026-10-22",
+          "open": 341.37,
+          "high": 484.78,
+          "low": 243.12,
+          "close": 454.15,
+          "day_pnl": 112.78
+        },
+        {
+          "date": "2026-10-23",
+          "open": 454.15,
+          "high": 594.15,
+          "low": 319.84,
+          "close": 486.81,
+          "day_pnl": 32.66
+        },
+        {
+          "date": "2026-10-24",
+          "open": 486.81,
+          "high": 585.3,
+          "low": 394.28,
+          "close": 585.3,
+          "day_pnl": 98.49
+        },
+        {
+          "date": "2026-10-25",
+          "open": 585.3,
+          "high": 708.28,
+          "low": 494.23,
+          "close": 703.93,
+          "day_pnl": 118.63
+        },
+        {
+          "date": "2026-10-26",
+          "open": 703.93,
+          "high": 856.82,
+          "low": 606.15,
+          "close": 759.84,
+          "day_pnl": 55.91
+        },
+        {
+          "date": "2026-10-27",
+          "open": 759.84,
+          "high": 912.3,
+          "low": 681.05,
+          "close": 912.3,
+          "day_pnl": 152.46
+        },
+        {
+          "date": "2026-10-28",
+          "open": 912.3,
+          "high": 1054.04,
+          "low": 853.82,
+          "close": 1054.04,
+          "day_pnl": 141.74
+        },
+        {
+          "date": "2026-10-29",
+          "open": 1054.04,
+          "high": 1234.54,
+          "low": 952.04,
+          "close": 1234.54,
+          "day_pnl": 180.5
+        },
+        {
+          "date": "2026-10-30",
+          "open": 1234.54,
+          "high": 1375.63,
+          "low": 1143.42,
+          "close": 1269.05,
+          "day_pnl": 34.51
+        },
+        {
+          "date": "2026-10-31",
+          "open": 1269.05,
+          "high": 1403.59,
+          "low": 1208.06,
+          "close": 1372.46,
+          "day_pnl": 103.41
+        },
+        {
+          "date": "2026-11-01",
+          "open": 1372.46,
+          "high": 1491.7,
+          "low": 1326.15,
+          "close": 1474.46,
+          "day_pnl": 102.0
+        },
+        {
+          "date": "2026-11-02",
+          "open": 1474.46,
+          "high": 1637.45,
+          "low": 1444.84,
+          "close": 1637.45,
+          "day_pnl": 162.99
+        },
+        {
+          "date": "2026-11-03",
+          "open": 1637.45,
+          "high": 1748.54,
+          "low": 1521.19,
+          "close": 1748.54,
+          "day_pnl": 111.09
+        },
+        {
+          "date": "2026-11-04",
+          "open": 1748.54,
+          "high": 1859.96,
+          "low": 1661.22,
+          "close": 1852.91,
+          "day_pnl": 104.37
+        },
+        {
+          "date": "2026-11-05",
+          "open": 1852.91,
+          "high": 2006.24,
+          "low": 1786.7,
+          "close": 1965.88,
+          "day_pnl": 112.97
+        },
+        {
+          "date": "2026-11-06",
+          "open": 1965.88,
+          "high": 2109.71,
+          "low": 1827.59,
+          "close": 1944.81,
+          "day_pnl": -21.07
+        },
+        {
+          "date": "2026-11-07",
+          "open": 1944.81,
+          "high": 2020.71,
+          "low": 1847.31,
+          "close": 1983.69,
+          "day_pnl": 38.88
+        },
+        {
+          "date": "2026-11-08",
+          "open": 1983.69,
+          "high": 2166.36,
+          "low": 1869.6,
+          "close": 2166.36,
+          "day_pnl": 182.67
+        },
+        {
+          "date": "2026-11-09",
+          "open": 2166.36,
+          "high": 2219.78,
+          "low": 2118.18,
+          "close": 2219.78,
+          "day_pnl": 53.42
+        },
+        {
+          "date": "2026-11-10",
+          "open": 2219.78,
+          "high": 2372.31,
+          "low": 2116.2,
+          "close": 2372.31,
+          "day_pnl": 152.53
+        },
+        {
+          "date": "2026-11-11",
+          "open": 2372.31,
+          "high": 2463.77,
+          "low": 2250.0,
+          "close": 2394.15,
+          "day_pnl": 21.84
+        },
+        {
+          "date": "2026-11-12",
+          "open": 2394.15,
+          "high": 2496.6,
+          "low": 2286.54,
+          "close": 2496.6,
+          "day_pnl": 102.45
+        },
+        {
+          "date": "2026-11-13",
+          "open": 2496.6,
+          "high": 2541.05,
+          "low": 2365.92,
+          "close": 2480.86,
+          "day_pnl": -15.74
+        },
+        {
+          "date": "2026-11-14",
+          "open": 2480.86,
+          "high": 2686.32,
+          "low": 2408.18,
+          "close": 2686.32,
+          "day_pnl": 205.46
+        },
+        {
+          "date": "2026-11-15",
+          "open": 2686.32,
+          "high": 2765.79,
+          "low": 2546.6,
+          "close": 2480.0,
+          "day_pnl": 28.7
+        }
+      ],
+      "session_regime_heatmap": [
+        {
+          "session": "Asian",
+          "regime": "Trending",
+          "winrate": 72.3,
+          "pnl": 481.57,
+          "trades": 9
+        },
+        {
+          "session": "Asian",
+          "regime": "Ranging",
+          "winrate": 54.0,
+          "pnl": 91.99,
+          "trades": 2
+        },
+        {
+          "session": "Asian",
+          "regime": "High-Vol",
+          "winrate": 77.3,
+          "pnl": 584.99,
+          "trades": 5
+        },
+        {
+          "session": "London",
+          "regime": "Trending",
+          "winrate": 62.4,
+          "pnl": 349.53,
+          "trades": 6
+        },
+        {
+          "session": "London",
+          "regime": "Ranging",
+          "winrate": 55.7,
+          "pnl": 171.01,
+          "trades": 7
+        },
+        {
+          "session": "London",
+          "regime": "High-Vol",
+          "winrate": 77.8,
+          "pnl": 812.02,
+          "trades": 5
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Trending",
+          "winrate": 50.9,
+          "pnl": 79.56,
+          "trades": 4
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Ranging",
+          "winrate": 75.1,
+          "pnl": 434.49,
+          "trades": 4
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "High-Vol",
+          "winrate": 59.5,
+          "pnl": 246.78,
+          "trades": 6
+        }
+      ],
+      "playbook": [
+        "[Trained \u2022 Nov 17 Ready] Macro Regime + H4 OTE 0.705 Sniper (Calibrated on 400 H1 bars) | H1 ATR=$4.85 | Bias=BULLISH.",
+        "Only enter XAUUSD London/NY Overlap when DXY < 20-EMA & H4 OTE 0.618\u20130.786 aligns.",
+        "Move SL to Breakeven +2p once TP1 (1.5R) fills; trail runner below M15 swing.",
+        "Skip entries 45m before/after CPI, NFP, or FOMC rate decisions."
+      ],
+      "mutations": [
+        {
+          "date": "2026-11-14",
+          "mentor": "Self-Reflection",
+          "change": "Increased TP2 runner allocation to 35% during Trending regime.",
+          "impact_pct": "+0.4R Avg"
+        }
+      ],
+      "research_log": [
+        {
+          "ts": "2026-11-16T19:31:23Z",
+          "source": "Macro Radar",
+          "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
+        },
+        {
+          "ts": "2026-11-16T19:03:23Z",
+          "source": "Bybit PAXG/Orderflow",
+          "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
+        },
+        {
+          "ts": "2026-11-16T17:45:23Z",
+          "source": "USD Economic Calendar",
+          "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
+        }
+      ],
+      "rank": 1,
+      "trained_skill": "Macro Regime + H4 OTE 0.705 Sniper (Calibrated on 400 H1 bars)",
+      "nov17_ready": true
+    },
+    {
+      "agent_id": "ai-2",
+      "display_name": "Grok 3",
+      "short_name": "Grok",
+      "provider": "xAI",
+      "brand_key": "xai",
+      "avatar": "/avatars/grok.jpg",
+      "model_name": "grok-3-beta",
+      "color": "#F5F5F7",
+      "style_archetype": "Contrarian Liquidity Sweep & Sentiment",
+      "equity": 11940.0,
+      "initial_equity": 10000.0,
+      "total_pnl": 1940.0,
+      "roi_pct": 19.4,
+      "day_pnl": 286.4,
+      "open_pnl": 0.0,
+      "winrate_pct": 58.6,
+      "profit_factor": 2.05,
+      "sharpe_ratio": 1.84,
+      "sortino_ratio": 2.36,
+      "calmar_ratio": 6.26,
+      "max_dd_pct": 3.1,
+      "expectancy_usd": 72.87,
+      "avg_rr": 1.95,
+      "kelly_pct": 18.0,
+      "weekly_trades": 34,
+      "status": "SCANNING",
+      "consecutive_losses": 0,
+      "is_leader": false,
+      "is_mirrored": true,
+      "mirror_multiplier": 1.0,
+      "sparkline": [
+        11160.39,
+        11345.06,
+        11457.29,
+        11569.52,
+        11576.0,
+        11638.71,
+        11741.88,
+        11796.21,
+        11911.59,
+        12033.57,
+        12095.3,
+        12214.86,
+        12183.42,
+        11940.0
+      ],
+      "equity_curve": [
+        {
+          "date": "2026-10-17",
+          "equity": 10110.03,
+          "pnl": 110.03
+        },
+        {
+          "date": "2026-10-18",
+          "equity": 10207.37,
+          "pnl": 207.37
+        },
+        {
+          "date": "2026-10-19",
+          "equity": 10381.47,
+          "pnl": 381.47
+        },
+        {
+          "date": "2026-10-20",
+          "equity": 10432.11,
+          "pnl": 432.11
+        },
+        {
+          "date": "2026-10-21",
+          "equity": 10395.09,
+          "pnl": 395.09
+        },
+        {
+          "date": "2026-10-22",
+          "equity": 10400.24,
+          "pnl": 400.24
+        },
+        {
+          "date": "2026-10-23",
+          "equity": 10549.17,
+          "pnl": 549.17
+        },
+        {
+          "date": "2026-10-24",
+          "equity": 10591.36,
+          "pnl": 591.36
+        },
+        {
+          "date": "2026-10-25",
+          "equity": 10784.27,
+          "pnl": 784.27
+        },
+        {
+          "date": "2026-10-26",
+          "equity": 10777.62,
+          "pnl": 777.62
+        },
+        {
+          "date": "2026-10-27",
+          "equity": 10856.23,
+          "pnl": 856.23
+        },
+        {
+          "date": "2026-10-28",
+          "equity": 10931.11,
+          "pnl": 931.11
+        },
+        {
+          "date": "2026-10-29",
+          "equity": 10994.24,
+          "pnl": 994.24
+        },
+        {
+          "date": "2026-10-30",
+          "equity": 11179.35,
+          "pnl": 1179.35
+        },
+        {
+          "date": "2026-10-31",
+          "equity": 11173.51,
+          "pnl": 1173.51
+        },
+        {
+          "date": "2026-11-01",
+          "equity": 11199.77,
+          "pnl": 1199.77
+        },
+        {
+          "date": "2026-11-02",
+          "equity": 11160.39,
+          "pnl": 1160.39
+        },
+        {
+          "date": "2026-11-03",
+          "equity": 11345.06,
+          "pnl": 1345.06
+        },
+        {
+          "date": "2026-11-04",
+          "equity": 11457.29,
+          "pnl": 1457.29
+        },
+        {
+          "date": "2026-11-05",
+          "equity": 11569.52,
+          "pnl": 1569.52
+        },
+        {
+          "date": "2026-11-06",
+          "equity": 11576.0,
+          "pnl": 1576.0
+        },
+        {
+          "date": "2026-11-07",
+          "equity": 11638.71,
+          "pnl": 1638.71
+        },
+        {
+          "date": "2026-11-08",
+          "equity": 11741.88,
+          "pnl": 1741.88
+        },
+        {
+          "date": "2026-11-09",
+          "equity": 11796.21,
+          "pnl": 1796.21
+        },
+        {
+          "date": "2026-11-10",
+          "equity": 11911.59,
+          "pnl": 1911.59
+        },
+        {
+          "date": "2026-11-11",
+          "equity": 12033.57,
+          "pnl": 2033.57
+        },
+        {
+          "date": "2026-11-12",
+          "equity": 12095.3,
+          "pnl": 2095.3
+        },
+        {
+          "date": "2026-11-13",
+          "equity": 12214.86,
+          "pnl": 2214.86
+        },
+        {
+          "date": "2026-11-14",
+          "equity": 12183.42,
+          "pnl": 2183.42
+        },
+        {
+          "date": "2026-11-15",
+          "equity": 11940.0,
+          "pnl": 1940.0
+        }
+      ],
+      "pnl_candles": [
+        {
+          "date": "2026-10-17",
+          "open": 0.0,
+          "high": 139.43,
+          "low": -116.93,
+          "close": 110.03,
+          "day_pnl": 110.03
+        },
+        {
+          "date": "2026-10-18",
+          "open": 110.03,
+          "high": 265.07,
+          "low": -5.03,
+          "close": 207.37,
+          "day_pnl": 97.34
+        },
+        {
+          "date": "2026-10-19",
+          "open": 207.37,
+          "high": 381.47,
+          "low": 151.66,
+          "close": 381.47,
+          "day_pnl": 174.1
+        },
+        {
+          "date": "2026-10-20",
+          "open": 381.47,
+          "high": 504.76,
+          "low": 341.17,
+          "close": 432.11,
+          "day_pnl": 50.64
+        },
+        {
+          "date": "2026-10-21",
+          "open": 432.11,
+          "high": 472.21,
+          "low": 288.92,
+          "close": 395.09,
+          "day_pnl": -37.02
+        },
+        {
+          "date": "2026-10-22",
+          "open": 395.09,
+          "high": 448.32,
+          "low": 348.06,
+          "close": 400.24,
+          "day_pnl": 5.15
+        },
+        {
+          "date": "2026-10-23",
+          "open": 400.24,
+          "high": 549.17,
+          "low": 311.69,
+          "close": 549.17,
+          "day_pnl": 148.93
+        },
+        {
+          "date": "2026-10-24",
+          "open": 549.17,
+          "high": 615.26,
+          "low": 488.98,
+          "close": 591.36,
+          "day_pnl": 42.19
+        },
+        {
+          "date": "2026-10-25",
+          "open": 591.36,
+          "high": 784.27,
+          "low": 466.34,
+          "close": 784.27,
+          "day_pnl": 192.91
+        },
+        {
+          "date": "2026-10-26",
+          "open": 784.27,
+          "high": 826.09,
+          "low": 646.04,
+          "close": 777.62,
+          "day_pnl": -6.65
+        },
+        {
+          "date": "2026-10-27",
+          "open": 777.62,
+          "high": 892.86,
+          "low": 667.41,
+          "close": 856.23,
+          "day_pnl": 78.61
+        },
+        {
+          "date": "2026-10-28",
+          "open": 856.23,
+          "high": 931.11,
+          "low": 738.92,
+          "close": 931.11,
+          "day_pnl": 74.88
+        },
+        {
+          "date": "2026-10-29",
+          "open": 931.11,
+          "high": 1001.98,
+          "low": 822.63,
+          "close": 994.24,
+          "day_pnl": 63.13
+        },
+        {
+          "date": "2026-10-30",
+          "open": 994.24,
+          "high": 1179.35,
+          "low": 936.49,
+          "close": 1179.35,
+          "day_pnl": 185.11
+        },
+        {
+          "date": "2026-10-31",
+          "open": 1179.35,
+          "high": 1249.23,
+          "low": 1047.13,
+          "close": 1173.51,
+          "day_pnl": -5.84
+        },
+        {
+          "date": "2026-11-01",
+          "open": 1173.51,
+          "high": 1338.42,
+          "low": 1079.8,
+          "close": 1199.77,
+          "day_pnl": 26.26
+        },
+        {
+          "date": "2026-11-02",
+          "open": 1199.77,
+          "high": 1276.69,
+          "low": 1106.38,
+          "close": 1160.39,
+          "day_pnl": -39.38
+        },
+        {
+          "date": "2026-11-03",
+          "open": 1160.39,
+          "high": 1345.06,
+          "low": 1060.83,
+          "close": 1345.06,
+          "day_pnl": 184.67
+        },
+        {
+          "date": "2026-11-04",
+          "open": 1345.06,
+          "high": 1457.29,
+          "low": 1260.1,
+          "close": 1457.29,
+          "day_pnl": 112.23
+        },
+        {
+          "date": "2026-11-05",
+          "open": 1457.29,
+          "high": 1569.52,
+          "low": 1403.05,
+          "close": 1569.52,
+          "day_pnl": 112.23
+        },
+        {
+          "date": "2026-11-06",
+          "open": 1569.52,
+          "high": 1695.86,
+          "low": 1482.52,
+          "close": 1576.0,
+          "day_pnl": 6.48
+        },
+        {
+          "date": "2026-11-07",
+          "open": 1576.0,
+          "high": 1638.71,
+          "low": 1546.06,
+          "close": 1638.71,
+          "day_pnl": 62.71
+        },
+        {
+          "date": "2026-11-08",
+          "open": 1638.71,
+          "high": 1741.88,
+          "low": 1521.7,
+          "close": 1741.88,
+          "day_pnl": 103.17
+        },
+        {
+          "date": "2026-11-09",
+          "open": 1741.88,
+          "high": 1903.04,
+          "low": 1638.45,
+          "close": 1796.21,
+          "day_pnl": 54.33
+        },
+        {
+          "date": "2026-11-10",
+          "open": 1796.21,
+          "high": 1911.59,
+          "low": 1654.34,
+          "close": 1911.59,
+          "day_pnl": 115.38
+        },
+        {
+          "date": "2026-11-11",
+          "open": 1911.59,
+          "high": 2033.57,
+          "low": 1836.66,
+          "close": 2033.57,
+          "day_pnl": 121.98
+        },
+        {
+          "date": "2026-11-12",
+          "open": 2033.57,
+          "high": 2163.56,
+          "low": 1935.99,
+          "close": 2095.3,
+          "day_pnl": 61.73
+        },
+        {
+          "date": "2026-11-13",
+          "open": 2095.3,
+          "high": 2214.86,
+          "low": 1976.04,
+          "close": 2214.86,
+          "day_pnl": 119.56
+        },
+        {
+          "date": "2026-11-14",
+          "open": 2214.86,
+          "high": 2301.32,
+          "low": 2126.91,
+          "close": 2183.42,
+          "day_pnl": -31.44
+        },
+        {
+          "date": "2026-11-15",
+          "open": 2183.42,
+          "high": 2255.48,
+          "low": 2071.05,
+          "close": 1940.0,
+          "day_pnl": 44.56
+        }
+      ],
+      "session_regime_heatmap": [
+        {
+          "session": "Asian",
+          "regime": "Trending",
+          "winrate": 51.9,
+          "pnl": 81.38,
+          "trades": 3
+        },
+        {
+          "session": "Asian",
+          "regime": "Ranging",
+          "winrate": 45.8,
+          "pnl": -53.02,
+          "trades": 6
+        },
+        {
+          "session": "Asian",
+          "regime": "High-Vol",
+          "winrate": 57.2,
+          "pnl": 213.75,
+          "trades": 6
+        },
+        {
+          "session": "London",
+          "regime": "Trending",
+          "winrate": 53.1,
+          "pnl": 142.0,
+          "trades": 3
+        },
+        {
+          "session": "London",
+          "regime": "Ranging",
+          "winrate": 65.6,
+          "pnl": 316.3,
+          "trades": 4
+        },
+        {
+          "session": "London",
+          "regime": "High-Vol",
+          "winrate": 70.0,
+          "pnl": 317.29,
+          "trades": 7
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Trending",
+          "winrate": 67.9,
+          "pnl": 280.87,
+          "trades": 9
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Ranging",
+          "winrate": 65.9,
+          "pnl": 271.89,
+          "trades": 3
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "High-Vol",
+          "winrate": 61.5,
+          "pnl": 170.89,
+          "trades": 5
+        }
+      ],
+      "playbook": [
+        "[Trained \u2022 Nov 17 Ready] Liquidity Sweep + PAXG OI Divergence (High-Vol Guard) | H1 ATR=$4.85 | Bias=BULLISH.",
+        "Fade Asian range fakeouts after liquidity sweep + Bybit PAXG OI divergence > 2.5%.",
+        "Scale 50% size in High-Vol regime; target opposite liquidity pool at 2.5R."
+      ],
+      "mutations": [
+        {
+          "date": "2026-11-14",
+          "mentor": "Self-Reflection",
+          "change": "Increased TP2 runner allocation to 35% during Trending regime.",
+          "impact_pct": "+0.4R Avg"
+        }
+      ],
+      "research_log": [
+        {
+          "ts": "2026-11-16T19:26:23Z",
+          "source": "Macro Radar",
+          "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
+        },
+        {
+          "ts": "2026-11-16T18:56:23Z",
+          "source": "Bybit PAXG/Orderflow",
+          "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
+        },
+        {
+          "ts": "2026-11-16T17:34:23Z",
+          "source": "USD Economic Calendar",
+          "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
+        }
+      ],
+      "rank": 2,
+      "trained_skill": "Liquidity Sweep + PAXG OI Divergence (High-Vol Guard)",
+      "nov17_ready": true
+    },
+    {
+      "agent_id": "ai-3",
+      "display_name": "DeepSeek V4",
+      "short_name": "DeepSeek",
+      "provider": "DeepSeek / OpenRouter",
+      "brand_key": "deepseek",
+      "avatar": "/avatars/deepseek.jpg",
+      "model_name": "deepseek/deepseek-r1",
+      "color": "#3B82F6",
+      "style_archetype": "Quantitative Statistical Mean-Reversion",
+      "equity": 11620.0,
+      "initial_equity": 10000.0,
+      "total_pnl": 1620.0,
+      "roi_pct": 16.2,
+      "day_pnl": 194.1,
+      "open_pnl": 9.0,
+      "winrate_pct": 61.5,
+      "profit_factor": 1.92,
+      "sharpe_ratio": 1.76,
+      "sortino_ratio": 2.25,
+      "calmar_ratio": 5.79,
+      "max_dd_pct": 2.8,
+      "expectancy_usd": 73.43,
+      "avg_rr": 1.82,
+      "kelly_pct": 18.0,
+      "weekly_trades": 26,
+      "status": "IN TRADE",
+      "consecutive_losses": 0,
+      "is_leader": false,
+      "is_mirrored": true,
+      "mirror_multiplier": 1.0,
+      "sparkline": [
+        11119.16,
+        11215.96,
+        11206.83,
+        11176.25,
+        11160.01,
+        11188.86,
+        11221.37,
+        11212.62,
+        11233.77,
+        11324.29,
+        11481.55,
+        11612.13,
+        11608.71,
+        11620.0
+      ],
+      "equity_curve": [
+        {
+          "date": "2026-10-17",
+          "equity": 10027.03,
+          "pnl": 27.03
+        },
+        {
+          "date": "2026-10-18",
+          "equity": 9996.42,
+          "pnl": -3.58
+        },
+        {
+          "date": "2026-10-19",
+          "equity": 10059.71,
+          "pnl": 59.71
+        },
+        {
+          "date": "2026-10-20",
+          "equity": 10105.95,
+          "pnl": 105.95
+        },
+        {
+          "date": "2026-10-21",
+          "equity": 10146.89,
+          "pnl": 146.89
+        },
+        {
+          "date": "2026-10-22",
+          "equity": 10172.12,
+          "pnl": 172.12
+        },
+        {
+          "date": "2026-10-23",
+          "equity": 10340.3,
+          "pnl": 340.3
+        },
+        {
+          "date": "2026-10-24",
+          "equity": 10343.01,
+          "pnl": 343.01
+        },
+        {
+          "date": "2026-10-25",
+          "equity": 10501.07,
+          "pnl": 501.07
+        },
+        {
+          "date": "2026-10-26",
+          "equity": 10459.93,
+          "pnl": 459.93
+        },
+        {
+          "date": "2026-10-27",
+          "equity": 10593.78,
+          "pnl": 593.78
+        },
+        {
+          "date": "2026-10-28",
+          "equity": 10586.83,
+          "pnl": 586.83
+        },
+        {
+          "date": "2026-10-29",
+          "equity": 10720.97,
+          "pnl": 720.97
+        },
+        {
+          "date": "2026-10-30",
+          "equity": 10798.78,
+          "pnl": 798.78
+        },
+        {
+          "date": "2026-10-31",
+          "equity": 10971.08,
+          "pnl": 971.08
+        },
+        {
+          "date": "2026-11-01",
+          "equity": 11139.45,
+          "pnl": 1139.45
+        },
+        {
+          "date": "2026-11-02",
+          "equity": 11119.16,
+          "pnl": 1119.16
+        },
+        {
+          "date": "2026-11-03",
+          "equity": 11215.96,
+          "pnl": 1215.96
+        },
+        {
+          "date": "2026-11-04",
+          "equity": 11206.83,
+          "pnl": 1206.83
+        },
+        {
+          "date": "2026-11-05",
+          "equity": 11176.25,
+          "pnl": 1176.25
+        },
+        {
+          "date": "2026-11-06",
+          "equity": 11160.01,
+          "pnl": 1160.01
+        },
+        {
+          "date": "2026-11-07",
+          "equity": 11188.86,
+          "pnl": 1188.86
+        },
+        {
+          "date": "2026-11-08",
+          "equity": 11221.37,
+          "pnl": 1221.37
+        },
+        {
+          "date": "2026-11-09",
+          "equity": 11212.62,
+          "pnl": 1212.62
+        },
+        {
+          "date": "2026-11-10",
+          "equity": 11233.77,
+          "pnl": 1233.77
+        },
+        {
+          "date": "2026-11-11",
+          "equity": 11324.29,
+          "pnl": 1324.29
+        },
+        {
+          "date": "2026-11-12",
+          "equity": 11481.55,
+          "pnl": 1481.55
+        },
+        {
+          "date": "2026-11-13",
+          "equity": 11612.13,
+          "pnl": 1612.13
+        },
+        {
+          "date": "2026-11-14",
+          "equity": 11608.71,
+          "pnl": 1608.71
+        },
+        {
+          "date": "2026-11-15",
+          "equity": 11620.0,
+          "pnl": 1620.0
+        }
+      ],
+      "pnl_candles": [
+        {
+          "date": "2026-10-17",
+          "open": 0.0,
+          "high": 146.6,
+          "low": -71.87,
+          "close": 27.03,
+          "day_pnl": 27.03
+        },
+        {
+          "date": "2026-10-18",
+          "open": 27.03,
+          "high": 73.24,
+          "low": -69.57,
+          "close": -3.58,
+          "day_pnl": -30.61
+        },
+        {
+          "date": "2026-10-19",
+          "open": -3.58,
+          "high": 94.31,
+          "low": -46.02,
+          "close": 59.71,
+          "day_pnl": 63.29
+        },
+        {
+          "date": "2026-10-20",
+          "open": 59.71,
+          "high": 158.31,
+          "low": 15.44,
+          "close": 105.95,
+          "day_pnl": 46.24
+        },
+        {
+          "date": "2026-10-21",
+          "open": 105.95,
+          "high": 191.03,
+          "low": -38.71,
+          "close": 146.89,
+          "day_pnl": 40.94
+        },
+        {
+          "date": "2026-10-22",
+          "open": 146.89,
+          "high": 295.96,
+          "low": 68.93,
+          "close": 172.12,
+          "day_pnl": 25.23
+        },
+        {
+          "date": "2026-10-23",
+          "open": 172.12,
+          "high": 340.3,
+          "low": 49.5,
+          "close": 340.3,
+          "day_pnl": 168.18
+        },
+        {
+          "date": "2026-10-24",
+          "open": 340.3,
+          "high": 469.14,
+          "low": 312.35,
+          "close": 343.01,
+          "day_pnl": 2.71
+        },
+        {
+          "date": "2026-10-25",
+          "open": 343.01,
+          "high": 501.07,
+          "low": 207.99,
+          "close": 501.07,
+          "day_pnl": 158.06
+        },
+        {
+          "date": "2026-10-26",
+          "open": 501.07,
+          "high": 593.65,
+          "low": 450.99,
+          "close": 459.93,
+          "day_pnl": -41.14
+        },
+        {
+          "date": "2026-10-27",
+          "open": 459.93,
+          "high": 593.78,
+          "low": 420.14,
+          "close": 593.78,
+          "day_pnl": 133.85
+        },
+        {
+          "date": "2026-10-28",
+          "open": 593.78,
+          "high": 744.97,
+          "low": 529.87,
+          "close": 586.83,
+          "day_pnl": -6.95
+        },
+        {
+          "date": "2026-10-29",
+          "open": 586.83,
+          "high": 720.97,
+          "low": 558.63,
+          "close": 720.97,
+          "day_pnl": 134.14
+        },
+        {
+          "date": "2026-10-30",
+          "open": 720.97,
+          "high": 798.78,
+          "low": 639.56,
+          "close": 798.78,
+          "day_pnl": 77.81
+        },
+        {
+          "date": "2026-10-31",
+          "open": 798.78,
+          "high": 971.08,
+          "low": 700.85,
+          "close": 971.08,
+          "day_pnl": 172.3
+        },
+        {
+          "date": "2026-11-01",
+          "open": 971.08,
+          "high": 1139.45,
+          "low": 857.24,
+          "close": 1139.45,
+          "day_pnl": 168.37
+        },
+        {
+          "date": "2026-11-02",
+          "open": 1139.45,
+          "high": 1222.3,
+          "low": 997.75,
+          "close": 1119.16,
+          "day_pnl": -20.29
+        },
+        {
+          "date": "2026-11-03",
+          "open": 1119.16,
+          "high": 1219.21,
+          "low": 1055.86,
+          "close": 1215.96,
+          "day_pnl": 96.8
+        },
+        {
+          "date": "2026-11-04",
+          "open": 1215.96,
+          "high": 1372.27,
+          "low": 1127.66,
+          "close": 1206.83,
+          "day_pnl": -9.13
+        },
+        {
+          "date": "2026-11-05",
+          "open": 1206.83,
+          "high": 1367.1,
+          "low": 1167.4,
+          "close": 1176.25,
+          "day_pnl": -30.58
+        },
+        {
+          "date": "2026-11-06",
+          "open": 1176.25,
+          "high": 1303.81,
+          "low": 1121.21,
+          "close": 1160.01,
+          "day_pnl": -16.24
+        },
+        {
+          "date": "2026-11-07",
+          "open": 1160.01,
+          "high": 1295.39,
+          "low": 1064.09,
+          "close": 1188.86,
+          "day_pnl": 28.85
+        },
+        {
+          "date": "2026-11-08",
+          "open": 1188.86,
+          "high": 1293.11,
+          "low": 1089.53,
+          "close": 1221.37,
+          "day_pnl": 32.51
+        },
+        {
+          "date": "2026-11-09",
+          "open": 1221.37,
+          "high": 1268.43,
+          "low": 1130.23,
+          "close": 1212.62,
+          "day_pnl": -8.75
+        },
+        {
+          "date": "2026-11-10",
+          "open": 1212.62,
+          "high": 1253.05,
+          "low": 1108.5,
+          "close": 1233.77,
+          "day_pnl": 21.15
+        },
+        {
+          "date": "2026-11-11",
+          "open": 1233.77,
+          "high": 1370.03,
+          "low": 1133.64,
+          "close": 1324.29,
+          "day_pnl": 90.52
+        },
+        {
+          "date": "2026-11-12",
+          "open": 1324.29,
+          "high": 1481.55,
+          "low": 1239.64,
+          "close": 1481.55,
+          "day_pnl": 157.26
+        },
+        {
+          "date": "2026-11-13",
+          "open": 1481.55,
+          "high": 1612.13,
+          "low": 1393.92,
+          "close": 1612.13,
+          "day_pnl": 130.58
+        },
+        {
+          "date": "2026-11-14",
+          "open": 1612.13,
+          "high": 1653.82,
+          "low": 1537.41,
+          "close": 1608.71,
+          "day_pnl": -3.42
+        },
+        {
+          "date": "2026-11-15",
+          "open": 1608.71,
+          "high": 1716.4,
+          "low": 1535.67,
+          "close": 1620.0,
+          "day_pnl": 37.73
+        }
+      ],
+      "session_regime_heatmap": [
+        {
+          "session": "Asian",
+          "regime": "Trending",
+          "winrate": 70.1,
+          "pnl": 484.41,
+          "trades": 4
+        },
+        {
+          "session": "Asian",
+          "regime": "Ranging",
+          "winrate": 68.0,
+          "pnl": 404.13,
+          "trades": 3
+        },
+        {
+          "session": "Asian",
+          "regime": "High-Vol",
+          "winrate": 50.7,
+          "pnl": 59.06,
+          "trades": 3
+        },
+        {
+          "session": "London",
+          "regime": "Trending",
+          "winrate": 65.1,
+          "pnl": 461.85,
+          "trades": 4
+        },
+        {
+          "session": "London",
+          "regime": "Ranging",
+          "winrate": 55.3,
+          "pnl": 164.93,
+          "trades": 3
+        },
+        {
+          "session": "London",
+          "regime": "High-Vol",
+          "winrate": 54.5,
+          "pnl": 162.72,
+          "trades": 2
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Trending",
+          "winrate": 55.5,
+          "pnl": 137.04,
+          "trades": 6
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Ranging",
+          "winrate": 66.9,
+          "pnl": 354.86,
+          "trades": 3
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "High-Vol",
+          "winrate": 74.2,
+          "pnl": 653.11,
+          "trades": 5
+        }
+      ],
+      "playbook": [
+        "[Trained \u2022 Nov 17 Ready] Statistical Z-Score Mean Reversion + US10Y Yield Filter | H1 ATR=$4.85 | Bias=BULLISH.",
+        "Enter mean-reversion only when Z-Score > 2.1 AND US10Y yield stalls at intraday resistance.",
+        "Hard abort if M15 candle closes outside 0.786 OTE invalidation."
+      ],
+      "mutations": [
+        {
+          "date": "2026-11-14",
+          "mentor": "Self-Reflection",
+          "change": "Increased TP2 runner allocation to 35% during Trending regime.",
+          "impact_pct": "+0.4R Avg"
+        }
+      ],
+      "research_log": [
+        {
+          "ts": "2026-11-16T19:21:23Z",
+          "source": "Macro Radar",
+          "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
+        },
+        {
+          "ts": "2026-11-16T18:49:23Z",
+          "source": "Bybit PAXG/Orderflow",
+          "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
+        },
+        {
+          "ts": "2026-11-16T17:23:23Z",
+          "source": "USD Economic Calendar",
+          "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
+        }
+      ],
+      "rank": 3,
+      "trained_skill": "Statistical Z-Score Mean Reversion + US10Y Yield Filter",
+      "nov17_ready": true
+    },
+    {
+      "agent_id": "ai-4",
+      "display_name": "Qwen 3.8",
+      "short_name": "Qwen",
+      "provider": "Cerebras",
+      "brand_key": "qwen",
+      "avatar": "/avatars/qwen.jpg",
+      "model_name": "qwen-3-32b",
+      "color": "#A855F7",
+      "style_archetype": "Asian-London Range Breakout & Momentum",
+      "equity": 11270.0,
+      "initial_equity": 10000.0,
+      "total_pnl": 1270.0,
+      "roi_pct": 12.7,
+      "day_pnl": 124.8,
+      "open_pnl": 0.0,
+      "winrate_pct": 55.0,
+      "profit_factor": 1.74,
+      "sharpe_ratio": 1.48,
+      "sortino_ratio": 1.89,
+      "calmar_ratio": 3.53,
+      "max_dd_pct": 3.6,
+      "expectancy_usd": 45.75,
+      "avg_rr": 1.65,
+      "kelly_pct": 18.0,
+      "weekly_trades": 22,
+      "status": "SCANNING",
+      "consecutive_losses": 0,
+      "is_leader": false,
+      "is_mirrored": false,
+      "mirror_multiplier": 1.0,
+      "sparkline": [
+        10698.02,
+        10749.96,
+        10717.16,
+        10834.61,
+        10799.49,
+        10788.93,
+        10815.76,
+        10838.57,
+        10930.0,
+        10934.37,
+        10922.3,
+        10856.31,
+        10893.72,
+        11270.0
+      ],
+      "equity_curve": [
+        {
+          "date": "2026-10-17",
+          "equity": 9935.09,
+          "pnl": -64.91
+        },
+        {
+          "date": "2026-10-18",
+          "equity": 10055.88,
+          "pnl": 55.88
+        },
+        {
+          "date": "2026-10-19",
+          "equity": 10147.84,
+          "pnl": 147.84
+        },
+        {
+          "date": "2026-10-20",
+          "equity": 10256.46,
+          "pnl": 256.46
+        },
+        {
+          "date": "2026-10-21",
+          "equity": 10329.54,
+          "pnl": 329.54
+        },
+        {
+          "date": "2026-10-22",
+          "equity": 10369.04,
+          "pnl": 369.04
+        },
+        {
+          "date": "2026-10-23",
+          "equity": 10314.78,
+          "pnl": 314.78
+        },
+        {
+          "date": "2026-10-24",
+          "equity": 10333.52,
+          "pnl": 333.52
+        },
+        {
+          "date": "2026-10-25",
+          "equity": 10434.76,
+          "pnl": 434.76
+        },
+        {
+          "date": "2026-10-26",
+          "equity": 10451.62,
+          "pnl": 451.62
+        },
+        {
+          "date": "2026-10-27",
+          "equity": 10584.2,
+          "pnl": 584.2
+        },
+        {
+          "date": "2026-10-28",
+          "equity": 10542.94,
+          "pnl": 542.94
+        },
+        {
+          "date": "2026-10-29",
+          "equity": 10580.31,
+          "pnl": 580.31
+        },
+        {
+          "date": "2026-10-30",
+          "equity": 10645.82,
+          "pnl": 645.82
+        },
+        {
+          "date": "2026-10-31",
+          "equity": 10784.74,
+          "pnl": 784.74
+        },
+        {
+          "date": "2026-11-01",
+          "equity": 10754.29,
+          "pnl": 754.29
+        },
+        {
+          "date": "2026-11-02",
+          "equity": 10698.02,
+          "pnl": 698.02
+        },
+        {
+          "date": "2026-11-03",
+          "equity": 10749.96,
+          "pnl": 749.96
+        },
+        {
+          "date": "2026-11-04",
+          "equity": 10717.16,
+          "pnl": 717.16
+        },
+        {
+          "date": "2026-11-05",
+          "equity": 10834.61,
+          "pnl": 834.61
+        },
+        {
+          "date": "2026-11-06",
+          "equity": 10799.49,
+          "pnl": 799.49
+        },
+        {
+          "date": "2026-11-07",
+          "equity": 10788.93,
+          "pnl": 788.93
+        },
+        {
+          "date": "2026-11-08",
+          "equity": 10815.76,
+          "pnl": 815.76
+        },
+        {
+          "date": "2026-11-09",
+          "equity": 10838.57,
+          "pnl": 838.57
+        },
+        {
+          "date": "2026-11-10",
+          "equity": 10930.0,
+          "pnl": 930.0
+        },
+        {
+          "date": "2026-11-11",
+          "equity": 10934.37,
+          "pnl": 934.37
+        },
+        {
+          "date": "2026-11-12",
+          "equity": 10922.3,
+          "pnl": 922.3
+        },
+        {
+          "date": "2026-11-13",
+          "equity": 10856.31,
+          "pnl": 856.31
+        },
+        {
+          "date": "2026-11-14",
+          "equity": 10893.72,
+          "pnl": 893.72
+        },
+        {
+          "date": "2026-11-15",
+          "equity": 11270.0,
+          "pnl": 1270.0
+        }
+      ],
+      "pnl_candles": [
+        {
+          "date": "2026-10-17",
+          "open": 0.0,
+          "high": 147.2,
+          "low": -118.55,
+          "close": -64.91,
+          "day_pnl": -64.91
+        },
+        {
+          "date": "2026-10-18",
+          "open": -64.91,
+          "high": 66.75,
+          "low": -191.89,
+          "close": 55.88,
+          "day_pnl": 120.79
+        },
+        {
+          "date": "2026-10-19",
+          "open": 55.88,
+          "high": 204.76,
+          "low": -13.53,
+          "close": 147.84,
+          "day_pnl": 91.96
+        },
+        {
+          "date": "2026-10-20",
+          "open": 147.84,
+          "high": 269.01,
+          "low": 23.58,
+          "close": 256.46,
+          "day_pnl": 108.62
+        },
+        {
+          "date": "2026-10-21",
+          "open": 256.46,
+          "high": 388.94,
+          "low": 169.89,
+          "close": 329.54,
+          "day_pnl": 73.08
+        },
+        {
+          "date": "2026-10-22",
+          "open": 329.54,
+          "high": 381.4,
+          "low": 267.78,
+          "close": 369.04,
+          "day_pnl": 39.5
+        },
+        {
+          "date": "2026-10-23",
+          "open": 369.04,
+          "high": 516.74,
+          "low": 297.16,
+          "close": 314.78,
+          "day_pnl": -54.26
+        },
+        {
+          "date": "2026-10-24",
+          "open": 314.78,
+          "high": 443.31,
+          "low": 174.05,
+          "close": 333.52,
+          "day_pnl": 18.74
+        },
+        {
+          "date": "2026-10-25",
+          "open": 333.52,
+          "high": 434.76,
+          "low": 249.9,
+          "close": 434.76,
+          "day_pnl": 101.24
+        },
+        {
+          "date": "2026-10-26",
+          "open": 434.76,
+          "high": 578.15,
+          "low": 296.09,
+          "close": 451.62,
+          "day_pnl": 16.86
+        },
+        {
+          "date": "2026-10-27",
+          "open": 451.62,
+          "high": 584.2,
+          "low": 384.98,
+          "close": 584.2,
+          "day_pnl": 132.58
+        },
+        {
+          "date": "2026-10-28",
+          "open": 584.2,
+          "high": 688.49,
+          "low": 542.94,
+          "close": 542.94,
+          "day_pnl": -41.26
+        },
+        {
+          "date": "2026-10-29",
+          "open": 542.94,
+          "high": 637.98,
+          "low": 420.66,
+          "close": 580.31,
+          "day_pnl": 37.37
+        },
+        {
+          "date": "2026-10-30",
+          "open": 580.31,
+          "high": 659.73,
+          "low": 505.86,
+          "close": 645.82,
+          "day_pnl": 65.51
+        },
+        {
+          "date": "2026-10-31",
+          "open": 645.82,
+          "high": 795.86,
+          "low": 565.63,
+          "close": 784.74,
+          "day_pnl": 138.92
+        },
+        {
+          "date": "2026-11-01",
+          "open": 784.74,
+          "high": 901.4,
+          "low": 691.2,
+          "close": 754.29,
+          "day_pnl": -30.45
+        },
+        {
+          "date": "2026-11-02",
+          "open": 754.29,
+          "high": 850.2,
+          "low": 698.02,
+          "close": 698.02,
+          "day_pnl": -56.27
+        },
+        {
+          "date": "2026-11-03",
+          "open": 698.02,
+          "high": 795.14,
+          "low": 592.79,
+          "close": 749.96,
+          "day_pnl": 51.94
+        },
+        {
+          "date": "2026-11-04",
+          "open": 749.96,
+          "high": 806.76,
+          "low": 615.92,
+          "close": 717.16,
+          "day_pnl": -32.8
+        },
+        {
+          "date": "2026-11-05",
+          "open": 717.16,
+          "high": 834.61,
+          "low": 573.39,
+          "close": 834.61,
+          "day_pnl": 117.45
+        },
+        {
+          "date": "2026-11-06",
+          "open": 834.61,
+          "high": 990.67,
+          "low": 799.49,
+          "close": 799.49,
+          "day_pnl": -35.12
+        },
+        {
+          "date": "2026-11-07",
+          "open": 799.49,
+          "high": 944.37,
+          "low": 706.55,
+          "close": 788.93,
+          "day_pnl": -10.56
+        },
+        {
+          "date": "2026-11-08",
+          "open": 788.93,
+          "high": 829.72,
+          "low": 717.54,
+          "close": 815.76,
+          "day_pnl": 26.83
+        },
+        {
+          "date": "2026-11-09",
+          "open": 815.76,
+          "high": 900.91,
+          "low": 695.33,
+          "close": 838.57,
+          "day_pnl": 22.81
+        },
+        {
+          "date": "2026-11-10",
+          "open": 838.57,
+          "high": 930.0,
+          "low": 718.07,
+          "close": 930.0,
+          "day_pnl": 91.43
+        },
+        {
+          "date": "2026-11-11",
+          "open": 930.0,
+          "high": 1057.45,
+          "low": 861.19,
+          "close": 934.37,
+          "day_pnl": 4.37
+        },
+        {
+          "date": "2026-11-12",
+          "open": 934.37,
+          "high": 1016.88,
+          "low": 818.46,
+          "close": 922.3,
+          "day_pnl": -12.07
+        },
+        {
+          "date": "2026-11-13",
+          "open": 922.3,
+          "high": 1032.83,
+          "low": 833.01,
+          "close": 856.31,
+          "day_pnl": -65.99
+        },
+        {
+          "date": "2026-11-14",
+          "open": 856.31,
+          "high": 930.83,
+          "low": 717.19,
+          "close": 893.72,
+          "day_pnl": 37.41
+        },
+        {
+          "date": "2026-11-15",
+          "open": 893.72,
+          "high": 1053.7,
+          "low": 834.22,
+          "close": 1270.0,
+          "day_pnl": -55.03
+        }
+      ],
+      "session_regime_heatmap": [
+        {
+          "session": "Asian",
+          "regime": "Trending",
+          "winrate": 55.2,
+          "pnl": 117.52,
+          "trades": 3
+        },
+        {
+          "session": "Asian",
+          "regime": "Ranging",
+          "winrate": 56.2,
+          "pnl": 126.13,
+          "trades": 3
+        },
+        {
+          "session": "Asian",
+          "regime": "High-Vol",
+          "winrate": 42.1,
+          "pnl": -115.9,
+          "trades": 8
+        },
+        {
+          "session": "London",
+          "regime": "Trending",
+          "winrate": 44.9,
+          "pnl": -45.07,
+          "trades": 7
+        },
+        {
+          "session": "London",
+          "regime": "Ranging",
+          "winrate": 59.0,
+          "pnl": 247.44,
+          "trades": 7
+        },
+        {
+          "session": "London",
+          "regime": "High-Vol",
+          "winrate": 51.2,
+          "pnl": 60.97,
+          "trades": 8
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Trending",
+          "winrate": 47.5,
+          "pnl": -12.88,
+          "trades": 3
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Ranging",
+          "winrate": 50.5,
+          "pnl": 56.36,
+          "trades": 5
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "High-Vol",
+          "winrate": 53.9,
+          "pnl": 74.27,
+          "trades": 3
+        }
+      ],
+      "playbook": [
+        "[Trained \u2022 Nov 17 Ready] Asian-London Range Breakout + 0.650 Fib Retest | H1 ATR=$4.85 | Bias=BULLISH.",
+        "Trade Asian-London breakout retest on 0.650 Fib level with positive CVD confirmation.",
+        "Avoid counter-trend shorts during NY Gold ETF inflow spikes."
+      ],
+      "mutations": [
+        {
+          "date": "2026-11-14",
+          "mentor": "Self-Reflection",
+          "change": "Increased TP2 runner allocation to 35% during Trending regime.",
+          "impact_pct": "+0.4R Avg"
+        }
+      ],
+      "research_log": [
+        {
+          "ts": "2026-11-16T19:16:23Z",
+          "source": "Macro Radar",
+          "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
+        },
+        {
+          "ts": "2026-11-16T18:42:23Z",
+          "source": "Bybit PAXG/Orderflow",
+          "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
+        },
+        {
+          "ts": "2026-11-16T17:12:23Z",
+          "source": "USD Economic Calendar",
+          "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
+        }
+      ],
+      "rank": 4,
+      "trained_skill": "Asian-London Range Breakout + 0.650 Fib Retest",
+      "nov17_ready": true
+    },
+    {
+      "agent_id": "ai-5",
+      "display_name": "Gemini 2.5 Flash",
+      "short_name": "Gemini",
+      "provider": "Google",
+      "brand_key": "gemini",
+      "avatar": "/avatars/gemini.jpg",
+      "model_name": "gemini-2.5-flash",
+      "color": "#0A84FF",
+      "style_archetype": "DXY/US10Y Correlation & COT Confluence",
+      "equity": 11001.82,
+      "initial_equity": 10000.0,
+      "total_pnl": 1001.82,
+      "roi_pct": 10.02,
+      "day_pnl": 140.12,
+      "open_pnl": 3.5,
+      "winrate_pct": 52.4,
+      "profit_factor": 1.62,
+      "sharpe_ratio": 1.31,
+      "sortino_ratio": 1.68,
+      "calmar_ratio": 2.26,
+      "max_dd_pct": 4.2,
+      "expectancy_usd": 33.1,
+      "avg_rr": 1.54,
+      "kelly_pct": 18.0,
+      "weekly_trades": 21,
+      "status": "IN TRADE",
+      "consecutive_losses": 0,
+      "is_leader": false,
+      "is_mirrored": false,
+      "mirror_multiplier": 1.0,
+      "sparkline": [
+        10795.64,
+        10837.15,
+        10905.06,
+        10883.26,
+        10864.1,
+        11011.32,
+        11049.91,
+        11151.25,
+        11213.81,
+        11147.27,
+        11235.35,
+        11381.42,
+        10950.0,
+        11001.82
+      ],
+      "equity_curve": [
+        {
+          "date": "2026-10-17",
+          "equity": 10044.18,
+          "pnl": 44.18
+        },
+        {
+          "date": "2026-10-18",
+          "equity": 10026.22,
+          "pnl": 26.22
+        },
+        {
+          "date": "2026-10-19",
+          "equity": 9984.79,
+          "pnl": -15.21
+        },
+        {
+          "date": "2026-10-20",
+          "equity": 9988.14,
+          "pnl": -11.86
+        },
+        {
+          "date": "2026-10-21",
+          "equity": 10131.16,
+          "pnl": 131.16
+        },
+        {
+          "date": "2026-10-22",
+          "equity": 10270.57,
+          "pnl": 270.57
+        },
+        {
+          "date": "2026-10-23",
+          "equity": 10267.88,
+          "pnl": 267.88
+        },
+        {
+          "date": "2026-10-24",
+          "equity": 10222.73,
+          "pnl": 222.73
+        },
+        {
+          "date": "2026-10-25",
+          "equity": 10307.21,
+          "pnl": 307.21
+        },
+        {
+          "date": "2026-10-26",
+          "equity": 10299.32,
+          "pnl": 299.32
+        },
+        {
+          "date": "2026-10-27",
+          "equity": 10371.46,
+          "pnl": 371.46
+        },
+        {
+          "date": "2026-10-28",
+          "equity": 10464.96,
+          "pnl": 464.96
+        },
+        {
+          "date": "2026-10-29",
+          "equity": 10470.92,
+          "pnl": 470.92
+        },
+        {
+          "date": "2026-10-30",
+          "equity": 10622.57,
+          "pnl": 622.57
+        },
+        {
+          "date": "2026-10-31",
+          "equity": 10729.99,
+          "pnl": 729.99
+        },
+        {
+          "date": "2026-11-01",
+          "equity": 10793.02,
+          "pnl": 793.02
+        },
+        {
+          "date": "2026-11-02",
+          "equity": 10839.01,
+          "pnl": 839.01
+        },
+        {
+          "date": "2026-11-03",
+          "equity": 10795.64,
+          "pnl": 795.64
+        },
+        {
+          "date": "2026-11-04",
+          "equity": 10837.15,
+          "pnl": 837.15
+        },
+        {
+          "date": "2026-11-05",
+          "equity": 10905.06,
+          "pnl": 905.06
+        },
+        {
+          "date": "2026-11-06",
+          "equity": 10883.26,
+          "pnl": 883.26
+        },
+        {
+          "date": "2026-11-07",
+          "equity": 10864.1,
+          "pnl": 864.1
+        },
+        {
+          "date": "2026-11-08",
+          "equity": 11011.32,
+          "pnl": 1011.32
+        },
+        {
+          "date": "2026-11-09",
+          "equity": 11049.91,
+          "pnl": 1049.91
+        },
+        {
+          "date": "2026-11-10",
+          "equity": 11151.25,
+          "pnl": 1151.25
+        },
+        {
+          "date": "2026-11-11",
+          "equity": 11213.81,
+          "pnl": 1213.81
+        },
+        {
+          "date": "2026-11-12",
+          "equity": 11147.27,
+          "pnl": 1147.27
+        },
+        {
+          "date": "2026-11-13",
+          "equity": 11235.35,
+          "pnl": 1235.35
+        },
+        {
+          "date": "2026-11-14",
+          "equity": 11381.42,
+          "pnl": 1381.42
+        },
+        {
+          "date": "2026-11-15",
+          "equity": 10950.0,
+          "pnl": 950.0
+        }
+      ],
+      "pnl_candles": [
+        {
+          "date": "2026-10-17",
+          "open": 0.0,
+          "high": 109.43,
+          "low": -128.4,
+          "close": 44.18,
+          "day_pnl": 44.18
+        },
+        {
+          "date": "2026-10-18",
+          "open": 44.18,
+          "high": 204.68,
+          "low": -98.76,
+          "close": 26.22,
+          "day_pnl": -17.96
+        },
+        {
+          "date": "2026-10-19",
+          "open": 26.22,
+          "high": 73.53,
+          "low": -112.32,
+          "close": -15.21,
+          "day_pnl": -41.43
+        },
+        {
+          "date": "2026-10-20",
+          "open": -15.21,
+          "high": 22.59,
+          "low": -88.59,
+          "close": -11.86,
+          "day_pnl": 3.35
+        },
+        {
+          "date": "2026-10-21",
+          "open": -11.86,
+          "high": 131.16,
+          "low": -40.43,
+          "close": 131.16,
+          "day_pnl": 143.02
+        },
+        {
+          "date": "2026-10-22",
+          "open": 131.16,
+          "high": 277.7,
+          "low": 106.11,
+          "close": 270.57,
+          "day_pnl": 139.41
+        },
+        {
+          "date": "2026-10-23",
+          "open": 270.57,
+          "high": 323.47,
+          "low": 128.65,
+          "close": 267.88,
+          "day_pnl": -2.69
+        },
+        {
+          "date": "2026-10-24",
+          "open": 267.88,
+          "high": 377.18,
+          "low": 165.45,
+          "close": 222.73,
+          "day_pnl": -45.15
+        },
+        {
+          "date": "2026-10-25",
+          "open": 222.73,
+          "high": 317.86,
+          "low": 122.22,
+          "close": 307.21,
+          "day_pnl": 84.48
+        },
+        {
+          "date": "2026-10-26",
+          "open": 307.21,
+          "high": 462.21,
+          "low": 172.28,
+          "close": 299.32,
+          "day_pnl": -7.89
+        },
+        {
+          "date": "2026-10-27",
+          "open": 299.32,
+          "high": 461.04,
+          "low": 154.69,
+          "close": 371.46,
+          "day_pnl": 72.14
+        },
+        {
+          "date": "2026-10-28",
+          "open": 371.46,
+          "high": 464.96,
+          "low": 269.91,
+          "close": 464.96,
+          "day_pnl": 93.5
+        },
+        {
+          "date": "2026-10-29",
+          "open": 464.96,
+          "high": 554.97,
+          "low": 390.82,
+          "close": 470.92,
+          "day_pnl": 5.96
+        },
+        {
+          "date": "2026-10-30",
+          "open": 470.92,
+          "high": 622.57,
+          "low": 374.29,
+          "close": 622.57,
+          "day_pnl": 151.65
+        },
+        {
+          "date": "2026-10-31",
+          "open": 622.57,
+          "high": 742.85,
+          "low": 499.83,
+          "close": 729.99,
+          "day_pnl": 107.42
+        },
+        {
+          "date": "2026-11-01",
+          "open": 729.99,
+          "high": 816.47,
+          "low": 594.22,
+          "close": 793.02,
+          "day_pnl": 63.03
+        },
+        {
+          "date": "2026-11-02",
+          "open": 793.02,
+          "high": 914.93,
+          "low": 694.37,
+          "close": 839.01,
+          "day_pnl": 45.99
+        },
+        {
+          "date": "2026-11-03",
+          "open": 839.01,
+          "high": 958.74,
+          "low": 795.64,
+          "close": 795.64,
+          "day_pnl": -43.37
+        },
+        {
+          "date": "2026-11-04",
+          "open": 795.64,
+          "high": 888.37,
+          "low": 768.61,
+          "close": 837.15,
+          "day_pnl": 41.51
+        },
+        {
+          "date": "2026-11-05",
+          "open": 837.15,
+          "high": 905.06,
+          "low": 702.11,
+          "close": 905.06,
+          "day_pnl": 67.91
+        },
+        {
+          "date": "2026-11-06",
+          "open": 905.06,
+          "high": 952.98,
+          "low": 771.22,
+          "close": 883.26,
+          "day_pnl": -21.8
+        },
+        {
+          "date": "2026-11-07",
+          "open": 883.26,
+          "high": 1000.96,
+          "low": 749.6,
+          "close": 864.1,
+          "day_pnl": -19.16
+        },
+        {
+          "date": "2026-11-08",
+          "open": 864.1,
+          "high": 1011.32,
+          "low": 821.96,
+          "close": 1011.32,
+          "day_pnl": 147.22
+        },
+        {
+          "date": "2026-11-09",
+          "open": 1011.32,
+          "high": 1117.41,
+          "low": 938.36,
+          "close": 1049.91,
+          "day_pnl": 38.59
+        },
+        {
+          "date": "2026-11-10",
+          "open": 1049.91,
+          "high": 1151.25,
+          "low": 974.98,
+          "close": 1151.25,
+          "day_pnl": 101.34
+        },
+        {
+          "date": "2026-11-11",
+          "open": 1151.25,
+          "high": 1238.72,
+          "low": 1072.01,
+          "close": 1213.81,
+          "day_pnl": 62.56
+        },
+        {
+          "date": "2026-11-12",
+          "open": 1213.81,
+          "high": 1322.39,
+          "low": 1074.57,
+          "close": 1147.27,
+          "day_pnl": -66.54
+        },
+        {
+          "date": "2026-11-13",
+          "open": 1147.27,
+          "high": 1235.35,
+          "low": 1023.86,
+          "close": 1235.35,
+          "day_pnl": 88.08
+        },
+        {
+          "date": "2026-11-14",
+          "open": 1235.35,
+          "high": 1381.42,
+          "low": 1176.5,
+          "close": 1381.42,
+          "day_pnl": 146.07
+        },
+        {
+          "date": "2026-11-15",
+          "open": 1381.42,
+          "high": 1491.65,
+          "low": 1310.09,
+          "close": 950.0,
+          "day_pnl": -71.33
+        }
+      ],
+      "session_regime_heatmap": [
+        {
+          "session": "Asian",
+          "regime": "Trending",
+          "winrate": 65.2,
+          "pnl": 346.76,
+          "trades": 9
+        },
+        {
+          "session": "Asian",
+          "regime": "Ranging",
+          "winrate": 45.0,
+          "pnl": -39.63,
+          "trades": 7
+        },
+        {
+          "session": "Asian",
+          "regime": "High-Vol",
+          "winrate": 54.1,
+          "pnl": 120.44,
+          "trades": 7
+        },
+        {
+          "session": "London",
+          "regime": "Trending",
+          "winrate": 48.6,
+          "pnl": 16.08,
+          "trades": 3
+        },
+        {
+          "session": "London",
+          "regime": "Ranging",
+          "winrate": 53.5,
+          "pnl": 140.58,
+          "trades": 8
+        },
+        {
+          "session": "London",
+          "regime": "High-Vol",
+          "winrate": 66.0,
+          "pnl": 486.51,
+          "trades": 8
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Trending",
+          "winrate": 40.0,
+          "pnl": -122.91,
+          "trades": 5
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Ranging",
+          "winrate": 44.2,
+          "pnl": -103.45,
+          "trades": 9
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "High-Vol",
+          "winrate": 50.9,
+          "pnl": 52.65,
+          "trades": 3
+        }
+      ],
+      "playbook": [
+        "[Trained \u2022 Nov 17 Ready] DXY Inverse Slope + COT Confluence Gate | H1 ATR=$4.85 | Bias=BULLISH.",
+        "Require 3-factor confluence: DXY inverse slope + COT commercial net-long + H1 BOS.",
+        "Reduce risk to 0.5% during Ranging Asia session."
+      ],
+      "mutations": [
+        {
+          "date": "2026-11-14",
+          "mentor": "Self-Reflection",
+          "change": "Increased TP2 runner allocation to 35% during Trending regime.",
+          "impact_pct": "+0.4R Avg"
+        }
+      ],
+      "research_log": [
+        {
+          "ts": "2026-11-16T20:20:32Z",
+          "source": "Autonomous Scan",
+          "summary": "XAUUSD @ $2662.10 | DXY 104.12 | Regime check complete -> Executed setup."
+        },
+        {
+          "ts": "2026-11-16T19:11:23Z",
+          "source": "Macro Radar",
+          "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
+        },
+        {
+          "ts": "2026-11-16T18:35:23Z",
+          "source": "Bybit PAXG/Orderflow",
+          "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
+        },
+        {
+          "ts": "2026-11-16T17:01:23Z",
+          "source": "USD Economic Calendar",
+          "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
+        }
+      ],
+      "rank": 5,
+      "trained_skill": "DXY Inverse Slope + COT Confluence Gate",
+      "nov17_ready": true
+    },
+    {
+      "agent_id": "ai-6",
+      "display_name": "GPT-OSS 120B",
+      "short_name": "GPT-OSS",
+      "provider": "Groq / OpenAI",
+      "brand_key": "openai",
+      "avatar": "/avatars/gptoss.jpg",
+      "model_name": "openai/gpt-oss-120b",
+      "color": "#30D158",
+      "style_archetype": "NY Overlap Orderflow & Volatility Expansion",
+      "equity": 10580.0,
+      "initial_equity": 10000.0,
+      "total_pnl": 580.0,
+      "roi_pct": 5.8,
+      "day_pnl": 42.1,
+      "open_pnl": 0.0,
+      "winrate_pct": 50.0,
+      "profit_factor": 1.45,
+      "sharpe_ratio": 1.08,
+      "sortino_ratio": 1.38,
+      "calmar_ratio": 1.21,
+      "max_dd_pct": 4.8,
+      "expectancy_usd": 19.0,
+      "avg_rr": 1.38,
+      "kelly_pct": 13.8,
+      "weekly_trades": 18,
+      "status": "SCANNING",
+      "consecutive_losses": 0,
+      "is_leader": false,
+      "is_mirrored": false,
+      "mirror_multiplier": 1.0,
+      "sparkline": [
+        10612.85,
+        10683.72,
+        10792.58,
+        10735.89,
+        10872.24,
+        10857.84,
+        11001.4,
+        11024.57,
+        11039.36,
+        11076.74,
+        11088.8,
+        11069.01,
+        11126.64,
+        10580.0
+      ],
+      "equity_curve": [
+        {
+          "date": "2026-10-17",
+          "equity": 9964.36,
+          "pnl": -35.64
+        },
+        {
+          "date": "2026-10-18",
+          "equity": 10086.06,
+          "pnl": 86.06
+        },
+        {
+          "date": "2026-10-19",
+          "equity": 10013.58,
+          "pnl": 13.58
+        },
+        {
+          "date": "2026-10-20",
+          "equity": 10158.3,
+          "pnl": 158.3
+        },
+        {
+          "date": "2026-10-21",
+          "equity": 10210.68,
+          "pnl": 210.68
+        },
+        {
+          "date": "2026-10-22",
+          "equity": 10165.9,
+          "pnl": 165.9
+        },
+        {
+          "date": "2026-10-23",
+          "equity": 10299.13,
+          "pnl": 299.13
+        },
+        {
+          "date": "2026-10-24",
+          "equity": 10356.89,
+          "pnl": 356.89
+        },
+        {
+          "date": "2026-10-25",
+          "equity": 10387.99,
+          "pnl": 387.99
+        },
+        {
+          "date": "2026-10-26",
+          "equity": 10360.36,
+          "pnl": 360.36
+        },
+        {
+          "date": "2026-10-27",
+          "equity": 10298.27,
+          "pnl": 298.27
+        },
+        {
+          "date": "2026-10-28",
+          "equity": 10381.41,
+          "pnl": 381.41
+        },
+        {
+          "date": "2026-10-29",
+          "equity": 10494.16,
+          "pnl": 494.16
+        },
+        {
+          "date": "2026-10-30",
+          "equity": 10548.75,
+          "pnl": 548.75
+        },
+        {
+          "date": "2026-10-31",
+          "equity": 10513.74,
+          "pnl": 513.74
+        },
+        {
+          "date": "2026-11-01",
+          "equity": 10547.57,
+          "pnl": 547.57
+        },
+        {
+          "date": "2026-11-02",
+          "equity": 10612.85,
+          "pnl": 612.85
+        },
+        {
+          "date": "2026-11-03",
+          "equity": 10683.72,
+          "pnl": 683.72
+        },
+        {
+          "date": "2026-11-04",
+          "equity": 10792.58,
+          "pnl": 792.58
+        },
+        {
+          "date": "2026-11-05",
+          "equity": 10735.89,
+          "pnl": 735.89
+        },
+        {
+          "date": "2026-11-06",
+          "equity": 10872.24,
+          "pnl": 872.24
+        },
+        {
+          "date": "2026-11-07",
+          "equity": 10857.84,
+          "pnl": 857.84
+        },
+        {
+          "date": "2026-11-08",
+          "equity": 11001.4,
+          "pnl": 1001.4
+        },
+        {
+          "date": "2026-11-09",
+          "equity": 11024.57,
+          "pnl": 1024.57
+        },
+        {
+          "date": "2026-11-10",
+          "equity": 11039.36,
+          "pnl": 1039.36
+        },
+        {
+          "date": "2026-11-11",
+          "equity": 11076.74,
+          "pnl": 1076.74
+        },
+        {
+          "date": "2026-11-12",
+          "equity": 11088.8,
+          "pnl": 1088.8
+        },
+        {
+          "date": "2026-11-13",
+          "equity": 11069.01,
+          "pnl": 1069.01
+        },
+        {
+          "date": "2026-11-14",
+          "equity": 11126.64,
+          "pnl": 1126.64
+        },
+        {
+          "date": "2026-11-15",
+          "equity": 10580.0,
+          "pnl": 580.0
+        }
+      ],
+      "pnl_candles": [
+        {
+          "date": "2026-10-17",
+          "open": 0.0,
+          "high": 150.63,
+          "low": -51.86,
+          "close": -35.64,
+          "day_pnl": -35.64
+        },
+        {
+          "date": "2026-10-18",
+          "open": -35.64,
+          "high": 86.06,
+          "low": -146.36,
+          "close": 86.06,
+          "day_pnl": 121.7
+        },
+        {
+          "date": "2026-10-19",
+          "open": 86.06,
+          "high": 177.53,
+          "low": -57.08,
+          "close": 13.58,
+          "day_pnl": -72.48
+        },
+        {
+          "date": "2026-10-20",
+          "open": 13.58,
+          "high": 158.3,
+          "low": -15.12,
+          "close": 158.3,
+          "day_pnl": 144.72
+        },
+        {
+          "date": "2026-10-21",
+          "open": 158.3,
+          "high": 229.1,
+          "low": 132.71,
+          "close": 210.68,
+          "day_pnl": 52.38
+        },
+        {
+          "date": "2026-10-22",
+          "open": 210.68,
+          "high": 369.05,
+          "low": 112.01,
+          "close": 165.9,
+          "day_pnl": -44.78
+        },
+        {
+          "date": "2026-10-23",
+          "open": 165.9,
+          "high": 299.13,
+          "low": 62.91,
+          "close": 299.13,
+          "day_pnl": 133.23
+        },
+        {
+          "date": "2026-10-24",
+          "open": 299.13,
+          "high": 356.89,
+          "low": 231.41,
+          "close": 356.89,
+          "day_pnl": 57.76
+        },
+        {
+          "date": "2026-10-25",
+          "open": 356.89,
+          "high": 488.89,
+          "low": 249.5,
+          "close": 387.99,
+          "day_pnl": 31.1
+        },
+        {
+          "date": "2026-10-26",
+          "open": 387.99,
+          "high": 542.51,
+          "low": 306.95,
+          "close": 360.36,
+          "day_pnl": -27.63
+        },
+        {
+          "date": "2026-10-27",
+          "open": 360.36,
+          "high": 518.57,
+          "low": 274.06,
+          "close": 298.27,
+          "day_pnl": -62.09
+        },
+        {
+          "date": "2026-10-28",
+          "open": 298.27,
+          "high": 385.97,
+          "low": 197.96,
+          "close": 381.41,
+          "day_pnl": 83.14
+        },
+        {
+          "date": "2026-10-29",
+          "open": 381.41,
+          "high": 494.16,
+          "low": 245.67,
+          "close": 494.16,
+          "day_pnl": 112.75
+        },
+        {
+          "date": "2026-10-30",
+          "open": 494.16,
+          "high": 642.8,
+          "low": 445.49,
+          "close": 548.75,
+          "day_pnl": 54.59
+        },
+        {
+          "date": "2026-10-31",
+          "open": 548.75,
+          "high": 691.85,
+          "low": 445.55,
+          "close": 513.74,
+          "day_pnl": -35.01
+        },
+        {
+          "date": "2026-11-01",
+          "open": 513.74,
+          "high": 563.38,
+          "low": 376.66,
+          "close": 547.57,
+          "day_pnl": 33.83
+        },
+        {
+          "date": "2026-11-02",
+          "open": 547.57,
+          "high": 663.57,
+          "low": 490.35,
+          "close": 612.85,
+          "day_pnl": 65.28
+        },
+        {
+          "date": "2026-11-03",
+          "open": 612.85,
+          "high": 739.8,
+          "low": 476.3,
+          "close": 683.72,
+          "day_pnl": 70.87
+        },
+        {
+          "date": "2026-11-04",
+          "open": 683.72,
+          "high": 792.58,
+          "low": 578.84,
+          "close": 792.58,
+          "day_pnl": 108.86
+        },
+        {
+          "date": "2026-11-05",
+          "open": 792.58,
+          "high": 900.95,
+          "low": 718.89,
+          "close": 735.89,
+          "day_pnl": -56.69
+        },
+        {
+          "date": "2026-11-06",
+          "open": 735.89,
+          "high": 872.24,
+          "low": 652.9,
+          "close": 872.24,
+          "day_pnl": 136.35
+        },
+        {
+          "date": "2026-11-07",
+          "open": 872.24,
+          "high": 953.71,
+          "low": 805.94,
+          "close": 857.84,
+          "day_pnl": -14.4
+        },
+        {
+          "date": "2026-11-08",
+          "open": 857.84,
+          "high": 1001.4,
+          "low": 774.35,
+          "close": 1001.4,
+          "day_pnl": 143.56
+        },
+        {
+          "date": "2026-11-09",
+          "open": 1001.4,
+          "high": 1125.44,
+          "low": 887.03,
+          "close": 1024.57,
+          "day_pnl": 23.17
+        },
+        {
+          "date": "2026-11-10",
+          "open": 1024.57,
+          "high": 1108.54,
+          "low": 989.56,
+          "close": 1039.36,
+          "day_pnl": 14.79
+        },
+        {
+          "date": "2026-11-11",
+          "open": 1039.36,
+          "high": 1202.72,
+          "low": 968.48,
+          "close": 1076.74,
+          "day_pnl": 37.38
+        },
+        {
+          "date": "2026-11-12",
+          "open": 1076.74,
+          "high": 1224.89,
+          "low": 1045.53,
+          "close": 1088.8,
+          "day_pnl": 12.06
+        },
+        {
+          "date": "2026-11-13",
+          "open": 1088.8,
+          "high": 1123.93,
+          "low": 1003.11,
+          "close": 1069.01,
+          "day_pnl": -19.79
+        },
+        {
+          "date": "2026-11-14",
+          "open": 1069.01,
+          "high": 1156.24,
+          "low": 1000.95,
+          "close": 1126.64,
+          "day_pnl": 57.63
+        },
+        {
+          "date": "2026-11-15",
+          "open": 1126.64,
+          "high": 1252.72,
+          "low": 1085.67,
+          "close": 580.0,
+          "day_pnl": -40.97
+        }
+      ],
+      "session_regime_heatmap": [
+        {
+          "session": "Asian",
+          "regime": "Trending",
+          "winrate": 36.5,
+          "pnl": -140.98,
+          "trades": 7
+        },
+        {
+          "session": "Asian",
+          "regime": "Ranging",
+          "winrate": 52.5,
+          "pnl": 123.52,
+          "trades": 3
+        },
+        {
+          "session": "Asian",
+          "regime": "High-Vol",
+          "winrate": 47.4,
+          "pnl": -13.07,
+          "trades": 9
+        },
+        {
+          "session": "London",
+          "regime": "Trending",
+          "winrate": 36.3,
+          "pnl": -304.19,
+          "trades": 8
+        },
+        {
+          "session": "London",
+          "regime": "Ranging",
+          "winrate": 57.8,
+          "pnl": 118.61,
+          "trades": 2
+        },
+        {
+          "session": "London",
+          "regime": "High-Vol",
+          "winrate": 44.8,
+          "pnl": -50.96,
+          "trades": 4
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Trending",
+          "winrate": 52.6,
+          "pnl": 99.36,
+          "trades": 9
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Ranging",
+          "winrate": 49.3,
+          "pnl": 17.17,
+          "trades": 9
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "High-Vol",
+          "winrate": 53.6,
+          "pnl": 89.75,
+          "trades": 3
+        }
+      ],
+      "playbook": [
+        "[Trained \u2022 Nov 17 Ready] NY Overlap Volatility Compression Breakout | H1 ATR=$4.85 | Bias=BULLISH.",
+        "Target NY Overlap volatility expansion after 2h compression (< 0.45 ATR).",
+        "Cut losing positions if momentum stalls after 4 H1 bars."
+      ],
+      "mutations": [
+        {
+          "date": "2026-11-14",
+          "mentor": "Self-Reflection",
+          "change": "Increased TP2 runner allocation to 35% during Trending regime.",
+          "impact_pct": "+0.4R Avg"
+        }
+      ],
+      "research_log": [
+        {
+          "ts": "2026-11-16T19:06:23Z",
+          "source": "Macro Radar",
+          "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
+        },
+        {
+          "ts": "2026-11-16T18:28:23Z",
+          "source": "Bybit PAXG/Orderflow",
+          "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
+        },
+        {
+          "ts": "2026-11-16T16:50:23Z",
+          "source": "USD Economic Calendar",
+          "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
+        }
+      ],
+      "rank": 6,
+      "trained_skill": "NY Overlap Volatility Compression Breakout",
+      "nov17_ready": true
+    },
+    {
+      "agent_id": "ai-7",
+      "display_name": "Mistral Small 4",
+      "short_name": "Mistral",
+      "provider": "Mistral",
+      "brand_key": "mistral",
+      "avatar": "/avatars/mistral.jpg",
+      "model_name": "mistral-small-latest",
+      "color": "#FF9F0A",
+      "style_archetype": "Institutional OI Wall Rejections",
+      "equity": 9760.0,
+      "initial_equity": 10000.0,
+      "total_pnl": -240.0,
+      "roi_pct": -2.4,
+      "day_pnl": -118.4,
+      "open_pnl": 0.0,
+      "winrate_pct": 43.8,
+      "profit_factor": 0.91,
+      "sharpe_ratio": -0.24,
+      "sortino_ratio": -0.31,
+      "calmar_ratio": -0.37,
+      "max_dd_pct": 6.4,
+      "expectancy_usd": -3.64,
+      "avg_rr": 1.2,
+      "kelly_pct": 0.0,
+      "weekly_trades": 16,
+      "status": "COOLDOWN",
+      "consecutive_losses": 2,
+      "is_leader": false,
+      "is_mirrored": false,
+      "mirror_multiplier": 1.0,
+      "sparkline": [
+        9814.48,
+        9924.65,
+        9908.77,
+        9917.28,
+        9866.65,
+        9799.56,
+        9827.9,
+        9818.28,
+        9809.91,
+        9925.45,
+        9970.04,
+        9911.42,
+        9956.18,
+        9760.0
+      ],
+      "equity_curve": [
+        {
+          "date": "2026-10-17",
+          "equity": 10012.52,
+          "pnl": 12.52
+        },
+        {
+          "date": "2026-10-18",
+          "equity": 9907.94,
+          "pnl": -92.06
+        },
+        {
+          "date": "2026-10-19",
+          "equity": 9856.92,
+          "pnl": -143.08
+        },
+        {
+          "date": "2026-10-20",
+          "equity": 9803.97,
+          "pnl": -196.03
+        },
+        {
+          "date": "2026-10-21",
+          "equity": 9703.59,
+          "pnl": -296.41
+        },
+        {
+          "date": "2026-10-22",
+          "equity": 9672.97,
+          "pnl": -327.03
+        },
+        {
+          "date": "2026-10-23",
+          "equity": 9574.99,
+          "pnl": -425.01
+        },
+        {
+          "date": "2026-10-24",
+          "equity": 9648.16,
+          "pnl": -351.84
+        },
+        {
+          "date": "2026-10-25",
+          "equity": 9544.18,
+          "pnl": -455.82
+        },
+        {
+          "date": "2026-10-26",
+          "equity": 9614.09,
+          "pnl": -385.91
+        },
+        {
+          "date": "2026-10-27",
+          "equity": 9661.59,
+          "pnl": -338.41
+        },
+        {
+          "date": "2026-10-28",
+          "equity": 9723.97,
+          "pnl": -276.03
+        },
+        {
+          "date": "2026-10-29",
+          "equity": 9687.42,
+          "pnl": -312.58
+        },
+        {
+          "date": "2026-10-30",
+          "equity": 9786.79,
+          "pnl": -213.21
+        },
+        {
+          "date": "2026-10-31",
+          "equity": 9780.7,
+          "pnl": -219.3
+        },
+        {
+          "date": "2026-11-01",
+          "equity": 9763.52,
+          "pnl": -236.48
+        },
+        {
+          "date": "2026-11-02",
+          "equity": 9814.48,
+          "pnl": -185.52
+        },
+        {
+          "date": "2026-11-03",
+          "equity": 9924.65,
+          "pnl": -75.35
+        },
+        {
+          "date": "2026-11-04",
+          "equity": 9908.77,
+          "pnl": -91.23
+        },
+        {
+          "date": "2026-11-05",
+          "equity": 9917.28,
+          "pnl": -82.72
+        },
+        {
+          "date": "2026-11-06",
+          "equity": 9866.65,
+          "pnl": -133.35
+        },
+        {
+          "date": "2026-11-07",
+          "equity": 9799.56,
+          "pnl": -200.44
+        },
+        {
+          "date": "2026-11-08",
+          "equity": 9827.9,
+          "pnl": -172.1
+        },
+        {
+          "date": "2026-11-09",
+          "equity": 9818.28,
+          "pnl": -181.72
+        },
+        {
+          "date": "2026-11-10",
+          "equity": 9809.91,
+          "pnl": -190.09
+        },
+        {
+          "date": "2026-11-11",
+          "equity": 9925.45,
+          "pnl": -74.55
+        },
+        {
+          "date": "2026-11-12",
+          "equity": 9970.04,
+          "pnl": -29.96
+        },
+        {
+          "date": "2026-11-13",
+          "equity": 9911.42,
+          "pnl": -88.58
+        },
+        {
+          "date": "2026-11-14",
+          "equity": 9956.18,
+          "pnl": -43.82
+        },
+        {
+          "date": "2026-11-15",
+          "equity": 9760.0,
+          "pnl": -240.0
+        }
+      ],
+      "pnl_candles": [
+        {
+          "date": "2026-10-17",
+          "open": 0.0,
+          "high": 121.36,
+          "low": -60.37,
+          "close": 12.52,
+          "day_pnl": 12.52
+        },
+        {
+          "date": "2026-10-18",
+          "open": 12.52,
+          "high": 112.79,
+          "low": -99.2,
+          "close": -92.06,
+          "day_pnl": -104.58
+        },
+        {
+          "date": "2026-10-19",
+          "open": -92.06,
+          "high": -56.42,
+          "low": -200.42,
+          "close": -143.08,
+          "day_pnl": -51.02
+        },
+        {
+          "date": "2026-10-20",
+          "open": -143.08,
+          "high": -62.53,
+          "low": -236.59,
+          "close": -196.03,
+          "day_pnl": -52.95
+        },
+        {
+          "date": "2026-10-21",
+          "open": -196.03,
+          "high": -115.38,
+          "low": -320.51,
+          "close": -296.41,
+          "day_pnl": -100.38
+        },
+        {
+          "date": "2026-10-22",
+          "open": -296.41,
+          "high": -252.77,
+          "low": -375.83,
+          "close": -327.03,
+          "day_pnl": -30.62
+        },
+        {
+          "date": "2026-10-23",
+          "open": -327.03,
+          "high": -244.84,
+          "low": -425.01,
+          "close": -425.01,
+          "day_pnl": -97.98
+        },
+        {
+          "date": "2026-10-24",
+          "open": -425.01,
+          "high": -351.84,
+          "low": -450.63,
+          "close": -351.84,
+          "day_pnl": 73.17
+        },
+        {
+          "date": "2026-10-25",
+          "open": -351.84,
+          "high": -187.53,
+          "low": -494.81,
+          "close": -455.82,
+          "day_pnl": -103.98
+        },
+        {
+          "date": "2026-10-26",
+          "open": -455.82,
+          "high": -350.39,
+          "low": -589.17,
+          "close": -385.91,
+          "day_pnl": 69.91
+        },
+        {
+          "date": "2026-10-27",
+          "open": -385.91,
+          "high": -228.8,
+          "low": -480.45,
+          "close": -338.41,
+          "day_pnl": 47.5
+        },
+        {
+          "date": "2026-10-28",
+          "open": -338.41,
+          "high": -237.9,
+          "low": -418.63,
+          "close": -276.03,
+          "day_pnl": 62.38
+        },
+        {
+          "date": "2026-10-29",
+          "open": -276.03,
+          "high": -194.11,
+          "low": -391.47,
+          "close": -312.58,
+          "day_pnl": -36.55
+        },
+        {
+          "date": "2026-10-30",
+          "open": -312.58,
+          "high": -213.21,
+          "low": -428.16,
+          "close": -213.21,
+          "day_pnl": 99.37
+        },
+        {
+          "date": "2026-10-31",
+          "open": -213.21,
+          "high": -170.01,
+          "low": -316.88,
+          "close": -219.3,
+          "day_pnl": -6.09
+        },
+        {
+          "date": "2026-11-01",
+          "open": -219.3,
+          "high": -145.75,
+          "low": -313.35,
+          "close": -236.48,
+          "day_pnl": -17.18
+        },
+        {
+          "date": "2026-11-02",
+          "open": -236.48,
+          "high": -116.24,
+          "low": -371.36,
+          "close": -185.52,
+          "day_pnl": 50.96
+        },
+        {
+          "date": "2026-11-03",
+          "open": -185.52,
+          "high": -75.35,
+          "low": -250.59,
+          "close": -75.35,
+          "day_pnl": 110.17
+        },
+        {
+          "date": "2026-11-04",
+          "open": -75.35,
+          "high": 9.12,
+          "low": -136.98,
+          "close": -91.23,
+          "day_pnl": -15.88
+        },
+        {
+          "date": "2026-11-05",
+          "open": -91.23,
+          "high": 47.13,
+          "low": -180.93,
+          "close": -82.72,
+          "day_pnl": 8.51
+        },
+        {
+          "date": "2026-11-06",
+          "open": -82.72,
+          "high": -4.03,
+          "low": -133.35,
+          "close": -133.35,
+          "day_pnl": -50.63
+        },
+        {
+          "date": "2026-11-07",
+          "open": -133.35,
+          "high": -95.54,
+          "low": -200.44,
+          "close": -200.44,
+          "day_pnl": -67.09
+        },
+        {
+          "date": "2026-11-08",
+          "open": -200.44,
+          "high": -140.47,
+          "low": -231.0,
+          "close": -172.1,
+          "day_pnl": 28.34
+        },
+        {
+          "date": "2026-11-09",
+          "open": -172.1,
+          "high": -110.13,
+          "low": -273.92,
+          "close": -181.72,
+          "day_pnl": -9.62
+        },
+        {
+          "date": "2026-11-10",
+          "open": -181.72,
+          "high": -107.01,
+          "low": -246.64,
+          "close": -190.09,
+          "day_pnl": -8.37
+        },
+        {
+          "date": "2026-11-11",
+          "open": -190.09,
+          "high": -31.22,
+          "low": -268.86,
+          "close": -74.55,
+          "day_pnl": 115.54
+        },
+        {
+          "date": "2026-11-12",
+          "open": -74.55,
+          "high": -0.27,
+          "low": -175.17,
+          "close": -29.96,
+          "day_pnl": 44.59
+        },
+        {
+          "date": "2026-11-13",
+          "open": -29.96,
+          "high": 103.32,
+          "low": -106.19,
+          "close": -88.58,
+          "day_pnl": -58.62
+        },
+        {
+          "date": "2026-11-14",
+          "open": -88.58,
+          "high": -12.66,
+          "low": -177.01,
+          "close": -43.82,
+          "day_pnl": 44.76
+        },
+        {
+          "date": "2026-11-15",
+          "open": -43.82,
+          "high": -4.0,
+          "low": -170.52,
+          "close": -240.0,
+          "day_pnl": -3.76
+        }
+      ],
+      "session_regime_heatmap": [
+        {
+          "session": "Asian",
+          "regime": "Trending",
+          "winrate": 29.9,
+          "pnl": -453.09,
+          "trades": 8
+        },
+        {
+          "session": "Asian",
+          "regime": "Ranging",
+          "winrate": 31.1,
+          "pnl": -412.56,
+          "trades": 9
+        },
+        {
+          "session": "Asian",
+          "regime": "High-Vol",
+          "winrate": 57.1,
+          "pnl": 120.06,
+          "trades": 3
+        },
+        {
+          "session": "London",
+          "regime": "Trending",
+          "winrate": 32.8,
+          "pnl": -221.61,
+          "trades": 2
+        },
+        {
+          "session": "London",
+          "regime": "Ranging",
+          "winrate": 40.7,
+          "pnl": -157.75,
+          "trades": 9
+        },
+        {
+          "session": "London",
+          "regime": "High-Vol",
+          "winrate": 49.1,
+          "pnl": 24.24,
+          "trades": 2
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Trending",
+          "winrate": 55.1,
+          "pnl": 98.66,
+          "trades": 2
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Ranging",
+          "winrate": 31.0,
+          "pnl": -365.6,
+          "trades": 3
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "High-Vol",
+          "winrate": 50.9,
+          "pnl": 46.8,
+          "trades": 7
+        }
+      ],
+      "playbook": [
+        "[Trained \u2022 Nov 17 Ready] OI Wall Rejection + ADX>28 Counter-Trend Veto | H1 ATR=$4.85 | Bias=BULLISH.",
+        "Wait for institutional OI wall rejection at round $25 increments ($2650, $2675).",
+        "[MUTATED] Adopted Claude's rule: Ban counter-trend entries when ADX > 28."
+      ],
+      "mutations": [
+        {
+          "date": "2026-11-14",
+          "mentor": "Claude Sonnet 4",
+          "change": "Tightened OTE entry zone to 0.650\u20130.750 & added DXY slope filter.",
+          "impact_pct": "+3.2% Winrate"
+        }
+      ],
+      "research_log": [
+        {
+          "ts": "2026-11-16T19:01:23Z",
+          "source": "Macro Radar",
+          "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
+        },
+        {
+          "ts": "2026-11-16T18:21:23Z",
+          "source": "Bybit PAXG/Orderflow",
+          "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
+        },
+        {
+          "ts": "2026-11-16T16:39:23Z",
+          "source": "USD Economic Calendar",
+          "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
+        }
+      ],
+      "rank": 7,
+      "trained_skill": "OI Wall Rejection + ADX>28 Counter-Trend Veto",
+      "nov17_ready": true
+    },
+    {
+      "agent_id": "ai-8",
+      "display_name": "Llama 3.3 70B",
+      "short_name": "Llama",
+      "provider": "Cloudflare / Meta",
+      "brand_key": "meta",
+      "avatar": "/avatars/llama.jpg",
+      "model_name": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "color": "#FF375F",
+      "style_archetype": "Discount OTE Pullback & Risk-Parity",
+      "equity": 9510.0,
+      "initial_equity": 10000.0,
+      "total_pnl": -490.0,
+      "roi_pct": -4.9,
+      "day_pnl": -164.2,
+      "open_pnl": 0.0,
+      "winrate_pct": 40.0,
+      "profit_factor": 0.82,
+      "sharpe_ratio": -0.48,
+      "sortino_ratio": -0.61,
+      "calmar_ratio": -0.62,
+      "max_dd_pct": 7.9,
+      "expectancy_usd": -12.0,
+      "avg_rr": 1.2,
+      "kelly_pct": 0.0,
+      "weekly_trades": 15,
+      "status": "COOLDOWN",
+      "consecutive_losses": 2,
+      "is_leader": false,
+      "is_mirrored": false,
+      "mirror_multiplier": 1.0,
+      "sparkline": [
+        9995.55,
+        10056.2,
+        9962.21,
+        9955.51,
+        9895.2,
+        9979.43,
+        10010.1,
+        10057.75,
+        9987.79,
+        10015.04,
+        9943.4,
+        9838.27,
+        9927.15,
+        9510.0
+      ],
+      "equity_curve": [
+        {
+          "date": "2026-10-17",
+          "equity": 10025.61,
+          "pnl": 25.61
+        },
+        {
+          "date": "2026-10-18",
+          "equity": 10041.32,
+          "pnl": 41.32
+        },
+        {
+          "date": "2026-10-19",
+          "equity": 10020.66,
+          "pnl": 20.66
+        },
+        {
+          "date": "2026-10-20",
+          "equity": 10007.89,
+          "pnl": 7.89
+        },
+        {
+          "date": "2026-10-21",
+          "equity": 10118.42,
+          "pnl": 118.42
+        },
+        {
+          "date": "2026-10-22",
+          "equity": 10228.1,
+          "pnl": 228.1
+        },
+        {
+          "date": "2026-10-23",
+          "equity": 10309.59,
+          "pnl": 309.59
+        },
+        {
+          "date": "2026-10-24",
+          "equity": 10222.34,
+          "pnl": 222.34
+        },
+        {
+          "date": "2026-10-25",
+          "equity": 10191.15,
+          "pnl": 191.15
+        },
+        {
+          "date": "2026-10-26",
+          "equity": 10208.08,
+          "pnl": 208.08
+        },
+        {
+          "date": "2026-10-27",
+          "equity": 10151.52,
+          "pnl": 151.52
+        },
+        {
+          "date": "2026-10-28",
+          "equity": 10249.23,
+          "pnl": 249.23
+        },
+        {
+          "date": "2026-10-29",
+          "equity": 10174.63,
+          "pnl": 174.63
+        },
+        {
+          "date": "2026-10-30",
+          "equity": 10050.14,
+          "pnl": 50.14
+        },
+        {
+          "date": "2026-10-31",
+          "equity": 10016.36,
+          "pnl": 16.36
+        },
+        {
+          "date": "2026-11-01",
+          "equity": 10020.44,
+          "pnl": 20.44
+        },
+        {
+          "date": "2026-11-02",
+          "equity": 9995.55,
+          "pnl": -4.45
+        },
+        {
+          "date": "2026-11-03",
+          "equity": 10056.2,
+          "pnl": 56.2
+        },
+        {
+          "date": "2026-11-04",
+          "equity": 9962.21,
+          "pnl": -37.79
+        },
+        {
+          "date": "2026-11-05",
+          "equity": 9955.51,
+          "pnl": -44.49
+        },
+        {
+          "date": "2026-11-06",
+          "equity": 9895.2,
+          "pnl": -104.8
+        },
+        {
+          "date": "2026-11-07",
+          "equity": 9979.43,
+          "pnl": -20.57
+        },
+        {
+          "date": "2026-11-08",
+          "equity": 10010.1,
+          "pnl": 10.1
+        },
+        {
+          "date": "2026-11-09",
+          "equity": 10057.75,
+          "pnl": 57.75
+        },
+        {
+          "date": "2026-11-10",
+          "equity": 9987.79,
+          "pnl": -12.21
+        },
+        {
+          "date": "2026-11-11",
+          "equity": 10015.04,
+          "pnl": 15.04
+        },
+        {
+          "date": "2026-11-12",
+          "equity": 9943.4,
+          "pnl": -56.6
+        },
+        {
+          "date": "2026-11-13",
+          "equity": 9838.27,
+          "pnl": -161.73
+        },
+        {
+          "date": "2026-11-14",
+          "equity": 9927.15,
+          "pnl": -72.85
+        },
+        {
+          "date": "2026-11-15",
+          "equity": 9510.0,
+          "pnl": -490.0
+        }
+      ],
+      "pnl_candles": [
+        {
+          "date": "2026-10-17",
+          "open": 0.0,
+          "high": 52.18,
+          "low": -138.87,
+          "close": 25.61,
+          "day_pnl": 25.61
+        },
+        {
+          "date": "2026-10-18",
+          "open": 25.61,
+          "high": 174.82,
+          "low": -100.27,
+          "close": 41.32,
+          "day_pnl": 15.71
+        },
+        {
+          "date": "2026-10-19",
+          "open": 41.32,
+          "high": 110.72,
+          "low": -27.96,
+          "close": 20.66,
+          "day_pnl": -20.66
+        },
+        {
+          "date": "2026-10-20",
+          "open": 20.66,
+          "high": 85.6,
+          "low": -95.11,
+          "close": 7.89,
+          "day_pnl": -12.77
+        },
+        {
+          "date": "2026-10-21",
+          "open": 7.89,
+          "high": 118.42,
+          "low": -113.18,
+          "close": 118.42,
+          "day_pnl": 110.53
+        },
+        {
+          "date": "2026-10-22",
+          "open": 118.42,
+          "high": 228.1,
+          "low": -0.81,
+          "close": 228.1,
+          "day_pnl": 109.68
+        },
+        {
+          "date": "2026-10-23",
+          "open": 228.1,
+          "high": 309.59,
+          "low": 181.44,
+          "close": 309.59,
+          "day_pnl": 81.49
+        },
+        {
+          "date": "2026-10-24",
+          "open": 309.59,
+          "high": 424.96,
+          "low": 222.34,
+          "close": 222.34,
+          "day_pnl": -87.25
+        },
+        {
+          "date": "2026-10-25",
+          "open": 222.34,
+          "high": 347.83,
+          "low": 157.61,
+          "close": 191.15,
+          "day_pnl": -31.19
+        },
+        {
+          "date": "2026-10-26",
+          "open": 191.15,
+          "high": 246.4,
+          "low": 149.63,
+          "close": 208.08,
+          "day_pnl": 16.93
+        },
+        {
+          "date": "2026-10-27",
+          "open": 208.08,
+          "high": 312.34,
+          "low": 135.61,
+          "close": 151.52,
+          "day_pnl": -56.56
+        },
+        {
+          "date": "2026-10-28",
+          "open": 151.52,
+          "high": 249.23,
+          "low": 34.63,
+          "close": 249.23,
+          "day_pnl": 97.71
+        },
+        {
+          "date": "2026-10-29",
+          "open": 249.23,
+          "high": 306.38,
+          "low": 135.06,
+          "close": 174.63,
+          "day_pnl": -74.6
+        },
+        {
+          "date": "2026-10-30",
+          "open": 174.63,
+          "high": 309.02,
+          "low": 50.14,
+          "close": 50.14,
+          "day_pnl": -124.49
+        },
+        {
+          "date": "2026-10-31",
+          "open": 50.14,
+          "high": 158.83,
+          "low": 12.2,
+          "close": 16.36,
+          "day_pnl": -33.78
+        },
+        {
+          "date": "2026-11-01",
+          "open": 16.36,
+          "high": 178.43,
+          "low": -9.98,
+          "close": 20.44,
+          "day_pnl": 4.08
+        },
+        {
+          "date": "2026-11-02",
+          "open": 20.44,
+          "high": 145.17,
+          "low": -65.59,
+          "close": -4.45,
+          "day_pnl": -24.89
+        },
+        {
+          "date": "2026-11-03",
+          "open": -4.45,
+          "high": 74.11,
+          "low": -70.13,
+          "close": 56.2,
+          "day_pnl": 60.65
+        },
+        {
+          "date": "2026-11-04",
+          "open": 56.2,
+          "high": 179.93,
+          "low": -83.15,
+          "close": -37.79,
+          "day_pnl": -93.99
+        },
+        {
+          "date": "2026-11-05",
+          "open": -37.79,
+          "high": 36.05,
+          "low": -156.06,
+          "close": -44.49,
+          "day_pnl": -6.7
+        },
+        {
+          "date": "2026-11-06",
+          "open": -44.49,
+          "high": 100.1,
+          "low": -141.92,
+          "close": -104.8,
+          "day_pnl": -60.31
+        },
+        {
+          "date": "2026-11-07",
+          "open": -104.8,
+          "high": -16.5,
+          "low": -146.75,
+          "close": -20.57,
+          "day_pnl": 84.23
+        },
+        {
+          "date": "2026-11-08",
+          "open": -20.57,
+          "high": 83.94,
+          "low": -112.59,
+          "close": 10.1,
+          "day_pnl": 30.67
+        },
+        {
+          "date": "2026-11-09",
+          "open": 10.1,
+          "high": 100.5,
+          "low": -76.2,
+          "close": 57.75,
+          "day_pnl": 47.65
+        },
+        {
+          "date": "2026-11-10",
+          "open": 57.75,
+          "high": 198.36,
+          "low": -55.06,
+          "close": -12.21,
+          "day_pnl": -69.96
+        },
+        {
+          "date": "2026-11-11",
+          "open": -12.21,
+          "high": 144.06,
+          "low": -58.19,
+          "close": 15.04,
+          "day_pnl": 27.25
+        },
+        {
+          "date": "2026-11-12",
+          "open": 15.04,
+          "high": 73.58,
+          "low": -82.11,
+          "close": -56.6,
+          "day_pnl": -71.64
+        },
+        {
+          "date": "2026-11-13",
+          "open": -56.6,
+          "high": 49.41,
+          "low": -168.25,
+          "close": -161.73,
+          "day_pnl": -105.13
+        },
+        {
+          "date": "2026-11-14",
+          "open": -161.73,
+          "high": -60.69,
+          "low": -251.76,
+          "close": -72.85,
+          "day_pnl": 88.88
+        },
+        {
+          "date": "2026-11-15",
+          "open": -72.85,
+          "high": 75.34,
+          "low": -133.01,
+          "close": -490.0,
+          "day_pnl": -6.3
+        }
+      ],
+      "session_regime_heatmap": [
+        {
+          "session": "Asian",
+          "regime": "Trending",
+          "winrate": 42.8,
+          "pnl": -91.97,
+          "trades": 3
+        },
+        {
+          "session": "Asian",
+          "regime": "Ranging",
+          "winrate": 53.1,
+          "pnl": 77.2,
+          "trades": 5
+        },
+        {
+          "session": "Asian",
+          "regime": "High-Vol",
+          "winrate": 34.7,
+          "pnl": -216.95,
+          "trades": 6
+        },
+        {
+          "session": "London",
+          "regime": "Trending",
+          "winrate": 33.8,
+          "pnl": -294.64,
+          "trades": 6
+        },
+        {
+          "session": "London",
+          "regime": "Ranging",
+          "winrate": 26.9,
+          "pnl": -524.29,
+          "trades": 4
+        },
+        {
+          "session": "London",
+          "regime": "High-Vol",
+          "winrate": 51.5,
+          "pnl": 91.83,
+          "trades": 6
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Trending",
+          "winrate": 36.9,
+          "pnl": -260.64,
+          "trades": 3
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "Ranging",
+          "winrate": 52.8,
+          "pnl": 64.99,
+          "trades": 9
+        },
+        {
+          "session": "NY Overlap",
+          "regime": "High-Vol",
+          "winrate": 44.8,
+          "pnl": -74.18,
+          "trades": 5
+        }
+      ],
+      "playbook": [
+        "[Trained \u2022 Nov 17 Ready] Discount OTE Pullback + 4h Tilt Cooldown Guard | H1 ATR=$4.85 | Bias=BULLISH.",
+        "Discount OTE pullback entries with strict 1.0% risk cap.",
+        "[MUTATED] Adopted Grok's rule: Enforce 4h Tilt Cooldown after 2 consecutive losses."
+      ],
+      "mutations": [
+        {
+          "date": "2026-11-14",
+          "mentor": "Claude Sonnet 4",
+          "change": "Tightened OTE entry zone to 0.650\u20130.750 & added DXY slope filter.",
+          "impact_pct": "+3.2% Winrate"
+        }
+      ],
+      "research_log": [
+        {
+          "ts": "2026-11-16T18:56:23Z",
+          "source": "Macro Radar",
+          "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
+        },
+        {
+          "ts": "2026-11-16T18:14:23Z",
+          "source": "Bybit PAXG/Orderflow",
+          "summary": "PAXG Perp OI +3.4% | Funding +0.0085% | Long/Short Ratio 1.18."
+        },
+        {
+          "ts": "2026-11-16T16:28:23Z",
+          "source": "USD Economic Calendar",
+          "summary": "No high-impact USD news in next 90m; London-NY Overlap liquidity optimal."
+        }
+      ],
+      "rank": 8,
+      "trained_skill": "Discount OTE Pullback + 4h Tilt Cooldown Guard",
+      "nov17_ready": true
+    }
+  ],
+  "benchmarks": [
+    {
+      "agent_id": "consensus",
+      "display_name": "AI Consensus",
+      "provider": "Ensemble Vote",
+      "style_archetype": "3-of-8 Uncorrelated AI Agreement",
+      "color": "#FFD60A",
+      "equity": 11410.0,
+      "roi_pct": 14.1,
+      "sharpe_ratio": 1.65,
+      "max_dd_pct": 2.9
+    },
+    {
+      "agent_id": "ctrl-ote",
+      "display_name": "Rule OTE",
+      "provider": "Deterministic",
+      "style_archetype": "Pure H4 Trend + 0.705 Fib Limit",
+      "color": "#8E8E93",
+      "equity": 10840.0,
+      "roi_pct": 8.4,
+      "sharpe_ratio": 1.12,
+      "max_dd_pct": 4.5
+    },
+    {
+      "agent_id": "ctrl-bnh",
+      "display_name": "Buy & Hold",
+      "provider": "Passive",
+      "style_archetype": "Passive XAUUSD Benchmark",
+      "color": "#636366",
+      "equity": 10620.0,
+      "roi_pct": 6.2,
+      "sharpe_ratio": 1.12,
+      "max_dd_pct": 4.5
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORD-9401",
+      "agent_id": "ai-1",
+      "agent_name": "Claude Sonnet 4",
+      "avatar": "/avatars/claude.jpg",
+      "symbol": "XAUUSD",
+      "side": "BUY",
+      "type": "Limit",
+      "qty": 0.45,
+      "entry_price": 2658.4,
+      "sl": 2648.0,
+      "tp": 2684.5,
+      "pnl": 16.65,
+      "status": "Open",
+      "session": "NY Overlap",
+      "regime": "Trending",
+      "confidence": 91,
+      "tag": "OTE 0.705 + DXY Drop",
+      "ts": "2026-11-16T19:17:23Z"
+    },
+    {
+      "id": "ORD-9400",
+      "agent_id": "ai-3",
+      "agent_name": "DeepSeek V4",
+      "avatar": "/avatars/deepseek.jpg",
+      "symbol": "XAUUSD",
+      "side": "BUY",
+      "type": "Market",
+      "qty": 0.3,
+      "entry_price": 2659.1,
+      "sl": 2650.2,
+      "tp": 2681.0,
+      "pnl": 9.0,
+      "status": "Open",
+      "session": "NY Overlap",
+      "regime": "Trending",
+      "confidence": 86,
+      "tag": "Z-Score Reversion",
+      "ts": "2026-11-16T19:11:23Z"
+    },
+    {
+      "id": "ORD-9399",
+      "agent_id": "ai-5",
+      "agent_name": "Gemini 2.5 Flash",
+      "avatar": "/avatars/gemini.jpg",
+      "symbol": "XAUUSD",
+      "side": "SELL",
+      "type": "Market",
+      "qty": 0.25,
+      "entry_price": 2663.5,
+      "sl": 2671.0,
+      "tp": 2645.0,
+      "pnl": 3.5,
+      "status": "Open",
+      "session": "London",
+      "regime": "Ranging",
+      "confidence": 74,
+      "tag": "US10Y Yield Spike",
+      "ts": "2026-11-16T18:53:23Z"
+    },
+    {
+      "id": "ORD-9396",
+      "agent_id": "ai-2",
+      "agent_name": "Grok 3",
+      "avatar": "/avatars/grok.jpg",
+      "symbol": "XAUUSD",
+      "side": "BUY",
+      "type": "Market",
+      "qty": 0.4,
+      "entry_price": 2644.8,
+      "sl": 2636.0,
+      "tp": 2666.0,
+      "pnl": 286.4,
+      "status": "Filled",
+      "session": "London",
+      "regime": "High-Vol",
+      "confidence": 89,
+      "tag": "Liquidity Sweep",
+      "lesson": "Sweep + OI spike yielded clean 2.4R expansion.",
+      "ts": "2026-11-16T16:45:23Z"
+    },
+    {
+      "id": "ORD-9392",
+      "agent_id": "ai-7",
+      "agent_name": "Mistral Small 4",
+      "avatar": "/avatars/mistral.jpg",
+      "symbol": "XAUUSD",
+      "side": "SELL",
+      "type": "Limit",
+      "qty": 0.3,
+      "entry_price": 2652.0,
+      "sl": 2659.5,
+      "tp": 2635.0,
+      "pnl": -118.4,
+      "status": "Filled",
+      "session": "Asian",
+      "regime": "Trending",
+      "confidence": 68,
+      "tag": "OI Wall Fade",
+      "lesson": "Triggered Tilt Cooldown: avoided fading strong London trend.",
+      "ts": "2026-11-16T13:45:23Z"
+    },
+    {
+      "id": "ORD-9389",
+      "agent_id": "ai-4",
+      "agent_name": "Qwen 3.8",
+      "avatar": "/avatars/qwen.jpg",
+      "symbol": "XAUUSD",
+      "side": "BUY",
+      "type": "Limit",
+      "qty": 0.35,
+      "entry_price": 2638.0,
+      "sl": 2630.0,
+      "tp": 2658.0,
+      "pnl": 0.0,
+      "status": "Canceled",
+      "session": "Asian",
+      "regime": "Ranging",
+      "confidence": 72,
+      "tag": "Timeout 8H",
+      "ts": "2026-11-16T10:45:23Z"
+    }
+  ],
+  "chat": [
+    {
+      "id": "MSG-7138",
+      "agent_id": "ai-1",
+      "agent_name": "Claude Sonnet 4",
+      "avatar": "",
+      "brand_key": "anthropic",
+      "event_type": "DEBATE",
+      "tokens_used": 48,
+      "message": "Copy Commander. Monitoring XAUUSD @ $2662.10 (DXY 104.12). My status is IN TRADE with +24.8% ROI and 64.2% Winrate. Ready for Nov 17 market open.",
+      "ts": "2026-11-16T20:22:38Z"
+    },
+    {
+      "id": "USR-7509",
+      "agent_id": "commander",
+      "agent_name": "Commander (You)",
+      "avatar": "",
+      "brand_key": "openai",
+      "event_type": "DEBATE",
+      "tokens_used": 0,
+      "message": "Confirm Nov 17 readiness",
+      "ts": "2026-11-16T20:22:38Z"
+    },
+    {
+      "id": "MSG-2393",
+      "agent_id": "ai-1",
+      "agent_name": "Claude Sonnet 4",
+      "avatar": "",
+      "brand_key": "anthropic",
+      "event_type": "DEBATE",
+      "tokens_used": 48,
+      "message": "Copy Commander. Monitoring XAUUSD @ $2662.10 (DXY 104.12). My status is IN TRADE with +24.8% ROI and 64.2% Winrate. Ready for Nov 17 market open.",
+      "ts": "2026-11-16T20:20:32Z"
+    },
+    {
+      "id": "USR-4268",
+      "agent_id": "commander",
+      "agent_name": "Commander (You)",
+      "avatar": "",
+      "brand_key": "openai",
+      "event_type": "DEBATE",
+      "tokens_used": 0,
+      "message": "Status check for Nov 17 open?",
+      "ts": "2026-11-16T20:20:32Z"
+    },
+    {
+      "id": "MSG-9198",
+      "agent_id": "ai-5",
+      "agent_name": "Gemini 2.5 Flash",
+      "avatar": "",
+      "brand_key": "gemini",
+      "event_type": "TRADE_OPEN",
+      "tokens_used": 62,
+      "message": "Autonomous Scan @ $2662.10: LONG signal triggered. Locked +$51.82. Current ROI: +10.02%.",
+      "ts": "2026-11-16T20:20:32Z"
+    },
+    {
+      "id": "MSG-1",
+      "agent_id": "ai-1",
+      "agent_name": "Claude Sonnet 4",
+      "avatar": "/avatars/claude.jpg",
+      "brand_key": "anthropic",
+      "event_type": "TRADE_OPEN",
+      "tokens_used": 64,
+      "message": "Opened XAUUSD LONG @ 2658.40 (0.45 lot). DXY broke below 104.20 and H4 OTE 0.705 held cleanly. Risk 1.0%, TP 2684.50.",
+      "ts": "2026-11-16T19:18:23Z"
+    },
+    {
+      "id": "MSG-2",
+      "agent_id": "ai-5",
+      "agent_name": "Gemini 2.5 Flash",
+      "avatar": "/avatars/gemini.jpg",
+      "brand_key": "gemini",
+      "event_type": "DEBATE",
+      "tokens_used": 72,
+      "message": "@Claude Care on that LONG \u2014 US10Y ticked up +2bps on my macro feed. I'm hedged SHORT from 2663.50 until NY cash close.",
+      "ts": "2026-11-16T19:23:23Z"
+    },
+    {
+      "id": "MSG-3",
+      "agent_id": "ai-2",
+      "agent_name": "Grok 3",
+      "avatar": "/avatars/grok.jpg",
+      "brand_key": "xai",
+      "event_type": "TRADE_CLOSE",
+      "tokens_used": 58,
+      "message": "Closed LONG +$286.40 (+2.4R). PAXG OI jumped +3.4% right on the London sweep \u2014 easiest liquidity grab of the week.",
+      "ts": "2026-11-16T19:29:23Z"
+    },
+    {
+      "id": "MSG-4",
+      "agent_id": "ai-7",
+      "agent_name": "Mistral Small 4",
+      "avatar": "/avatars/mistral.jpg",
+      "brand_key": "mistral",
+      "event_type": "HOURLY_PULSE",
+      "tokens_used": 51,
+      "message": "In 4h Tilt Cooldown after 2 consecutive losses. Reviewing Claude's ADX>28 filter before next Sunday Summit.",
+      "ts": "2026-11-16T19:39:23Z"
+    }
+  ],
+  "summit": {
+    "last_summit": "2026-11-15 18:00 UTC",
+    "mentors": [
+      "Claude Sonnet 4",
+      "Grok 3"
+    ],
+    "mentees": [
+      "Mistral Small 4",
+      "Llama 3.3 70B"
+    ],
+    "summary": "Mentors audited 12 losing trades from Mistral & Llama. Key finding: 75% of losses occurred counter-trending during ADX > 28 NY Overlap.",
+    "shared_rules": [
+      "Block counter-trend OI Wall fades when H1 ADX > 28.",
+      "Enforce mandatory 4h Tilt Cooldown after 2 consecutive losses.",
+      "Require DXY 20-EMA alignment before sizing > 0.30 lots."
+    ],
+    "transcript": [
+      {
+        "speaker": "Claude Sonnet 4",
+        "role": "Mentor #1",
+        "text": "Mistral, your Asian range fades worked, but you shorted 3 straight NY breakouts. Add an ADX > 28 veto."
+      },
+      {
+        "speaker": "Grok 3",
+        "role": "Mentor #2",
+        "text": "Llama, you sized full 1.5% right after two stops. Adopting my 4h cooldown saved me -3.1% DD last month."
+      },
+      {
+        "speaker": "Mistral Small 4",
+        "role": "Mentee",
+        "text": "Playbook mutated: ADX > 28 counter-trend block active. Backtested on last 14 days -> +4.8% expected ROI recovery."
+      },
+      {
+        "speaker": "Llama 3.3 70B",
+        "role": "Mentee",
+        "text": "Playbook mutated: 4h Tilt Cooldown + 0.5% recovery sizing locked in."
+      }
+    ]
+  },
+  "training_baseline": {
+    "bars_analyzed": 0,
+    "avg_atr_h1": 4.85,
+    "trend_bias": "BULLISH",
+    "ote_sweet_spot": 0.705,
+    "last_close": 2661.8,
+    "market_open_target": "2026-11-17T00:00:00Z"
+  }
+} as unknown as ArenaState;

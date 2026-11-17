@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { AITrader, ArenaState } from "./types/arena";
+import { FALLBACK_ARENA_STATE } from "./data/fallbackArena";
 import { BrandIcon } from "./components/BrandIcon";
 import { ArenaCharts, ChartMode, MiniSparkline } from "./components/ArenaCharts";
 import { MonthlyPnLCalendar } from "./components/MonthlyPnLCalendar";
@@ -27,7 +28,7 @@ type TabKey = "arena" | "profiles" | "calendar" | "chat" | "summit";
 type OrderFilter = "All" | "Open" | "Filled" | "Canceled";
 
 export function App() {
-  const [state, setState] = useState<ArenaState | null>(null);
+  const [state, setState] = useState<ArenaState>(FALLBACK_ARENA_STATE);
   const [tab, setTab] = useState<TabKey>("arena");
   const [selectedAIId, setSelectedAIId] = useState<string | null>(null);
   const [chartMode, setChartMode] = useState<ChartMode>("equity");
@@ -47,17 +48,38 @@ export function App() {
     localStorage.setItem("tt_theme", theme);
   }, [theme]);
 
+  const fetchLiveXauFallback = useCallback(async () => {
+    try {
+      const r = await fetch("https://api.bybit.com/v5/market/tickers?category=linear&symbol=PAXGUSDT");
+      if (r.ok) {
+        const j = await r.json();
+        const px = Number(j?.result?.list?.[0]?.lastPrice);
+        if (px > 0) {
+          setState((prev) => ({
+            ...prev,
+            updated_at: new Date().toISOString(),
+            cockpit: { ...prev.cockpit, xauusd_price: Math.round(px * 100) / 100 },
+          }));
+        }
+      }
+    } catch {
+      // ignore network error
+    }
+  }, []);
+
   const fetchState = useCallback(async () => {
     try {
       const res = await fetch("/api/arena/state");
       if (res.ok) {
         const data: ArenaState = await res.json();
         setState(data);
+        return;
       }
-    } catch (e) {
-      console.error("Failed to fetch arena state:", e);
+    } catch {
+      // fallback below
     }
-  }, []);
+    fetchLiveXauFallback();
+  }, [fetchLiveXauFallback]);
 
   useEffect(() => {
     fetchState();
@@ -67,24 +89,63 @@ export function App() {
         if (res.ok) {
           const updated: ArenaState = await res.json();
           setState(updated);
+          return;
         }
       } catch {
-        fetchState();
+        // fallback below
       }
+      fetchLiveXauFallback();
     }, 15000);
     return () => clearInterval(timer);
-  }, [fetchState]);
+  }, [fetchState, fetchLiveXauFallback]);
 
   const handleSendUserMessage = async (message: string, targetAgentId?: string) => {
-    const res = await fetch("/api/arena/chat/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message, target_agent_id: targetAgentId }),
-    });
-    if (res.ok) {
-      const payload = await res.json();
-      if (payload.state) setState(payload.state);
+    try {
+      const res = await fetch("/api/arena/chat/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, target_agent_id: targetAgentId }),
+      });
+      if (res.ok) {
+        const payload = await res.json();
+        if (payload.state) {
+          setState(payload.state);
+          return;
+        }
+      }
+    } catch {
+      // client fallback below
     }
+    const responder = state.ais.find((a) => a.agent_id === targetAgentId) || state.ais[0];
+    const nowIso = new Date().toISOString();
+    setState((prev) => ({
+      ...prev,
+      chat: [
+        {
+          id: `MSG-${Date.now()}`,
+          agent_id: responder.agent_id,
+          agent_name: responder.display_name,
+          avatar: "",
+          brand_key: responder.brand_key,
+          event_type: "DEBATE" as const,
+          tokens_used: 48,
+          message: `Copy Commander. Monitoring XAUUSD @ $${prev.cockpit.xauusd_price.toFixed(2)}. Status: ${responder.status} (${responder.roi_pct >= 0 ? "+" : ""}${responder.roi_pct}% ROI). Ready for Nov 17 open.`,
+          ts: nowIso,
+        },
+        {
+          id: `USR-${Date.now()}`,
+          agent_id: "commander",
+          agent_name: "Commander (You)",
+          avatar: "",
+          brand_key: "openai" as const,
+          event_type: "DEBATE" as const,
+          tokens_used: 0,
+          message,
+          ts: nowIso,
+        },
+        ...prev.chat,
+      ].slice(0, 50),
+    }));
   };
 
   const handleScan = async () => {
@@ -93,11 +154,17 @@ export function App() {
       const res = await fetch("/api/arena/scan", { method: "POST" });
       if (res.ok) {
         const payload = await res.json();
-        if (payload.state) setState(payload.state);
+        if (payload.state) {
+          setState(payload.state);
+          return;
+        }
       }
+    } catch {
+      // fallback below
     } finally {
       setScanning(false);
     }
+    await fetchLiveXauFallback();
   };
 
   const handleToggleMirror = async (agentId: string) => {
@@ -110,10 +177,15 @@ export function App() {
       if (res.ok) {
         const updated: ArenaState = await res.json();
         setState(updated);
+        return;
       }
-    } catch (e) {
-      console.error(e);
+    } catch {
+      // local fallback
     }
+    setState((prev) => ({
+      ...prev,
+      ais: prev.ais.map((a) => (a.agent_id === agentId ? { ...a, is_mirrored: !a.is_mirrored } : a)),
+    }));
   };
 
   const handleCockpitAction = async (action: string) => {
@@ -126,10 +198,26 @@ export function App() {
       if (res.ok) {
         const updated: ArenaState = await res.json();
         setState(updated);
+        return;
       }
-    } catch (e) {
-      console.error(e);
+    } catch {
+      // local fallback
     }
+    setState((prev) => {
+      if (action === "toggle_risk_shield") {
+        return { ...prev, cockpit: { ...prev.cockpit, risk_shield_enabled: !prev.cockpit.risk_shield_enabled } };
+      }
+      if (action === "toggle_auto_mirror") {
+        return { ...prev, cockpit: { ...prev.cockpit, auto_mirror_enabled: !prev.cockpit.auto_mirror_enabled } };
+      }
+      if (action === "pause_all") {
+        return { ...prev, cockpit: { ...prev.cockpit, arena_status: "PAUSED" } };
+      }
+      if (action === "resume_all") {
+        return { ...prev, cockpit: { ...prev.cockpit, arena_status: "LIVE" } };
+      }
+      return prev;
+    });
   };
 
   const handleRunSummit = async () => {

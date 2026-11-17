@@ -17,7 +17,9 @@ from api.ai_trainer import train_all_ais_foundational
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_PATH = BASE_DIR / "config.yaml"
-STATE_PATH = BASE_DIR / "data" / "arena_state.json"
+SEED_STATE_PATH = BASE_DIR / "data" / "arena_state.json"
+TMP_STATE_PATH = Path("/tmp/arena_state.json")
+STATE_PATH = SEED_STATE_PATH
 
 _LOCK = threading.Lock()
 
@@ -488,25 +490,29 @@ def _recompute_cockpit_and_ranks(state: Dict[str, Any]) -> None:
 
 def get_state() -> Dict[str, Any]:
     with _LOCK:
-        if STATE_PATH.exists():
-            try:
-                data = json.loads(STATE_PATH.read_text(encoding="utf-8"))
-                if data.get("ais") and len(data["ais"]) == 8:
-                    _recompute_cockpit_and_ranks(data)
-                    return data
-            except Exception:
-                pass
+        for path in (TMP_STATE_PATH, STATE_PATH, SEED_STATE_PATH):
+            if path.exists():
+                try:
+                    data = json.loads(path.read_text(encoding="utf-8"))
+                    if data.get("ais") and len(data["ais"]) == 8:
+                        _recompute_cockpit_and_ranks(data)
+                        return data
+                except Exception:
+                    pass
         state = _build_initial_state()
         _recompute_cockpit_and_ranks(state)
-        STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
-        STATE_PATH.write_text(json.dumps(state, indent=2), encoding="utf-8")
+        save_state(state)
         return state
 
 
 def save_state(state: Dict[str, Any]) -> None:
     _recompute_cockpit_and_ranks(state)
-    STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    STATE_PATH.write_text(json.dumps(state, indent=2), encoding="utf-8")
+    payload = json.dumps(state, indent=2)
+    try:
+        STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        STATE_PATH.write_text(payload, encoding="utf-8")
+    except OSError:
+        TMP_STATE_PATH.write_text(payload, encoding="utf-8")
 
 
 def _fetch_live_xau_price() -> Optional[float]:

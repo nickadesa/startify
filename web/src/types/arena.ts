@@ -83,6 +83,8 @@ export interface AITrader {
   playbook: string[];
   mutations: PlaybookMutation[];
   research_log: ResearchEntry[];
+  trained_skill?: string;
+  nov17_ready?: boolean;
 }
 
 export interface BenchmarkItem {

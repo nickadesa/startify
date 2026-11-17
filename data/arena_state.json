@@ -1,18 +1,18 @@
 {
-  "updated_at": "2026-11-16T20:22:38Z",
+  "updated_at": "2026-11-17T02:09:12Z",
   "cockpit": {
     "arena_status": "LIVE",
     "symbol": "XAUUSD",
-    "xauusd_price": 2662.1,
+    "xauusd_price": 2662.89,
     "dxy": 104.12,
     "us10y": 4.18,
     "risk_shield_enabled": true,
     "auto_mirror_enabled": true,
-    "daily_tokens_used": 403,
+    "daily_tokens_used": 513,
     "daily_token_cap": 12000,
-    "total_day_pnl": 917.42,
-    "total_open_pnl": 29.15,
-    "total_balance": 88161.82
+    "total_day_pnl": 876.86,
+    "total_open_pnl": 33.1,
+    "total_balance": 88121.26
   },
   "kpi_targets": {
     "winrate_pct": 50.0,
@@ -37,7 +37,7 @@
       "total_pnl": 2480.0,
       "roi_pct": 24.8,
       "day_pnl": 412.5,
-      "open_pnl": 16.65,
+      "open_pnl": 20.2,
       "winrate_pct": 64.2,
       "profit_factor": 2.38,
       "sharpe_ratio": 2.14,
@@ -1118,7 +1118,7 @@
       "total_pnl": 1620.0,
       "roi_pct": 16.2,
       "day_pnl": 194.1,
-      "open_pnl": 9.0,
+      "open_pnl": 11.37,
       "winrate_pct": 61.5,
       "profit_factor": 1.92,
       "sharpe_ratio": 1.76,
@@ -1653,11 +1653,11 @@
       "model_name": "qwen-3-32b",
       "color": "#A855F7",
       "style_archetype": "Asian-London Range Breakout & Momentum",
-      "equity": 11270.0,
+      "equity": 11229.44,
       "initial_equity": 10000.0,
-      "total_pnl": 1270.0,
-      "roi_pct": 12.7,
-      "day_pnl": 124.8,
+      "total_pnl": 1229.44,
+      "roi_pct": 12.29,
+      "day_pnl": 84.24,
       "open_pnl": 0.0,
       "winrate_pct": 55.0,
       "profit_factor": 1.74,
@@ -1675,7 +1675,6 @@
       "is_mirrored": false,
       "mirror_multiplier": 1.0,
       "sparkline": [
-        10698.02,
         10749.96,
         10717.16,
         10834.61,
@@ -1688,7 +1687,8 @@
         10922.3,
         10856.31,
         10893.72,
-        11270.0
+        11270.0,
+        11229.44
       ],
       "equity_curve": [
         {
@@ -2164,6 +2164,11 @@
       ],
       "research_log": [
         {
+          "ts": "2026-11-17T02:09:11Z",
+          "source": "Autonomous Scan",
+          "summary": "XAUUSD @ $2662.89 | DXY 104.12 | Regime check complete -> Tightened stop."
+        },
+        {
           "ts": "2026-11-16T19:16:23Z",
           "source": "Macro Radar",
           "summary": "DXY 104.12 (-0.28%) | US10Y 4.18% (-4bps) -> Bullish tailwind for XAUUSD."
@@ -2198,7 +2203,7 @@
       "total_pnl": 1001.82,
       "roi_pct": 10.02,
       "day_pnl": 140.12,
-      "open_pnl": 3.5,
+      "open_pnl": 1.53,
       "winrate_pct": 52.4,
       "profit_factor": 1.62,
       "sharpe_ratio": 1.31,
@@ -4397,7 +4402,7 @@
       "entry_price": 2658.4,
       "sl": 2648.0,
       "tp": 2684.5,
-      "pnl": 16.65,
+      "pnl": 20.2,
       "status": "Open",
       "session": "NY Overlap",
       "regime": "Trending",
@@ -4417,7 +4422,7 @@
       "entry_price": 2659.1,
       "sl": 2650.2,
       "tp": 2681.0,
-      "pnl": 9.0,
+      "pnl": 11.37,
       "status": "Open",
       "session": "NY Overlap",
       "regime": "Trending",
@@ -4437,7 +4442,7 @@
       "entry_price": 2663.5,
       "sl": 2671.0,
       "tp": 2645.0,
-      "pnl": 3.5,
+      "pnl": 1.53,
       "status": "Open",
       "session": "London",
       "regime": "Ranging",
@@ -4509,6 +4514,39 @@
     }
   ],
   "chat": [
+    {
+      "id": "MSG-3393",
+      "agent_id": "ai-1",
+      "agent_name": "Claude Sonnet 4",
+      "avatar": "",
+      "brand_key": "anthropic",
+      "event_type": "DEBATE",
+      "tokens_used": 48,
+      "message": "Copy Commander. Monitoring XAUUSD @ $2662.89 (DXY 104.12). My status is IN TRADE with +24.8% ROI and 64.2% Winrate. Ready for Nov 17 market open.",
+      "ts": "2026-11-17T02:09:11Z"
+    },
+    {
+      "id": "USR-1325",
+      "agent_id": "commander",
+      "agent_name": "Commander (You)",
+      "avatar": "",
+      "brand_key": "openai",
+      "event_type": "DEBATE",
+      "tokens_used": 0,
+      "message": "Status check for Nov 17 open?",
+      "ts": "2026-11-17T02:09:11Z"
+    },
+    {
+      "id": "MSG-6497",
+      "agent_id": "ai-4",
+      "agent_name": "Qwen 3.8",
+      "avatar": "",
+      "brand_key": "qwen",
+      "event_type": "HOURLY_PULSE",
+      "tokens_used": 62,
+      "message": "Autonomous Scan @ $2662.89: SHORT signal triggered. Trimmed $40.56 risk. Current ROI: +12.29%.",
+      "ts": "2026-11-17T02:09:11Z"
+    },
     {
       "id": "MSG-7138",
       "agent_id": "ai-1",
