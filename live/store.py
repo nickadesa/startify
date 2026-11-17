@@ -25,10 +25,15 @@ CREATE INDEX IF NOT EXISTS ix_equity ON equity(agent_id, ts);
 """
 
 def conn() -> sqlite3.Connection:
-    global _conn
+    global _conn, DB_PATH
     with _lock:
         if _conn is None:
-            DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+            try:
+                DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+            except OSError as e:
+                print(f"DB_PATH {DB_PATH} not writable ({e}); falling back to /tmp/live.sqlite", flush=True)
+                DB_PATH = Path("/tmp/live.sqlite")
+                DB_PATH.parent.mkdir(parents=True, exist_ok=True)
             _conn = sqlite3.connect(str(DB_PATH), check_same_thread=False, isolation_level=None)
             _conn.row_factory = sqlite3.Row
             _conn.execute("PRAGMA journal_mode=WAL")
