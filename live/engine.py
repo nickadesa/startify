@@ -36,6 +36,7 @@ def set_agent_prefs(agent_id: str, patch: Dict[str, Any]) -> Dict[str, Any]:
     with LOCK:
         all_p = store.kv_get("agent_configs") or {}
         cur = get_agent_prefs(agent_id)
+        old_preset = cur["preset"]
         if "preset" in patch and patch["preset"] in presets.PRESET_MAP:
             cur["preset"] = patch["preset"]
         if "daily_dd_limit" in patch:
@@ -48,6 +49,17 @@ def set_agent_prefs(agent_id: str, patch: Dict[str, Any]) -> Dict[str, Any]:
             cur["max_lot"] = max(0.01, min(10.0, round(float(patch["max_lot"] or 2.0), 2)))
         all_p[agent_id] = cur
         store.kv_set("agent_configs", all_p)
+        if cur["preset"] != old_preset:
+            for pt in store.trades(status="Pending", agent_id=agent_id, limit=20):
+                pt["status"] = "Cancelled"
+                pt["closed_at"] = iso()
+                pt["exit_reason"] = "PRESET_CHANGE"
+                store.trade_put(pt)
+            acc = store.acct_get(agent_id)
+            if acc:
+                acc["last_decision_at"] = None
+                acc["last_note"] = f"Switched to {presets.get_preset(cur['preset'])['name']}"
+                store.acct_put(acc)
         return {"ok": True, "agent_id": agent_id, "prefs": cur}
 
 
@@ -307,12 +319,14 @@ def _write_journal(t: Dict[str, Any], a: Dict[str, Any]) -> Dict[str, Any]:
 
 # ───────────────────────── decide: Preset-Driven 6-Step Workflow ─────────────────────────
 SYSTEM = ("You are an autonomous XAUUSD (gold) day trader in a competition against other AIs. Capital is simulated $10,000. "
-          "Follow your active Strategy Preset strictly. Look at M5+ structure, ICT Killzone (UTC-4), and Open Interest. "
+          "Follow your active Strategy Preset strictly (e.g. DAVINICK: HTF Bias, Killzone UTC-4, Liquidity Sweep, Premium/Discount 50%, "
+          "Fib OTE 0.62/0.705/0.79, FVG, Order Block, Swing SL, Multi-TP -0.27/-0.618, COMEX Open Interest). "
+          "NEVER use generic retail EMA crossovers or ATR multiples unless your active preset explicitly asks for it. "
           "Rules: max 1 open/pending position, SL and TP mandatory, min reward:risk 2.0, SL distance $3-$40, no martingale. "
           "Entry modes: MARKET (enter now), LIMIT (stage limit_price), ZONE (wait without order). "
           "Answer ONLY with JSON: "
           "{\"action\":\"BUY|SELL|HOLD\",\"entry_mode\":\"MARKET|LIMIT|ZONE\",\"limit_price\":number_or_null,"
-          "\"sl\":number,\"tp\":number,\"confidence\":0-100,\"thesis\":\"max 25 words, concrete, mention levels\"}.")
+          "\"sl\":number,\"tp\":number,\"confidence\":0-100,\"thesis\":\"max 25 words, concrete, mention preset levels\"}.")
 
 def _context(a: Dict[str, Any], ag: Dict[str, Any], px: float, m5: List[Dict[str, float]], m15: List[Dict[str, float]],
              h1: List[Dict[str, float]], h4: List[Dict[str, float]], vp: Dict[str, float], macro: Dict[str, Any],
@@ -320,7 +334,6 @@ def _context(a: Dict[str, Any], ag: Dict[str, Any], px: float, m5: List[Dict[str
     last_m5 = (m5 or m15)[-16:]
     rows = "\n".join(f"{datetime.fromtimestamp(b['t'], timezone.utc).strftime('%d %H:%M')} O{b['o']:.1f} H{b['h']:.1f} L{b['l']:.1f} C{b['c']:.1f}" for b in last_m5)
     prefs = get_agent_prefs(a["agent_id"])
-    pr_obj = presets.get_preset(prefs["preset"])
     lc = get_leader_config()
     others, leader_note = [], ""
     for o in store.trades(status="Open", limit=50):
@@ -329,17 +342,10 @@ def _context(a: Dict[str, Any], ag: Dict[str, Any], px: float, m5: List[Dict[str
             if lc["consult_mode"] and lc["leader_id"] and o["agent_id"] == lc["leader_id"]:
                 leader_note = (f"\n[LEADER CONSULT SIGNAL] Leader {agent_cfg(o['agent_id'])['short_name']} is {o['side']} @ {o['entry']} "
                                f"(SL {o['sl']}, TP {o['tp']}, Thesis: {o.get('thesis','')}). Confirm confluence with your preset.")
-    vp_txt = f"Volume Profile (M15): POC {vp['poc']}, VAH {vp['vah']}, VAL {vp['val']}" if vp else ""
     mc_txt = f"Macro: DXY {macro.get('DXY','-')}, TLT {macro.get('TLT','-')}, Gold/Silver {macro.get('gold_silver_ratio','-')}" if macro else ""
-    oi_txt = f"Open Interest ({oi.get('source','-')}): Futures OI={oi.get('futures_oi') or '-'}, GLD Put/Call OI={oi.get('pc_oi_ratio') or '-'}"
-    t_m5 = strategy_presets._trend(m5, 8, 21)
-    t_m15 = strategy_presets._trend(m15, 9, 21)
-    t_h1 = strategy_presets._trend(h1, 9, 21)
-    t_h4 = strategy_presets._trend(h4, 9, 21)
-    return (f"Your style: {ag['style_archetype']}.\nActive Preset ({pr_obj['name']}): {pr_obj['prompt']}\n"
-            f"Killzone (UTC-4): {kz['name']} ({kz['ny_time']} NY)\n"
-            f"Trend M5+: M5={t_m5} | M15={t_m15} | H1={t_h1} | H4={t_h4}\n"
-            f"Price now: {px} | ATR(14, M15): {market.atr(m15):.2f}\n{vp_txt}\n{mc_txt}\n{oi_txt}\n"
+    preset_ctx = strategy_presets.preset_snapshot(prefs["preset"], px, m5, m15, h1, h4, vp, macro, oi, kz, a["agent_id"])
+    return (f"Your style: {ag['style_archetype']}.\n{preset_ctx}\n"
+            f"Price now: {px}\n{mc_txt}\n"
             f"M5 candles (last 16):\n{rows}\n"
             f"Your equity: ${a['equity']:.2f} (day {a['equity']-a['day_start_equity']:+.2f}), losses in a row: {a['consecutive_losses']}\n"
             f"Recent lessons: {a['lessons'][:3] or 'none yet'}\nOther AIs: {others or 'none'}{leader_note}")
@@ -614,15 +620,13 @@ def user_chat(message: str, image: Optional[str] = None, mentions: Optional[List
         px = (store.kv_get("price") or {}).get("price")
     # market context (network call) — outside the lock
     bars = market.candles("15m", "2d", "XAUUSD") or []
-    closes = [b["c"] for b in bars]
-    ema20 = market.ema(closes[-60:], 20) if len(closes) >= 25 else None
-    ema50 = market.ema(closes[-100:], 50) if len(closes) >= 55 else None
-    atr14 = market.atr(bars) if len(bars) >= 16 else None
     vp = market.volume_profile(bars[-48:]) if len(bars) >= 20 else None
-    trend_lbl = ("Bullish" if ema20 > ema50 else "Bearish") if (ema20 and ema50) else "Neutral"
+    struct_lbl = strategy_presets._structure_bias(bars, 24) if len(bars) >= 8 else "FLAT"
+    ote_ctx = strategy_presets._swing_ote(bars, "BEAR" if struct_lbl == "BEAR" else "BULL") if len(bars) >= 8 else None
     sess = market.session(now().hour)
-    mkt_ctx = (f"M15 trend: {trend_lbl}" + (f" (EMA20 {ema20:.1f} vs EMA50 {ema50:.1f})" if ema20 and ema50 else "")
-               + (f" | ATR14: ${atr14:.2f}" if atr14 else "") + (f" | VP POC {vp['poc']}, VAH {vp['vah']}, VAL {vp['val']}" if vp else "") + f" | Session: {sess}")
+    mkt_ctx = (f"M15 Structure: {struct_lbl}"
+               + (f" | 50% Eq {ote_ctx['eq']} | OTE .705={ote_ctx['ote_705']}" if ote_ctx else "")
+               + (f" | VP POC {vp['poc']}, VAH {vp['vah']}, VAL {vp['val']}" if vp else "") + f" | Session: {sess}")
     replies: List[int] = []
     round_replies: List[str] = []
     for ag in picked:
@@ -639,24 +643,23 @@ def user_chat(message: str, image: Optional[str] = None, mentions: Optional[List
         if llm.has_key(ag) and _tokens_ok(500):
             peers = ("\nOther AIs already answered the commander in this round:\n" + "\n".join(round_replies) +
                      "\nAdd your OWN view — agree or push back on them by @Name, don't just repeat.") if round_replies else ""
-            res = llm.ask(ag, _chat_system(ag, f"Active strategy preset: {pr_obj['name']}. Answer the commander's exact question directly in 2-4 crisp sentences, "
-                                               "using live price action, key levels (EMA/VP/ATR) and your current position."),
+            res = llm.ask(ag, _chat_system(ag, f"Active strategy preset: {pr_obj['name']} ({pr_obj['prompt']}). Answer the commander's exact question directly in 2-4 crisp sentences, "
+                                               "using your preset's exact concepts (e.g. OTE, FVG, Order Block, Sweep, Premium/Discount, VP) — do NOT talk about generic EMA/ATR."),
                           f"{facts}\nMarket: {mkt_ctx}\n\nRecent chat:\n{transcript}\n{peers}\n\nCommander asks: {msg or '(attached a chart image)'}",
                           320, image_data_url=image)
             if res: text, tokens, src = res[0], res[1], "llm"; _tokens_add(tokens)
         if not text:
             lvl = f"POC {vp['poc']} (VAL {vp['val']} / VAH {vp['vah']})" if vp else f"~{px}"
-            ema_txt = f"EMA20 ({ema20:.1f}) {'>' if trend_lbl == 'Bullish' else '<'} EMA50 ({ema50:.1f})" if ema20 and ema50 else trend_lbl
-            atr_txt = f"ATR14 ~${atr14:.1f}" if atr14 else ""
+            ote_txt = f"OTE .705={ote_ctx['ote_705']} (50% Eq {ote_ctx['eq']})" if ote_ctx else struct_lbl
             if image and not msg:
-                text = (f"Reading your chart with XAUUSD at {px} ({trend_lbl}, {ema_txt}). Key structure sits at {lvl} ({atr_txt}). I'm currently {pos_txt} at #{rank} (${me['equity']:,.0f}) using {pr_obj['name']}.")
+                text = (f"Reading your chart with XAUUSD at {px} ({struct_lbl}, {ote_txt}). Key structure sits at {lvl}. I'm currently {pos_txt} at #{rank} (${me['equity']:,.0f}) using {pr_obj['name']}.")
             elif any(k in msg.lower() for k in ("buy", "sell", "เข้า", "เทรด", "ทิศ", "แนวโน้ม", "trend", "ทอง", "gold", "วิเคราะห์", "analyze", "plan", "แผน")):
-                bias = "long bias above VAL/EMA20" if trend_lbl == "Bullish" else "short bias below VAH/EMA20"
-                text = (f"XAUUSD @ {px} in {sess}: M15 structure is {trend_lbl} ({ema_txt}, {atr_txt}). Volume Profile {lvl} gives a {bias} under my {pr_obj['name']} preset. Right now I'm {pos_txt} (#{rank}, ${me['equity']:,.0f}).")
+                bias = "long bias in Discount" if struct_lbl == "BULL" else "short bias in Premium"
+                text = (f"XAUUSD @ {px} in {sess}: M15 structure is {struct_lbl} ({ote_txt}). Volume Profile {lvl} gives a {bias} under my {pr_obj['name']} preset. Right now I'm {pos_txt} (#{rank}, ${me['equity']:,.0f}).")
             elif mine:
-                text = (f"Currently {pos_txt} while gold trades at {px} ({trend_lbl}, {ema_txt}). Watching {lvl} and keeping my stop respected at {mine[0]['sl']} ({atr_txt}).")
+                text = (f"Currently {pos_txt} while gold trades at {px} ({struct_lbl}, {ote_txt}). Watching {lvl} and keeping my stop respected at {mine[0]['sl']}.")
             else:
-                text = (f"Rank #{rank} (${me['equity']:,.0f}) on {pr_obj['name']} — sitting flat at {px}. M15 is {trend_lbl} ({ema_txt}, {atr_txt}); watching {lvl} for a clean 2R+ setup.")
+                text = (f"Rank #{rank} (${me['equity']:,.0f}) on {pr_obj['name']} — sitting flat at {px}. M15 structure is {struct_lbl} ({ote_txt}); watching {lvl} for a clean 2R+ setup.")
         rts = iso()
         rid = store.chat_add(rts, ag["agent_id"], "CHAT", text[:480], tokens, uid, None, src)
         discord.notify_chat(ag, text[:480], rts, msg[:120] if msg else "Shared an image")
