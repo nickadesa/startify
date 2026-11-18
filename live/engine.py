@@ -136,9 +136,12 @@ def init(fresh: bool = False) -> None:
 
 def reset_season() -> None:
     import sqlite3
+    saved_keys = store.kv_get("llm_env_keys")
     c = store.conn()
     for t in ("accounts", "trades", "journal", "chat", "equity", "kv"):
         c.execute(f"DELETE FROM {t}")
+    if saved_keys:
+        store.kv_set("llm_env_keys", saved_keys)
     init(fresh=True)
 
 # ───────────────────────── helpers ─────────────────────────
@@ -766,20 +769,23 @@ def stats(agent_id: str) -> Dict[str, Any]:
 def snapshot() -> Dict[str, Any]:
     init()
     px = store.kv_get("price") or {}
-    accts = store.acct_all()
+    accts = {x["agent_id"]: x for x in store.acct_all()}
     opens = store.trades(status="Open", limit=500)
     lc = get_leader_config()
     rows = []
-    for a in accts:
-        ag = agent_cfg(a["agent_id"]); o = [t for t in opens if t["agent_id"] == a["agent_id"]]
+    for ag in agents():
+        a = accts.get(ag["agent_id"])
+        if not a: continue
+        o = [t for t in opens if t["agent_id"] == a["agent_id"]]
         prefs = get_agent_prefs(a["agent_id"])
         pr_obj = presets.get_preset(prefs["preset"])
         eq = a["equity"] + a.get("open_pnl", 0.0)
         day_pnl = round(a["equity"] - a["day_start_equity"] + a.get("open_pnl", 0.0), 2)
         dd_locked = prefs["daily_dd_limit"] > 0 and day_pnl <= -prefs["daily_dd_limit"]
         st = "DISABLED" if a.get("disabled") else "DD LOCKED" if dd_locked else "COOLDOWN" if a.get("cooldown_until") and iso() < a["cooldown_until"] else ("IN TRADE" if o else "SCANNING")
+        live_mode = "llm" if llm.has_key(ag) else "preset"
         rows.append({"agent_id": a["agent_id"], "name": ag["display_name"], "short": ag["short_name"], "provider": ag["provider"],
-                     "color": ag["color"], "avatar": ag.get("avatar", ""), "style": ag["style_archetype"], "mode": a["mode"],
+                     "color": ag["color"], "avatar": ag.get("avatar", ""), "style": ag["style_archetype"], "mode": live_mode,
                      "balance": round(eq, 2), "equity": round(eq, 2), "roi_pct": round((eq / a["initial_equity"] - 1) * 100, 2),
                      "day_pnl": day_pnl, "open_pnl": a.get("open_pnl", 0.0),
                      "position": (f"{o[0]['side']} {o[0]['lots']}" if o else "-"), "avg_price": o[0]["entry"] if o else None,

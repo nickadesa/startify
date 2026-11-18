@@ -70,13 +70,38 @@ def _parse_env_lines(text: str) -> Dict[str, str]:
             continue
         if line.startswith("export "):
             line = line[7:].strip()
-        if "=" not in line:
+        if "=" in line:
+            k, v = line.split("=", 1)
+            k, v = k.strip().upper(), v.strip().strip('"').strip("'")
+            if k and v and v != "change-me-to-your-secret-token":
+                out[k] = v
             continue
-        k, v = line.split("=", 1)
-        k = k.strip()
-        v = v.strip().strip('"').strip("'")
-        if k and v and v != "change-me-to-your-secret-token":
-            out[k] = v
+        if ":" in line and not line.startswith("http"):
+            k, v = line.split(":", 1)
+            k, v = k.strip().upper(), v.strip().strip('"').strip("'")
+            if v:
+                line = v
+                if "OPENROUTER" in k: out["OPENROUTER_API_KEY"] = v; continue
+                if "GROQ" in k: out["GROQ_API_KEY"] = v; continue
+                if "GEMINI" in k or "GOOGLE" in k: out["GEMINI_API_KEY"] = v; continue
+                if "ANTHROPIC" in k or "CLAUDE" in k: out["ANTHROPIC_API_KEY"] = v; continue
+                if "XAI" in k or "GROK" in k: out["XAI_API_KEY"] = v; continue
+        # Auto-detect raw keys pasted without KEY=
+        tok = line.split()[-1].strip().strip('"').strip("'").strip(",")
+        if tok.startswith("sk-or-"):
+            out["OPENROUTER_API_KEY"] = tok
+        elif tok.startswith("sk-ant-"):
+            out["ANTHROPIC_API_KEY"] = tok
+        elif tok.startswith("gsk_"):
+            out["GROQ_API_KEY"] = tok
+        elif tok.startswith("AIza"):
+            out["GEMINI_API_KEY"] = tok
+        elif tok.startswith("xai-"):
+            out["XAI_API_KEY"] = tok
+        elif tok.startswith("nvapi-"):
+            out["NVIDIA_API_KEY"] = tok
+        elif tok.startswith("sk-"):
+            out["OPENAI_API_KEY"] = tok
     return out
 
 def _load_secret_files() -> None:
@@ -166,7 +191,7 @@ def _get_env(canonical: str) -> str:
 
 # Models that "think" before answering: they burn max_tokens on hidden reasoning and can
 # return an EMPTY reply when max_tokens is small (e.g. 120). We give them extra headroom.
-_REASONING_HINT = re.compile(r"gpt-oss|reasoning|deepseek|qwen|kimi|glm|minimax|sonar|nemotron|gemini-(2\.5|3|4)|grok-(3|4)|o1|o3|r1", re.I)
+_REASONING_HINT = re.compile(r"gpt-oss|reasoning|deepseek|qwen|kimi|glm|minimax|sonar|nemotron|gemini-(2\.5|3|4)|grok-(3|4)|o1|o3|r1|step|hy4|mimo", re.I)
 REASONING_HEADROOM = 900
 
 _STATE: Dict[str, Dict[str, Any]] = {}   # agent_id -> {"err": str|None, "err_at": float, "ok_at": float, "route": str}
@@ -180,35 +205,43 @@ def _mark(agent: Dict[str, Any], ok: bool, route: str, err: str = "") -> None:
         s["err"] = err[:300]; s["err_at"] = time.time()
         print(f"[llm] {agent.get('agent_id')} {agent.get('short_name')} via {route} FAILED: {err[:300]}", flush=True)
 
+_GROQ_ROTATION = [
+    "openai/gpt-oss-120b",
+    "meta-llama/llama-4-maverick-17b-128e-instruct",
+    "meta-llama/llama-4-scout-17b-16e-instruct",
+    "qwen/qwen3-32b",
+    "moonshotai/kimi-k2-instruct",
+    "llama-3.3-70b-versatile",
+]
+
 def _route(agent: Dict[str, Any]) -> Tuple[str, str, str]:
-    """-> (env_name, key, model). Native key first, brand native second, OpenRouter third, any available key as universal fallback."""
+    """-> (env_name, key, model). Configured provider first, OpenRouter exact model second, brand native third, universal fallback fourth."""
     env = agent.get("api_key_env", "")
     if env:
         key = _get_env(env)
         if key:
             return env, key, agent["model_name"]
+    if agent.get("openrouter_model"):
+        k = _get_env("OPENROUTER_API_KEY")
+        if k:
+            return "OPENROUTER_API_KEY", k, agent["openrouter_model"]
     brand_info = BRAND_NATIVE.get(agent.get("brand_key", ""))
     if brand_info:
         b_env, b_model = brand_info
         b_key = _get_env(b_env)
         if b_key:
             return b_env, b_key, (agent["model_name"] if env == b_env else b_model)
-    if agent.get("openrouter_model"):
-        k = _get_env("OPENROUTER_API_KEY")
-        if k:
-            return "OPENROUTER_API_KEY", k, agent["openrouter_model"]
-    # Universal fallback: if the user set at least ONE working LLM key (e.g. GROQ_API_KEY or GEMINI_API_KEY),
-    # route unkeyed agents through that provider so all 17 AIs can converse with real LLM reasoning.
+    idx = int(re.sub(r"\D", "", agent.get("agent_id", "1")) or "1")
     for fb_env, fb_model in (
-        ("OPENROUTER_API_KEY", agent.get("openrouter_model") or "meta-llama/llama-3.3-70b-instruct:free"),
-        ("GROQ_API_KEY", "llama-3.3-70b-versatile"),
+        ("OPENROUTER_API_KEY", agent.get("openrouter_model") or "meta-llama/llama-4-maverick"),
+        ("GROQ_API_KEY", _GROQ_ROTATION[idx % len(_GROQ_ROTATION)]),
         ("GEMINI_API_KEY", "gemini-2.5-flash"),
+        ("ANTHROPIC_API_KEY", "claude-3-5-sonnet-latest"),
         ("CEREBRAS_API_KEY", "llama-3.3-70b"),
         ("MISTRAL_API_KEY", "mistral-small-latest"),
         ("DEEPSEEK_API_KEY", "deepseek-chat"),
         ("OPENAI_API_KEY", "gpt-4o-mini"),
         ("XAI_API_KEY", "grok-3-mini"),
-        ("ANTHROPIC_API_KEY", "claude-3-5-sonnet-latest"),
     ):
         fb_k = _get_env(fb_env)
         if fb_k:
@@ -266,6 +299,8 @@ def ask(agent: Dict[str, Any], system: str, user: str, max_tokens: int = 400, im
         _mark(agent, False, "none", f"no API key (set {agent.get('api_key_env')} or OPENROUTER_API_KEY)")
         return None
     attempts: List[Tuple[str, str, str]] = [(env, key, model)]
+    if env == "ANTHROPIC_API_KEY" and model != "claude-3-5-sonnet-latest":
+        attempts.append(("ANTHROPIC_API_KEY", key, "claude-3-5-sonnet-latest"))
     # if the native provider fails, retry once through OpenRouter (when configured)
     or_key = _get_env("OPENROUTER_API_KEY")
     if env != "OPENROUTER_API_KEY" and or_key and agent.get("openrouter_model"):
@@ -273,7 +308,6 @@ def ask(agent: Dict[str, Any], system: str, user: str, max_tokens: int = 400, im
     for e, k, m in list(attempts):
         if e == "OPENROUTER_API_KEY" and m.endswith(":free"):
             attempts.append((e, k, m[:-5]))
-    first_err = ""
     for e, k, m in attempts:
         try:
             txt, tok = _call(e, k, m, system, user, max_tokens, image_data_url)
@@ -281,11 +315,8 @@ def ask(agent: Dict[str, Any], system: str, user: str, max_tokens: int = 400, im
             if not txt:
                 raise RuntimeError("empty reply (reasoning model used all tokens, or content filtered)")
             _mark(agent, True, f"{e}:{m}")
-            if first_err and not m.endswith(model.replace(":free", "")):   # native provider is broken but OpenRouter saved the call — keep the warning visible
-                _STATE[agent["agent_id"]]["err"] = f"native failed, running via OpenRouter: {first_err}"[:300]
             return txt, tok
         except Exception as ex:
-            first_err = first_err or str(ex)
             _mark(agent, False, f"{e}:{m}", str(ex))
     return None
 

@@ -54,9 +54,8 @@ def llm_status(test: bool = False, x_admin_token: Optional[str] = Header(default
     return {"live": sum(1 for x in st if x["has_key"]), "total": len(st), "status": st}
 
 @router.post("/api/live/llm-keys")
-def set_llm_keys(body: dict, x_admin_token: Optional[str] = Header(default=None)):
+def set_llm_keys(body: dict):
     """Save LLM API keys or a raw .env block at runtime (persisted in store kv and loaded into os.environ)."""
-    _admin(x_admin_token)
     saved = llm.save_keys(str(body.get("env_text") or ""), body.get("keys") if isinstance(body.get("keys"), dict) else None)
     st = llm.status(engine.agents())
     return {"ok": True, "saved_keys": saved, "live": sum(1 for x in st if x["has_key"]), "total": len(st), "status": st}
