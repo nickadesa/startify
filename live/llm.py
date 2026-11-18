@@ -247,6 +247,8 @@ def env_keys_present() -> List[str]:
 def status(agents: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     out = []
     present = env_keys_present()
+    empty_keys = sorted(k for k, v in os.environ.items() if not (v or "").strip())
+    all_names = sorted(k for k in os.environ.keys() if not k.startswith("_"))
     for a in agents:
         env, key, model = _route(a)
         s = _STATE.get(a["agent_id"], {})
@@ -255,6 +257,8 @@ def status(agents: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
                     "last_error": s.get("err"), "last_ok_ago_s": round(time.time() - s["ok_at"]) if s.get("ok_at") else None}
         if a["agent_id"] == "ai-1":
             item["env_keys_detected"] = present
+            item["env_empty_keys"] = empty_keys
+            item["env_all_names"] = all_names
         out.append(item)
     return out
 
