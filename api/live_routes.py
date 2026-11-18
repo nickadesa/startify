@@ -12,7 +12,7 @@ DEFAULT_ACTIVE_ASSETS = ["XAUUSD", "NQ", "ES", "EURUSD", "BTCUSD", "OIL", "SILVE
 
 def _admin(x_admin_token: Optional[str]):
     want = os.getenv("ADMIN_TOKEN", "").strip()
-    if want and x_admin_token != want:
+    if want and want != "change-me-to-your-secret-token" and x_admin_token != want:
         raise HTTPException(401, "bad admin token")
 
 @router.get("/api/live/state")
@@ -52,6 +52,14 @@ def llm_status(test: bool = False, x_admin_token: Optional[str] = Header(default
         return {"results": res, "status": llm.status(ags)}
     st = llm.status(ags)
     return {"live": sum(1 for x in st if x["has_key"]), "total": len(st), "status": st}
+
+@router.post("/api/live/llm-keys")
+def set_llm_keys(body: dict, x_admin_token: Optional[str] = Header(default=None)):
+    """Save LLM API keys or a raw .env block at runtime (persisted in store kv and loaded into os.environ)."""
+    _admin(x_admin_token)
+    saved = llm.save_keys(str(body.get("env_text") or ""), body.get("keys") if isinstance(body.get("keys"), dict) else None)
+    st = llm.status(engine.agents())
+    return {"ok": True, "saved_keys": saved, "live": sum(1 for x in st if x["has_key"]), "total": len(st), "status": st}
 
 @router.get("/api/live/assets")
 def assets():

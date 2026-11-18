@@ -60,32 +60,84 @@ BRAND_NATIVE: Dict[str, Tuple[str, str]] = {
     "cohere": ("COHERE_API_KEY", "command-a-03-2025"),
 }
 
-def _load_secret_files() -> None:
-    base = Path(__file__).resolve().parent.parent
-    for p in (base / ".env", Path("/etc/secrets/.env"), Path("/etc/secrets/env")):
-        if not p.is_file():
+_DB_KEYS_LOADED = False
+
+def _parse_env_lines(text: str) -> Dict[str, str]:
+    out: Dict[str, str] = {}
+    for raw in (text or "").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
             continue
-        try:
-            for raw in p.read_text(encoding="utf-8", errors="ignore").splitlines():
-                line = raw.strip()
-                if not line or line.startswith("#") or "=" not in line:
-                    continue
-                k, v = line.split("=", 1)
-                k, v = k.strip(), v.strip().strip('"').strip("'")
-                if k and v and not os.getenv(k, "").strip():
-                    os.environ[k] = v
-        except Exception:
-            pass
+        if line.startswith("export "):
+            line = line[7:].strip()
+        if "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        k = k.strip()
+        v = v.strip().strip('"').strip("'")
+        if k and v and v != "change-me-to-your-secret-token":
+            out[k] = v
+    return out
+
+def _load_secret_files() -> None:
+    global _DB_KEYS_LOADED
+    base = Path(__file__).resolve().parent.parent
+    candidates = [base / ".env", Path("/etc/secrets/.env"), Path("/etc/secrets/env")]
     sec_dir = Path("/etc/secrets")
     if sec_dir.is_dir():
         try:
             for f in sec_dir.iterdir():
-                if f.is_file() and f.name not in (".env", "env"):
-                    val = f.read_text(encoding="utf-8", errors="ignore").strip()
-                    if val and "=" not in val and "\n" not in val and not os.getenv(f.name, "").strip():
-                        os.environ[f.name] = val
+                if f.is_file() and f not in candidates:
+                    candidates.append(f)
         except Exception:
             pass
+    for p in candidates:
+        if not p.is_file():
+            continue
+        try:
+            txt = p.read_text(encoding="utf-8", errors="ignore").strip()
+            if not txt:
+                continue
+            parsed = _parse_env_lines(txt)
+            if parsed:
+                for k, v in parsed.items():
+                    if not os.getenv(k, "").strip():
+                        os.environ[k] = v
+            elif "=" not in txt and "\n" not in txt and p.name not in (".env", "env"):
+                if not os.getenv(p.name, "").strip():
+                    os.environ[p.name] = txt
+        except Exception:
+            pass
+    if not _DB_KEYS_LOADED:
+        _DB_KEYS_LOADED = True
+        try:
+            from live import store
+            saved = store.kv_get("llm_env_keys")
+            if isinstance(saved, dict):
+                for k, v in saved.items():
+                    if k and isinstance(v, str) and v.strip() and not os.getenv(k, "").strip():
+                        os.environ[k] = v.strip()
+        except Exception:
+            _DB_KEYS_LOADED = False
+
+def save_keys(raw_env: str = "", keys: Optional[Dict[str, str]] = None) -> List[str]:
+    from live import store
+    merged: Dict[str, str] = {}
+    existing = store.kv_get("llm_env_keys")
+    if isinstance(existing, dict):
+        merged.update({str(k): str(v).strip() for k, v in existing.items() if k and str(v).strip()})
+    if raw_env:
+        merged.update(_parse_env_lines(raw_env))
+    if isinstance(keys, dict):
+        for k, v in keys.items():
+            ks, vs = str(k).strip(), str(v or "").strip().strip('"').strip("'")
+            if ks and vs:
+                merged[ks] = vs
+    for k, v in merged.items():
+        os.environ[k] = v
+    store.kv_set("llm_env_keys", merged)
+    _STATE.clear()
+    return sorted(merged.keys())
 
 def _get_env(canonical: str) -> str:
     _load_secret_files()

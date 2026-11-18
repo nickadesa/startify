@@ -689,6 +689,14 @@ tbody tr:hover td{background:var(--hover)}
       <div class="set-row">
         <div><b>Risk Rules</b><div class="m" style="font-size:12px">2.0R min · 1.0% risk · 3% daily / 8% weekly cap · 4h cooldown</div></div>
       </div>
+      <div class="set-row" style="flex-direction:column;align-items:stretch;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <div><b>LLM API Keys (.env)</b><div class="m" style="font-size:12px">Paste KEY=VALUE lines (e.g. OPENROUTER_API_KEY=sk-or-...) to activate real LLMs</div></div>
+          <button class="btn blue" id="setSaveKeys" type="button" style="min-height:30px;padding:4px 10px">Save Keys</button>
+        </div>
+        <textarea class="set-in" id="setEnvText" rows="3" placeholder="OPENROUTER_API_KEY=sk-or-v1-...&#10;GEMINI_API_KEY=AIza...&#10;GROQ_API_KEY=gsk_..." style="width:100%;font-family:var(--mono,monospace);font-size:11.5px;resize:vertical"></textarea>
+        <div class="m" id="setKeysMsg" style="font-size:11.5px"></div>
+      </div>
       <div class="set-row">
         <div><b>Engine Actions</b><div class="m" style="font-size:12px">Trigger a manual cycle or reset season</div></div>
         <div style="display:flex;gap:8px">
@@ -1000,6 +1008,18 @@ $('#setRate').onchange=e=>{rateMs=+e.target.value;ls.set('rate',rateMs);startPol
 $('#setPs').onchange=e=>{PS=+e.target.value;ls.set('ps',PS);page=1;renderOrders()};
 $('#setAdm').onchange=e=>ls.set('adm',e.target.value.trim());
 if($('#setTradeAllow'))$('#setTradeAllow').onclick=async()=>{await admin('/api/live/trade-pause',{paused:!S?.trade_paused});await loadState()};
+if($('#setSaveKeys'))$('#setSaveKeys').onclick=async()=>{
+  const raw=($('#setEnvText')?.value||'').trim(),msg=$('#setKeysMsg'),btn=$('#setSaveKeys');
+  if(!raw){if(msg)msg.textContent='Please paste at least one KEY=VALUE line.';return}
+  btn.textContent='Saving…';
+  const r=await admin('/api/live/llm-keys',{env_text:raw});
+  btn.textContent='Save Keys';
+  if(r&&r.ok){
+    $('#setEnvText').value='';
+    if(msg)msg.innerHTML=`<span class="g">Saved (${(r.saved_keys||[]).join(', ')}) — LLM ${r.live}/${r.total} online!</span>`;
+    loadLlmStat();loadState();
+  }else if(msg){msg.innerHTML='<span class="r">Failed to save keys</span>'}
+};
 $('#setCycle').onclick=async()=>{const b=$('#setCycle');b.textContent='Running…';await admin('/api/live/cycle');b.textContent='Run Cycle';loadState()};
 $('#setReset').onclick=async()=>{if(confirm('Reset the entire season back to $10,000 for all 17 AIs?')){await admin('/api/live/reset-season');$('#setModal').hidden=true;loadState()}};
 
@@ -1488,7 +1508,9 @@ $('#quantCanvas').onmouseleave=()=>{if($('#qTip'))$('#qTip').hidden=true};
 
 async function loadLlmStat(){
   try{const r=await get('/api/live/llm-status');const bad=r.status.filter(x=>!x.has_key||x.last_error);
-    $('#llmStat').innerHTML=`LLM ${r.live}/${r.total} online`+(bad.length?` · <span style="color:var(--amber)" title="${esc(bad.map(x=>x.name+': '+(x.has_key?x.last_error:'no key')).join('\n'))}">${bad.length} on fallback</span>`:'');}catch(e){}
+    $('#llmStat').innerHTML=`LLM ${r.live}/${r.total} online`+(bad.length?` · <span style="color:var(--amber);cursor:pointer;text-decoration:underline" id="llmFixBtn" title="${esc(bad.map(x=>x.name+': '+(x.has_key?x.last_error:'no key')).join('\n'))}">${bad.length} on fallback (Set Keys)</span>`:'');
+    if($('#llmFixBtn'))$('#llmFixBtn').onclick=()=>{$('#bSet').click();setTimeout(()=>$('#setEnvText')?.focus(),60)};
+  }catch(e){}
 }
 // ── Chat (Real Brand Logos + User Messages + @Mentions + Image Upload)
 async function loadChat(){
