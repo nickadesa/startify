@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Multi-AI Trading Reels 1080x1920</title>
+<style>
+  @font-face {
+    font-family: 'DBHeavent';
+    src: url('assets/fonts/DBHeavent-Bold.ttf') format('truetype');
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: 'DBHelvethaicaX';
+    src: url('assets/fonts/DBHelvethaicaX-BoldExt.ttf') format('truetype');
+    font-weight: 700;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  html, body {
+    width: 1080px;
+    height: 1920px;
+    background: #0F1115;
+    color: #FFFFFF;
+    font-family: 'DBHelvethaicaX', 'DBHeavent', sans-serif;
+    font-weight: 700;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Strictly 3 colors: #0F1115, #FFFFFF, #A2D2FF */
+  /* Text rule: no stroke, drop shadow black opacity 25%, blur 14px, y-offset 4px */
+  .txt-shadow {
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+
+  #stage {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    background: #0F1115;
+    overflow: hidden;
+  }
+
+  /* Subtle ambient background glow & grid using only #A2D2FF on #0F1115 */
+  #ambient-glow {
+    position: absolute;
+    width: 980px;
+    height: 980px;
+    left: 50px;
+    top: 470px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(162, 210, 255, 0.11) 0%, rgba(15, 17, 21, 0) 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  #bg-grid {
+    position: absolute;
+    inset: -80px;
+    background-image:
+      linear-gradient(to right, rgba(162, 210, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(162, 210, 255, 0.03) 1px, transparent 1px);
+    background-size: 72px 72px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Top 1/4 Headline Zone (Safe zone top >= 150px) */
+  #headline-zone {
+    position: absolute;
+    top: 175px;
+    left: 60px;
+    right: 60px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 30;
+    pointer-events: none;
+  }
+
+  #headline-line1 {
+    font-size: 98px;
+    line-height: 0.98;
+    color: #A2D2FF;
+    letter-spacing: -0.01em;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+
+  #headline-line2 {
+    margin-top: 8px;
+    font-size: 92px;
+    line-height: 1.0;
+    color: #FFFFFF;
+    letter-spacing: -0.01em;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Scene Top Pill Badge for Scenes 2-5 (Safe zone top >= 150px) */
+  #scene-badge {
+    position: absolute;
+    top: 195px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 36px;
+    border-radius: 999px;
+    background: rgba(15, 17, 21, 0.88);
+    border: 2px solid rgba(162, 210, 255, 0.35);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 28;
+    opacity: 0;
+  }
+
+  #scene-badge-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #A2D2FF;
+  }
+
+  #scene-badge-text {
+    font-size: 52px;
+    line-height: 1;
+    color: #A2D2FF;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    white-space: nowrap;
+  }
+
+  /* Center Visual / Parallax Container */
+  #visual-stage {
+    position: absolute;
+    top: 435px;
+    left: 44px;
+    width: 992px;
+    height: 640px;
+    z-index: 15;
+    perspective: 1400px;
+  }
+
+  #parallax-rig {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+  }
+
+  /* Floating Web Screenshot Card (960x600 = exact 1380x860 aspect ratio, zero side cropping) */
+  #web-card {
+    position: absolute;
+    left: 16px;
+    top: 10px;
+    width: 960px;
+    height: 600px;
+    border-radius: 28px;
+    background: #0F1115;
+    border: 2px solid rgba(162, 210, 255, 0.28);
+    box-shadow: 0 36px 90px rgba(0, 0, 0, 0.75), 0 12px 32px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transform-origin: center center;
+  }
+
+  #shot-viewport {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0F1115;
+  }
+
+  .shot-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    opacity: 0;
+    transform-origin: center center;
+    will-change: transform, opacity;
+  }
+
+  /* Highlight Callout Box on Web Card (Only #A2D2FF border & subtle glow) */
+  #focus-box {
+    position: absolute;
+    border: 3px solid #A2D2FF;
+    border-radius: 16px;
+    box-shadow: 0 0 28px rgba(162, 210, 255, 0.35);
+    background: rgba(162, 210, 255, 0.06);
+    pointer-events: none;
+    opacity: 0;
+    z-index: 22;
+  }
+
+  /* ARISE!! Custom Motion Button & Shockwave Overlay (over the Dimiss All / Arise All button) */
+  #arise-btn-overlay {
+    position: absolute;
+    left: 194px;
+    top: 132px;
+    padding: 8px 22px;
+    border-radius: 12px;
+    background: #0F1115;
+    border: 2.5px solid #A2D2FF;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 26px rgba(162, 210, 255, 0.45);
+    color: #A2D2FF;
+    font-size: 34px;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    z-index: 25;
+    opacity: 0;
+    transform-origin: center center;
+  }
+
+  #arise-flash-banner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    padding: 28px 68px;
+    border-radius: 28px;
+    background: rgba(15, 17, 21, 0.94);
+    border: 3px solid #A2D2FF;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85), 0 0 60px rgba(162, 210, 255, 0.4);
+    color: #A2D2FF;
+    font-size: 124px;
+    line-height: 0.95;
+    letter-spacing: 0.08em;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    z-index: 29;
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  /* Scene 1 Hook Special Graphic Overlay (0.0s -> 4.34s & 8.80s -> 13.71s) */
+  #hook-counter-badge {
+    position: absolute;
+    right: 38px;
+    bottom: 34px;
+    padding: 18px 34px;
+    border-radius: 22px;
+    background: rgba(15, 17, 21, 0.94);
+    border: 2.5px solid #A2D2FF;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+    z-index: 26;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  #hook-counter-num {
+    font-size: 80px;
+    line-height: 1;
+    color: #A2D2FF;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+
+  #hook-counter-label {
+    font-size: 48px;
+    line-height: 1;
+    color: #FFFFFF;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Scene 5 Ending Question Card Overlay */
+  #ending-card {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 17, 21, 0.92);
+    z-index: 27;
+    opacity: 0;
+    pointer-events: none;
+    padding: 48px;
+    text-align: center;
+  }
+
+  #ending-pill {
+    padding: 12px 32px;
+    border-radius: 999px;
+    border: 2px solid #A2D2FF;
+    color: #A2D2FF;
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 28px;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+
+  #ending-title {
+    font-size: 112px;
+    color: #FFFFFF;
+    line-height: 1.0;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+
+  #ending-sub {
+    margin-top: 18px;
+    font-size: 74px;
+    line-height: 1.05;
+    color: #A2D2FF;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+
+  
+  /* 17 AI Logos Dock in Scene 1 */
+  #ai-logos-dock {
+    position: absolute;
+    top: 1090px;
+    left: 44px;
+    right: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    z-index: 32;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .ai-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+  .ai-chip {
+    width: 92px;
+    height: 96px;
+    border-radius: 18px;
+    background: rgba(15, 17, 21, 0.94);
+    border: 1.5px solid rgba(162, 210, 255, 0.32);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.65);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 4px;
+  }
+  .ai-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+  }
+  .ai-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+  .ai-name {
+    font-family: 'DBHeavent', sans-serif;
+    font-size: 24px;
+    line-height: 1;
+    color: #FFFFFF;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    white-space: nowrap;
+  }
+
+  /* Bottom 1/3 Subtitle Zone (Safe zone bottom >= 250px -> placed at bottom: 285px) */
+  #subtitle-zone {
+    position: absolute;
+    left: 60px;
+    right: 60px;
+    bottom: 285px;
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 35;
+    pointer-events: none;
+  }
+
+  #subtitle-box {
+    padding: 22px 44px;
+    border-radius: 26px;
+    background: rgba(15, 17, 21, 0.88);
+    border: 1.5px solid rgba(162, 210, 255, 0.24);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55);
+    max-width: 940px;
+    transform-origin: center center;
+  }
+
+  #subtitle-text {
+    font-size: 80px;
+    line-height: 1.06;
+    color: #FFFFFF;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    white-space: pre-line;
+    letter-spacing: -0.005em;
+  }
+
+  #subtitle-text .hl {
+    color: #A2D2FF;
+  }
+
+  /* macOS Cursor Layer */
+  #cursor-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1080px;
+    height: 1920px;
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  #cursor-wrap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 64px;
+    height: 64px;
+    transform-origin: 8px 6px;
+    will-change: transform;
+  }
+
+  /* Click Ring Ripple (#A2D2FF) */
+  #cur-ripple {
+    position: absolute;
+    left: -34px;
+    top: -34px;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    border: 4px solid #A2D2FF;
+    background: rgba(162, 210, 255, 0.18);
+    opacity: 0;
+    transform: scale(0.2);
+    pointer-events: none;
+  }
+
+  .cur-svg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+  }
+
+  #cur-hand, #cur-ibeam {
+    display: none;
+  }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <div id="ambient-glow"></div>
+    <div id="bg-grid"></div>
+
+    <!-- Top 1/4 Headline (Scene 1: 0s -> ~13.7s) -->
+    <div id="headline-zone">
+      <div id="headline-line1" class="txt-shadow">ผมสร้างเว็บให้ AI เทรด</div>
+      <div id="headline-line2" class="txt-shadow">จะดีจริงๆ หรอ?</div>
+    </div>
+
+    <!-- Top Scene Badge for Scenes 2-5 -->
+    <div id="scene-badge">
+      <div id="scene-badge-dot"></div>
+      <div id="scene-badge-text" class="txt-shadow">หน้า Cockpit • AI 17 ตัว</div>
+    </div>
+
+    <!-- Floating Web Screenshot Stage -->
+    <div id="visual-stage">
+      <div id="parallax-rig">
+        <div id="web-card">
+          <div id="shot-viewport">
+            <img id="img-shot0" class="shot-layer" src="shots/shot0_tradesyncer.png" />
+            <img id="img-shot1" class="shot-layer" src="shots/shot1_cockpit.png" />
+            <img id="img-shot2a" class="shot-layer" src="shots/shot2_before_toggle.png" />
+            <img id="img-shot2b" class="shot-layer" src="shots/shot2_after_toggle.png" />
+            <img id="img-shot3" class="shot-layer" src="shots/shot3_preset_modal.png" />
+            <img id="img-shot4a" class="shot-layer" src="shots/shot4_dismiss_all.png" />
+            <img id="img-shot4b" class="shot-layer" src="shots/shot4_arise_all.png" />
+            <img id="img-shot5a" class="shot-layer" src="shots/shot5_orders_all.png" />
+            <img id="img-shot5b" class="shot-layer" src="shots/shot5_orders_open_limit.png" />
+            <img id="img-shot5c" class="shot-layer" src="shots/shot5_orders_filled.png" />
+            <img id="img-shot6a" class="shot-layer" src="shots/shot6_chat_feed.png" />
+            <img id="img-shot6b" class="shot-layer" src="shots/shot6_chat_typing.png" />
+            <img id="img-shot6c" class="shot-layer" src="shots/shot6_chat_reply.png" />
+            <img id="img-shot7a" class="shot-layer" src="shots/shot7_calendar_month.png" />
+            <img id="img-shot7b" class="shot-layer" src="shots/shot7_calendar_day_detail.png" />
+            <img id="img-shot7c" class="shot-layer" src="shots/shot7_calendar_single_ai.png" />
+            <img id="img-shot8" class="shot-layer" src="shots/shot8_ai_stats_chart.png" />
+            <img id="img-shot9" class="shot-layer" src="shots/shot9_risk_rules.png" />
+
+            <!-- Highlight Focus Callout Box -->
+            <div id="focus-box"></div>
+
+            <!-- Custom Motion Button for ARISE!! -->
+            <div id="arise-btn-overlay" class="txt-shadow">ARISE!!</div>
+
+            <!-- Big ARISE!! Impact Banner -->
+            <div id="arise-flash-banner" class="txt-shadow">ARISE!!</div>
+
+            <!-- Scene 1 17 AIs Counter Badge -->
+            <div id="hook-counter-badge">
+              <div id="hook-counter-num" class="txt-shadow">17 AI</div>
+              <div id="hook-counter-label" class="txt-shadow">แข่งเทรดทองสด</div>
+            </div>
+
+            <!-- Scene 5 Ending Question Overlay -->
+            <div id="ending-card">
+              <div id="ending-pill" class="txt-shadow">RISK 1% PER TRADE • MAX 3% DAILY</div>
+              <div id="ending-title" class="txt-shadow">สรุปแล้ว… ดีจริงมั้ย?</div>
+              <div id="ending-sub" class="txt-shadow">คอมเมนต์บอกหน่อยครับ 👇</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+  <div id="ai-logos-dock">
+    <div class="ai-row">
+  <div class="ai-chip" data-idx="0">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Claude</title><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z" fill="#D97757" fill-rule="nonzero"></path></svg></div>
+    <div class="ai-name">Claude</div>
+  </div>
+
+  <div class="ai-chip" data-idx="1">
+    <div class="ai-icon"><svg fill="currentColor" fill-rule="evenodd" height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Grok</title><path d="M9.27 15.29l7.978-5.897c.391-.29.95-.177 1.137.272.98 2.369.542 5.215-1.41 7.169-1.951 1.954-4.667 2.382-7.149 1.406l-2.711 1.257c3.889 2.661 8.611 2.003 11.562-.953 2.341-2.344 3.066-5.539 2.388-8.42l.006.007c-.983-4.232.242-5.924 2.75-9.383.06-.082.12-.164.179-.248l-3.301 3.305v-.01L9.267 15.292M7.623 16.723c-2.792-2.67-2.31-6.801.071-9.184 1.761-1.763 4.647-2.483 7.166-1.425l2.705-1.25a7.808 7.808 0 00-1.829-1A8.975 8.975 0 005.984 5.83c-2.533 2.536-3.33 6.436-1.962 9.764 1.022 2.487-.653 4.246-2.34 6.022-.599.63-1.199 1.259-1.682 1.925l7.62-6.815"></path></svg></div>
+    <div class="ai-name">Grok</div>
+  </div>
+
+  <div class="ai-chip" data-idx="2">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>DeepSeek</title><path d="M23.748 4.482c-.254-.124-.364.113-.512.234-.051.039-.094.09-.137.136-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.156-.708-.311-.955-.65-.172-.241-.219-.51-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.093.172.187.129.323-.082.28-.18.552-.266.833-.055.179-.137.217-.329.14a5.526 5.526 0 01-1.736-1.18c-.857-.828-1.631-1.742-2.597-2.458a11.365 11.365 0 00-.689-.471c-.985-.957.13-1.743.388-1.836.27-.098.093-.432-.779-.428-.872.004-1.67.295-2.687.684a3.055 3.055 0 01-.465.137 9.597 9.597 0 00-2.883-.102c-1.885.21-3.39 1.102-4.497 2.623C.082 8.606-.231 10.684.152 12.85c.403 2.284 1.569 4.175 3.36 5.653 1.858 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.133-.284 4.994-1.86.47.234.962.327 1.78.397.63.059 1.236-.03 1.705-.128.735-.156.684-.837.419-.961-2.155-1.004-1.682-.595-2.113-.926 1.096-1.296 2.746-2.642 3.392-7.003.05-.347.007-.565 0-.845-.004-.17.035-.237.23-.256a4.173 4.173 0 001.545-.475c1.396-.763 1.96-2.015 2.093-3.517.02-.23-.004-.467-.247-.588zM11.581 18c-2.089-1.642-3.102-2.183-3.52-2.16-.392.024-.321.471-.235.763.09.288.207.486.371.739.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.167-1.361-.802-2.5-1.86-3.301-3.307-.774-1.393-1.224-2.887-1.298-4.482-.02-.386.093-.522.477-.592a4.696 4.696 0 011.529-.039c2.132.312 3.946 1.265 5.468 2.774.868.86 1.525 1.887 2.202 2.891.72 1.066 1.494 2.082 2.48 2.914.348.292.625.514.891.677-.802.09-2.14.11-3.054-.614zm1-6.44a.306.306 0 01.415-.287.302.302 0 01.2.288.306.306 0 01-.31.307.303.303 0 01-.304-.308zm3.11 1.596c-.2.081-.399.151-.59.16a1.245 1.245 0 01-.798-.254c-.274-.23-.47-.358-.552-.758a1.73 1.73 0 01.016-.588c.07-.327-.008-.537-.239-.727-.187-.156-.426-.199-.688-.199a.559.559 0 01-.254-.078c-.11-.054-.2-.19-.114-.358.028-.054.16-.186.192-.21.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.391.451.462.576.685.914.176.265.336.537.445.848.067.195-.019.354-.25.452z" fill="#4D6BFE"></path></svg></div>
+    <div class="ai-name">DeepSeek</div>
+  </div>
+
+  <div class="ai-chip" data-idx="3">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Qwen</title><path d="M19.713 2.825h-5.907c0-.251-.066-.503-.196-.728L12.819.728A1.46 1.46 0 0 0 11.559 0h-1.58c-.52 0-1 .275-1.26.728l-2.42 4.19a1.45 1.45 0 0 0 0 1.453l.791 1.37c.26.448.74.727 1.26.727h11.36c.52 0 1-.275 1.26-.728l.79-1.37a1.45 1.45 0 0 0 0-1.451l-.79-1.37a1.46 1.46 0 0 0-1.26-.728zM.195 9.905l2.951 5.115a1.46 1.46 0 0 0-.531.531l-.791 1.37a1.45 1.45 0 0 0 0 1.452l.79 1.37c.26.448.74.727 1.26.727h4.84c.52 0 1-.275 1.26-.728l.79-1.37a1.45 1.45 0 0 0 0-1.451L5.086 7.083a1.46 1.46 0 0 0-1.26-.728h-1.58c-.52 0-1 .276-1.26.728l-.79 1.37a1.45 1.45 0 0 0 0 1.452m15.888 13.367 2.951-5.115c.217.125.469.196.728.196h1.582c.52 0 1-.275 1.26-.728l.79-1.37a1.45 1.45 0 0 0 0-1.451l-2.42-4.191a1.46 1.46 0 0 0-1.259-.728h-1.582c-.52 0-1 .276-1.259.728l-5.678 9.838a1.45 1.45 0 0 0 0 1.452l.79 1.37c.26.448.74.727 1.26.727h1.582c.52 0 1-.275 1.26-.728z" fill="#082dff"></path></svg></div>
+    <div class="ai-name">Qwen</div>
+  </div>
+
+  <div class="ai-chip" data-idx="4">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Gemini</title><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="#3186FF"></path><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="url(#lobe-icons-gemini-0-_R_0_)"></path><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="url(#lobe-icons-gemini-1-_R_0_)"></path><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="url(#lobe-icons-gemini-2-_R_0_)"></path><defs><linearGradient gradientUnits="userSpaceOnUse" id="lobe-icons-gemini-0-_R_0_" x1="7" x2="11" y1="15.5" y2="12"><stop stop-color="#08B962"></stop><stop offset="1" stop-color="#08B962" stop-opacity="0"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="lobe-icons-gemini-1-_R_0_" x1="8" x2="11.5" y1="5.5" y2="11"><stop stop-color="#F94543"></stop><stop offset="1" stop-color="#F94543" stop-opacity="0"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="lobe-icons-gemini-2-_R_0_" x1="3.5" x2="17.5" y1="13.5" y2="12"><stop stop-color="#FABC12"></stop><stop offset=".46" stop-color="#FABC12" stop-opacity="0"></stop></linearGradient></defs></svg></div>
+    <div class="ai-name">Gemini</div>
+  </div>
+
+  <div class="ai-chip" data-idx="5">
+    <div class="ai-icon"><svg fill="currentColor" fill-rule="evenodd" height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>OpenAI</title><path d="M9.205 8.658v-2.26c0-.19.072-.333.238-.428l4.543-2.616c.619-.357 1.356-.523 2.117-.523 2.854 0 4.662 2.212 4.662 4.566 0 .167 0 .357-.024.547l-4.71-2.759a.797.797 0 00-.856 0l-5.97 3.473zm10.609 8.8V12.06c0-.333-.143-.57-.429-.737l-5.97-3.473 1.95-1.118a.433.433 0 01.476 0l4.543 2.617c1.309.76 2.189 2.378 2.189 3.948 0 1.808-1.07 3.473-2.76 4.163zM7.802 12.703l-1.95-1.142c-.167-.095-.239-.238-.239-.428V5.899c0-2.545 1.95-4.472 4.591-4.472 1 0 1.927.333 2.712.928L8.23 5.067c-.285.166-.428.404-.428.737v6.898zM12 15.128l-2.795-1.57v-3.33L12 8.658l2.795 1.57v3.33L12 15.128zm1.796 7.23c-1 0-1.927-.332-2.712-.927l4.686-2.712c.285-.166.428-.404.428-.737v-6.898l1.974 1.142c.167.095.238.238.238.428v5.233c0 2.545-1.974 4.472-4.614 4.472zm-5.637-5.303l-4.544-2.617c-1.308-.761-2.188-2.378-2.188-3.948A4.482 4.482 0 014.21 6.327v5.423c0 .333.143.571.428.738l5.947 3.449-1.95 1.118a.432.432 0 01-.476 0zm-.262 3.9c-2.688 0-4.662-2.021-4.662-4.519 0-.19.024-.38.047-.57l4.686 2.71c.286.167.571.167.856 0l5.97-3.448v2.26c0 .19-.07.333-.237.428l-4.543 2.616c-.619.357-1.356.523-2.117.523zm5.899 2.83a5.947 5.947 0 005.827-4.756C22.287 18.339 24 15.84 24 13.296c0-1.665-.713-3.282-1.998-4.448.119-.5.19-.999.19-1.498 0-3.401-2.759-5.947-5.946-5.947-.642 0-1.26.095-1.88.31A5.962 5.962 0 0010.205 0a5.947 5.947 0 00-5.827 4.757C1.713 5.447 0 7.945 0 10.49c0 1.666.713 3.283 1.998 4.448-.119.5-.19 1-.19 1.499 0 3.401 2.759 5.946 5.946 5.946.642 0 1.26-.095 1.88-.309a5.96 5.96 0 004.162 1.713z"></path></svg></div>
+    <div class="ai-name">GPT-OSS</div>
+  </div>
+
+  <div class="ai-chip" data-idx="6">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Mistral</title><path d="M3.428 3.4h3.429v3.428H3.428V3.4zm13.714 0h3.43v3.428h-3.43V3.4z" fill="gold"></path><path d="M3.428 6.828h6.857v3.429H3.429V6.828zm10.286 0h6.857v3.429h-6.857V6.828z" fill="#FFAF00"></path><path d="M3.428 10.258h17.144v3.428H3.428v-3.428z" fill="#FF8205"></path><path d="M3.428 13.686h3.429v3.428H3.428v-3.428zm6.858 0h3.429v3.428h-3.429v-3.428zm6.856 0h3.43v3.428h-3.43v-3.428z" fill="#FA500F"></path><path d="M0 17.114h10.286v3.429H0v-3.429zm13.714 0H24v3.429H13.714v-3.429z" fill="#E10500"></path></svg></div>
+    <div class="ai-name">Mistral</div>
+  </div>
+
+  <div class="ai-chip" data-idx="7">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Meta</title><path d="M6.897 4h-.024l-.031 2.615h.022c1.715 0 3.046 1.357 5.94 6.246l.175.297.012.02 1.62-2.438-.012-.019a48.763 48.763 0 00-1.098-1.716 28.01 28.01 0 00-1.175-1.629C10.413 4.932 8.812 4 6.896 4z" fill="url(#lobe-icons-meta-0-_R_0_)"></path><path d="M6.873 4C4.95 4.01 3.247 5.258 2.02 7.17a4.352 4.352 0 00-.01.017l2.254 1.231.011-.017c.718-1.083 1.61-1.774 2.568-1.785h.021L6.896 4h-.023z" fill="url(#lobe-icons-meta-1-_R_0_)"></path><path d="M2.019 7.17l-.011.017C1.2 8.447.598 9.995.274 11.664l-.005.022 2.534.6.004-.022c.27-1.467.786-2.828 1.456-3.845l.011-.017L2.02 7.17z" fill="url(#lobe-icons-meta-2-_R_0_)"></path><path d="M2.807 12.264l-2.533-.6-.005.022c-.177.918-.267 1.851-.269 2.786v.023l2.598.233v-.023a12.591 12.591 0 01.21-2.44z" fill="url(#lobe-icons-meta-3-_R_0_)"></path><path d="M2.677 15.537a5.462 5.462 0 01-.079-.813v-.022L0 14.468v.024a8.89 8.89 0 00.146 1.652l2.535-.585a4.106 4.106 0 01-.004-.022z" fill="url(#lobe-icons-meta-4-_R_0_)"></path><path d="M3.27 16.89c-.284-.31-.484-.756-.589-1.328l-.004-.021-2.535.585.004.021c.192 1.01.568 1.85 1.106 2.487l.014.017 2.018-1.745a2.106 2.106 0 01-.015-.016z" fill="url(#lobe-icons-meta-5-_R_0_)"></path><path d="M10.78 9.654c-1.528 2.35-2.454 3.825-2.454 3.825-2.035 3.2-2.739 3.917-3.871 3.917a1.545 1.545 0 01-1.186-.508l-2.017 1.744.014.017C2.01 19.518 3.058 20 4.356 20c1.963 0 3.374-.928 5.884-5.33l1.766-3.13a41.283 41.283 0 00-1.227-1.886z" fill="#0082FB"></path><path d="M13.502 5.946l-.016.016c-.4.43-.786.908-1.16 1.416.378.483.768 1.024 1.175 1.63.48-.743.928-1.345 1.367-1.807l.016-.016-1.382-1.24z" fill="url(#lobe-icons-meta-6-_R_0_)"></path><path d="M20.918 5.713C19.853 4.633 18.583 4 17.225 4c-1.432 0-2.637.787-3.723 1.944l-.016.016 1.382 1.24.016-.017c.715-.747 1.408-1.12 2.176-1.12.826 0 1.6.39 2.27 1.075l.015.016 1.589-1.425-.016-.016z" fill="#0082FB"></path><path d="M23.998 14.125c-.06-3.467-1.27-6.566-3.064-8.396l-.016-.016-1.588 1.424.015.016c1.35 1.392 2.277 3.98 2.361 6.971v.023h2.292v-.022z" fill="url(#lobe-icons-meta-7-_R_0_)"></path><path d="M23.998 14.15v-.023h-2.292v.022c.004.14.006.282.006.424 0 .815-.121 1.474-.368 1.95l-.011.022 1.708 1.782.013-.02c.62-.96.946-2.293.946-3.91 0-.083 0-.165-.002-.247z" fill="url(#lobe-icons-meta-8-_R_0_)"></path><path d="M21.344 16.52l-.011.02c-.214.402-.519.67-.917.787l.778 2.462a3.493 3.493 0 00.438-.182 3.558 3.558 0 001.366-1.218l.044-.065.012-.02-1.71-1.784z" fill="url(#lobe-icons-meta-9-_R_0_)"></path><path d="M19.92 17.393c-.262 0-.492-.039-.718-.14l-.798 2.522c.449.153.927.222 1.46.222.492 0 .943-.073 1.352-.215l-.78-2.462c-.167.05-.341.075-.517.073z" fill="url(#lobe-icons-meta-10-_R_0_)"></path><path d="M18.323 16.534l-.014-.017-1.836 1.914.016.017c.637.682 1.246 1.105 1.937 1.337l.797-2.52c-.291-.125-.573-.353-.9-.731z" fill="url(#lobe-icons-meta-11-_R_0_)"></path><path d="M18.309 16.515c-.55-.642-1.232-1.712-2.303-3.44l-1.396-2.336-.011-.02-1.62 2.438.012.02.989 1.668c.959 1.61 1.74 2.774 2.493 3.585l.016.016 1.834-1.914a2.353 2.353 0 01-.014-.017z" fill="url(#lobe-icons-meta-12-_R_0_)"></path><defs><linearGradient id="lobe-icons-meta-0-_R_0_" x1="75.897%" x2="26.312%" y1="89.199%" y2="12.194%"><stop offset=".06%" stop-color="#0867DF"></stop><stop offset="45.39%" stop-color="#0668E1"></stop><stop offset="85.91%" stop-color="#0064E0"></stop></linearGradient><linearGradient id="lobe-icons-meta-1-_R_0_" x1="21.67%" x2="97.068%" y1="75.874%" y2="23.985%"><stop offset="13.23%" stop-color="#0064DF"></stop><stop offset="99.88%" stop-color="#0064E0"></stop></linearGradient><linearGradient id="lobe-icons-meta-2-_R_0_" x1="38.263%" x2="60.895%" y1="89.127%" y2="16.131%"><stop offset="1.47%" stop-color="#0072EC"></stop><stop offset="68.81%" stop-color="#0064DF"></stop></linearGradient><linearGradient id="lobe-icons-meta-3-_R_0_" x1="47.032%" x2="52.15%" y1="90.19%" y2="15.745%"><stop offset="7.31%" stop-color="#007CF6"></stop><stop offset="99.43%" stop-color="#0072EC"></stop></linearGradient><linearGradient id="lobe-icons-meta-4-_R_0_" x1="52.155%" x2="47.591%" y1="58.301%" y2="37.004%"><stop offset="7.31%" stop-color="#007FF9"></stop><stop offset="100%" stop-color="#007CF6"></stop></linearGradient><linearGradient id="lobe-icons-meta-5-_R_0_" x1="37.689%" x2="61.961%" y1="12.502%" y2="63.624%"><stop offset="7.31%" stop-color="#007FF9"></stop><stop offset="100%" stop-color="#0082FB"></stop></linearGradient><linearGradient id="lobe-icons-meta-6-_R_0_" x1="34.808%" x2="62.313%" y1="68.859%" y2="23.174%"><stop offset="27.99%" stop-color="#007FF8"></stop><stop offset="91.41%" stop-color="#0082FB"></stop></linearGradient><linearGradient id="lobe-icons-meta-7-_R_0_" x1="43.762%" x2="57.602%" y1="6.235%" y2="98.514%"><stop offset="0%" stop-color="#0082FB"></stop><stop offset="99.95%" stop-color="#0081FA"></stop></linearGradient><linearGradient id="lobe-icons-meta-8-_R_0_" x1="60.055%" x2="39.88%" y1="4.661%" y2="69.077%"><stop offset="6.19%" stop-color="#0081FA"></stop><stop offset="100%" stop-color="#0080F9"></stop></linearGradient><linearGradient id="lobe-icons-meta-9-_R_0_" x1="30.282%" x2="61.081%" y1="59.32%" y2="33.244%"><stop offset="0%" stop-color="#027AF3"></stop><stop offset="100%" stop-color="#0080F9"></stop></linearGradient><linearGradient id="lobe-icons-meta-10-_R_0_" x1="20.433%" x2="82.112%" y1="50.001%" y2="50.001%"><stop offset="0%" stop-color="#0377EF"></stop><stop offset="99.94%" stop-color="#0279F1"></stop></linearGradient><linearGradient id="lobe-icons-meta-11-_R_0_" x1="40.303%" x2="72.394%" y1="35.298%" y2="57.811%"><stop offset=".19%" stop-color="#0471E9"></stop><stop offset="100%" stop-color="#0377EF"></stop></linearGradient><linearGradient id="lobe-icons-meta-12-_R_0_" x1="32.254%" x2="68.003%" y1="19.719%" y2="84.908%"><stop offset="27.65%" stop-color="#0867DF"></stop><stop offset="100%" stop-color="#0471E9"></stop></linearGradient></defs></svg></div>
+    <div class="ai-name">Llama</div>
+  </div>
+
+  <div class="ai-chip" data-idx="8">
+    <div class="ai-icon"><svg fill="currentColor" fill-rule="evenodd" height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Z.ai</title><path d="M12.105 2L9.927 4.953H.653L2.83 2h9.276zM23.254 19.048L21.078 22h-9.242l2.174-2.952h9.244zM24 2L9.264 22H0L14.736 2H24z"></path></svg></div>
+    <div class="ai-name">GLM</div>
+  </div>
+</div>
+    <div class="ai-row">
+  <div class="ai-chip" data-idx="9">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Kimi</title><path d="M21.846 0a1.923 1.923 0 110 3.846H20.15a.226.226 0 01-.227-.226V1.923C19.923.861 20.784 0 21.846 0z" fill="#1783FF"></path><path d="M11.065 11.199l7.257-7.2c.137-.136.06-.41-.116-.41H14.3a.164.164 0 00-.117.051l-7.82 7.756c-.122.12-.302.013-.302-.179V3.82c0-.127-.083-.23-.185-.23H3.186c-.103 0-.186.103-.186.23V19.77c0 .128.083.23.186.23h2.69c.103 0 .186-.102.186-.23v-3.25c0-.069.025-.135.069-.178l2.424-2.406a.158.158 0 01.205-.023l6.484 4.772a7.677 7.677 0 003.453 1.283c.108.012.2-.095.2-.23v-3.06c0-.117-.07-.212-.164-.227a5.028 5.028 0 01-2.027-.807l-5.613-4.064c-.117-.078-.132-.279-.028-.381z" fill="currentColor"></path></svg></div>
+    <div class="ai-name">Kimi</div>
+  </div>
+
+  <div class="ai-chip" data-idx="10">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Minimax</title><defs><linearGradient id="lobe-icons-minimax-_R_0_" x1="0%" x2="100.182%" y1="50.057%" y2="50.057%"><stop offset="0%" stop-color="#E2167E"></stop><stop offset="100%" stop-color="#FE603C"></stop></linearGradient></defs><path d="M16.278 2c1.156 0 2.093.927 2.093 2.07v12.501a.74.74 0 00.744.709.74.74 0 00.743-.709V9.099a2.06 2.06 0 012.071-2.049A2.06 2.06 0 0124 9.1v6.561a.649.649 0 01-.652.645.649.649 0 01-.653-.645V9.1a.762.762 0 00-.766-.758.762.762 0 00-.766.758v7.472a2.037 2.037 0 01-2.048 2.026 2.037 2.037 0 01-2.048-2.026v-12.5a.785.785 0 00-.788-.753.785.785 0 00-.789.752l-.001 15.904A2.037 2.037 0 0113.441 22a2.037 2.037 0 01-2.048-2.026V18.04c0-.356.292-.645.652-.645.36 0 .652.289.652.645v1.934c0 .263.142.506.372.638.23.131.514.131.744 0a.734.734 0 00.372-.638V4.07c0-1.143.937-2.07 2.093-2.07zm-5.674 0c1.156 0 2.093.927 2.093 2.07v11.523a.648.648 0 01-.652.645.648.648 0 01-.652-.645V4.07a.785.785 0 00-.789-.78.785.785 0 00-.789.78v14.013a2.06 2.06 0 01-2.07 2.048 2.06 2.06 0 01-2.071-2.048V9.1a.762.762 0 00-.766-.758.762.762 0 00-.766.758v3.8a2.06 2.06 0 01-2.071 2.049A2.06 2.06 0 010 12.9v-1.378c0-.357.292-.646.652-.646.36 0 .653.29.653.646V12.9c0 .418.343.757.766.757s.766-.339.766-.757V9.099a2.06 2.06 0 012.07-2.048 2.06 2.06 0 012.071 2.048v8.984c0 .419.343.758.767.758.423 0 .766-.339.766-.758V4.07c0-1.143.937-2.07 2.093-2.07z" fill="url(#lobe-icons-minimax-_R_0_)" fill-rule="nonzero"></path></svg></div>
+    <div class="ai-name">MiniMax</div>
+  </div>
+
+  <div class="ai-chip" data-idx="11">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Perplexity</title><path d="M19.785 0v7.272H22.5V17.62h-2.935V24l-7.037-6.194v6.145h-1.091v-6.152L4.392 24v-6.465H1.5V7.188h2.884V0l7.053 6.494V.19h1.09v6.49L19.786 0zm-7.257 9.044v7.319l5.946 5.234V14.44l-5.946-5.397zm-1.099-.08l-5.946 5.398v7.235l5.946-5.234V8.965zm8.136 7.58h1.844V8.349H13.46l6.105 5.54v2.655zm-8.982-8.28H2.59v8.195h1.8v-2.576l6.192-5.62zM5.475 2.476v4.71h5.115l-5.115-4.71zm13.219 0l-5.115 4.71h5.115v-4.71z" fill="#22B8CD" fill-rule="nonzero"></path></svg></div>
+    <div class="ai-name">Perplexity</div>
+  </div>
+
+  <div class="ai-chip" data-idx="12">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Nvidia</title><path d="M10.212 8.976V7.62c.127-.01.256-.017.388-.021 3.596-.117 5.957 3.184 5.957 3.184s-2.548 3.647-5.282 3.647a3.227 3.227 0 01-1.063-.175v-4.109c1.4.174 1.681.812 2.523 2.258l1.873-1.627a4.905 4.905 0 00-3.67-1.846 6.594 6.594 0 00-.729.044m0-4.476v2.025c.13-.01.259-.019.388-.024 5.002-.174 8.261 4.226 8.261 4.226s-3.743 4.69-7.643 4.69c-.338 0-.675-.031-1.007-.092v1.25c.278.038.558.057.838.057 3.629 0 6.253-1.91 8.794-4.169.421.347 2.146 1.193 2.501 1.564-2.416 2.083-8.048 3.763-11.24 3.763-.308 0-.603-.02-.894-.048V19.5H24v-15H10.21zm0 9.756v1.068c-3.356-.616-4.287-4.21-4.287-4.21a7.173 7.173 0 014.287-2.138v1.172h-.005a3.182 3.182 0 00-2.502 1.178s.615 2.276 2.507 2.931m-5.961-3.3c1.436-1.935 3.604-3.148 5.961-3.336V6.523C5.81 6.887 2 10.723 2 10.723s2.158 6.427 8.21 7.015v-1.166C5.77 16 4.25 10.958 4.25 10.958h-.002z" fill="#74B71B" fill-rule="nonzero"></path></svg></div>
+    <div class="ai-name">Nvidia</div>
+  </div>
+
+  <div class="ai-chip" data-idx="13">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Cohere</title><path clip-rule="evenodd" d="M8.128 14.099c.592 0 1.77-.033 3.398-.703 1.897-.781 5.672-2.2 8.395-3.656 1.905-1.018 2.74-2.366 2.74-4.18A4.56 4.56 0 0018.1 1H7.549A6.55 6.55 0 001 7.55c0 3.617 2.745 6.549 7.128 6.549z" fill="#39594D" fill-rule="evenodd"></path><path clip-rule="evenodd" d="M9.912 18.61a4.387 4.387 0 012.705-4.052l3.323-1.38c3.361-1.394 7.06 1.076 7.06 4.715a5.104 5.104 0 01-5.105 5.104l-3.597-.001a4.386 4.386 0 01-4.386-4.387z" fill="#D18EE2" fill-rule="evenodd"></path><path d="M4.776 14.962A3.775 3.775 0 001 18.738v.489a3.776 3.776 0 007.551 0v-.49a3.775 3.775 0 00-3.775-3.775z" fill="#FF7759"></path></svg></div>
+    <div class="ai-name">Cohere</div>
+  </div>
+
+  <div class="ai-chip" data-idx="14">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>Gemma</title><defs><linearGradient id="lobe-icons-gemma-_R_0_" x1="24.419%" x2="75.194%" y1="75.581%" y2="25.194%"><stop offset="0%" stop-color="#446EFF"></stop><stop offset="36.661%" stop-color="#2E96FF"></stop><stop offset="83.221%" stop-color="#B1C5FF"></stop></linearGradient></defs><path d="M12.34 5.953a8.233 8.233 0 01-.247-1.125V3.72a8.25 8.25 0 015.562 2.232H12.34zm-.69 0c.113-.373.199-.755.257-1.145V3.72a8.25 8.25 0 00-5.562 2.232h5.304zm-5.433.187h5.373a7.98 7.98 0 01-.267.696 8.41 8.41 0 01-1.76 2.65L6.216 6.14zm-.264-.187H2.977v.187h2.915a8.436 8.436 0 00-2.357 5.767H0v.186h3.535a8.436 8.436 0 002.357 5.767H2.977v.186h2.976v2.977h.187v-2.915a8.436 8.436 0 005.767 2.357V24h.186v-3.535a8.436 8.436 0 005.767-2.357v2.915h.186v-2.977h2.977v-.186h-2.915a8.436 8.436 0 002.357-5.767H24v-.186h-3.535a8.436 8.436 0 00-2.357-5.767h2.915v-.187h-2.977V2.977h-.186v2.915a8.436 8.436 0 00-5.767-2.357V0h-.186v3.535A8.436 8.436 0 006.14 5.892V2.977h-.187v2.976zm6.14 14.326a8.25 8.25 0 005.562-2.233H12.34c-.108.367-.19.743-.247 1.126v1.107zm-.186-1.087a8.015 8.015 0 00-.258-1.146H6.345a8.25 8.25 0 005.562 2.233v-1.087zm-8.186-7.285h1.107a8.23 8.23 0 001.125-.247V6.345a8.25 8.25 0 00-2.232 5.562zm1.087.186H3.72a8.25 8.25 0 002.232 5.562v-5.304a8.012 8.012 0 00-1.145-.258zm15.47-.186a8.25 8.25 0 00-2.232-5.562v5.315c.367.108.743.19 1.126.247h1.107zm-1.086.186c-.39.058-.772.144-1.146.258v5.304a8.25 8.25 0 002.233-5.562h-1.087zm-1.332 5.69V12.41a7.97 7.97 0 00-.696.267 8.409 8.409 0 00-2.65 1.76l3.346 3.346zm0-6.18v-5.45l-.012-.013h-5.451c.076.235.162.468.26.696a8.698 8.698 0 001.819 2.688 8.698 8.698 0 002.688 1.82c.228.097.46.183.696.259zM6.14 17.848V12.41c.235.078.468.167.696.267a8.403 8.403 0 012.688 1.799 8.404 8.404 0 011.799 2.688c.1.228.19.46.267.696H6.152l-.012-.012zm0-6.245V6.326l3.29 3.29a8.716 8.716 0 01-2.594 1.728 8.14 8.14 0 01-.696.259zm6.257 6.257h5.277l-3.29-3.29a8.716 8.716 0 00-1.728 2.594 8.135 8.135 0 00-.259.696zm-2.347-7.81a9.435 9.435 0 01-2.88 1.96 9.14 9.14 0 012.88 1.94 9.14 9.14 0 011.94 2.88 9.435 9.435 0 011.96-2.88 9.14 9.14 0 012.88-1.94 9.435 9.435 0 01-2.88-1.96 9.434 9.434 0 01-1.96-2.88 9.14 9.14 0 01-1.94 2.88z" fill="url(#lobe-icons-gemma-_R_0_)" fill-rule="evenodd"></path></svg></div>
+    <div class="ai-name">Gemma</div>
+  </div>
+
+  <div class="ai-chip" data-idx="15">
+    <div class="ai-icon"><svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>ByteDance</title><path d="M14.944 18.587l-1.704-.445V10.01l1.824-.462c1-.254 1.84-.461 1.88-.453.032 0 .056 2.235.056 4.972v4.973l-.176-.008c-.104 0-.952-.207-1.88-.446z" fill="#00C8D2" fill-rule="nonzero"></path><path d="M7 16.542c0-2.736.024-4.98.064-4.98.032-.008.872.2 1.88.454l1.816.461-.016 4.05-.024 4.049-1.632.422c-.896.23-1.736.445-1.856.469L7 21.523v-4.98z" fill="#3C8CFF" fill-rule="nonzero"></path><path d="M19.24 12.477c0-9.03.008-9.515.144-9.475.072.024.784.207 1.576.406.792.207 1.576.405 1.744.445l.296.08-.016 8.56-.024 8.568-1.624.414c-.888.23-1.728.437-1.856.47l-.24.055v-9.523z" fill="#78E6DC" fill-rule="nonzero"></path><path d="M1 12.509c0-4.678.024-8.505.064-8.505.032 0 .872.207 1.872.454l1.824.461v7.582c0 4.16-.016 7.574-.032 7.574-.024 0-.872.215-1.88.47L1 21.013v-8.505z" fill="#325AB4"></path></svg></div>
+    <div class="ai-name">Doubao</div>
+  </div>
+
+  <div class="ai-chip" data-idx="16">
+    <div class="ai-icon"><svg fill="currentColor" fill-rule="evenodd" height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><title>OpenAI</title><path d="M9.205 8.658v-2.26c0-.19.072-.333.238-.428l4.543-2.616c.619-.357 1.356-.523 2.117-.523 2.854 0 4.662 2.212 4.662 4.566 0 .167 0 .357-.024.547l-4.71-2.759a.797.797 0 00-.856 0l-5.97 3.473zm10.609 8.8V12.06c0-.333-.143-.57-.429-.737l-5.97-3.473 1.95-1.118a.433.433 0 01.476 0l4.543 2.617c1.309.76 2.189 2.378 2.189 3.948 0 1.808-1.07 3.473-2.76 4.163zM7.802 12.703l-1.95-1.142c-.167-.095-.239-.238-.239-.428V5.899c0-2.545 1.95-4.472 4.591-4.472 1 0 1.927.333 2.712.928L8.23 5.067c-.285.166-.428.404-.428.737v6.898zM12 15.128l-2.795-1.57v-3.33L12 8.658l2.795 1.57v3.33L12 15.128zm1.796 7.23c-1 0-1.927-.332-2.712-.927l4.686-2.712c.285-.166.428-.404.428-.737v-6.898l1.974 1.142c.167.095.238.238.238.428v5.233c0 2.545-1.974 4.472-4.614 4.472zm-5.637-5.303l-4.544-2.617c-1.308-.761-2.188-2.378-2.188-3.948A4.482 4.482 0 014.21 6.327v5.423c0 .333.143.571.428.738l5.947 3.449-1.95 1.118a.432.432 0 01-.476 0zm-.262 3.9c-2.688 0-4.662-2.021-4.662-4.519 0-.19.024-.38.047-.57l4.686 2.71c.286.167.571.167.856 0l5.97-3.448v2.26c0 .19-.07.333-.237.428l-4.543 2.616c-.619.357-1.356.523-2.117.523zm5.899 2.83a5.947 5.947 0 005.827-4.756C22.287 18.339 24 15.84 24 13.296c0-1.665-.713-3.282-1.998-4.448.119-.5.19-.999.19-1.498 0-3.401-2.759-5.947-5.946-5.947-.642 0-1.26.095-1.88.31A5.962 5.962 0 0010.205 0a5.947 5.947 0 00-5.827 4.757C1.713 5.447 0 7.945 0 10.49c0 1.666.713 3.283 1.998 4.448-.119.5-.19 1-.19 1.499 0 3.401 2.759 5.946 5.946 5.946.642 0 1.26-.095 1.88-.309a5.96 5.96 0 004.162 1.713z"></path></svg></div>
+    <div class="ai-name">o3-mini</div>
+  </div>
+</div>
+  </div>
+
+    <!-- Bottom 1/3 Subtitle Zone -->
+    <div id="subtitle-zone">
+      <div id="subtitle-box">
+        <div id="subtitle-text" class="txt-shadow">ผมสร้างเว็บ ให้ AI เทรด</div>
+      </div>
+    </div>
+
+    <!-- macOS Cursor Layer -->
+    <div id="cursor-layer">
+      <div id="cursor-wrap">
+        <div id="cur-ripple"></div>
+        <!-- 1. macOS Default Arrow (black fill, white border) -->
+        <svg id="cur-arrow" class="cur-svg" width="54" height="64" viewBox="0 0 28 34" fill="none">
+          <path d="M2.5 2.2V26.8L8.4 21.1L12.6 30.2L17.1 28.1L12.8 19.1H21.2L2.5 2.2Z"
+                fill="#0F1115" stroke="#FFFFFF" stroke-width="2.4" stroke-linejoin="round"/>
+        </svg>
+        <!-- 2. macOS Pointing Hand (white glove with dark outline or dark with white outline in 3-color palette) -->
+        <svg id="cur-hand" class="cur-svg" width="58" height="64" viewBox="0 0 32 36" fill="none">
+          <path d="M12 3.5C12 2.1 13.1 1 14.5 1C15.9 1 17 2.1 17 3.5V14.2H18.2C19.5 14.2 20.5 15.2 20.5 16.5V15.5C20.5 14.2 21.5 13.2 22.8 13.2C24.1 13.2 25.1 14.2 25.1 15.5V17.2C25.1 16 26.1 15 27.3 15C28.5 15 29.5 16 29.5 17.2V24.5C29.5 29.5 25.5 33.5 20.5 33.5H13.8C10.2 33.5 7.2 31.3 5.8 28L2.5 20.5C1.9 19.2 2.5 17.6 3.8 17C5.1 16.4 6.6 17 7.2 18.2L9.5 23V14.2V3.5H12Z"
+                fill="#FFFFFF" stroke="#0F1115" stroke-width="2.4" stroke-linejoin="round"/>
+        </svg>
+        <!-- 3. macOS I-Beam Text Cursor -->
+        <svg id="cur-ibeam" class="cur-svg" width="44" height="58" viewBox="0 0 24 34" fill="none">
+          <path d="M7 3H17M7 31H17M12 3V31"
+                stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M7 3H17M7 31H17M12 3V31"
+                stroke="#0F1115" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Embedded timeline data from timeline.json
+    const SUBTITLES = [
+      { start: 0.0, end: 1.231, text: "ผมสร้างเว็บ ให้ <span class='hl'>AI</span> เทรด" },
+      { start: 1.239, end: 2.441, text: "ทองแทนผม…" },
+      { start: 2.482, end: 3.446, text: "จะดีจริงๆ หรอ?" },
+      { start: 3.477, end: 4.303, text: "เดี๋ยวพาดูกัน" },
+      { start: 4.346, end: 5.989, text: "ไอเดียมาจากเว็บ <span class='hl'>TradeSyncer</span>" },
+      { start: 6.037, end: 7.588, text: "ผมชอบที่มันใช้ง่ายมาก" },
+      { start: 7.623, end: 8.77, text: "เลยลองทำของตัวเองดู" },
+      { start: 8.804, end: 10.339, text: "และก็ตอนนี้ มี <span class='hl'>AI 17 ตัว</span>" },
+      { start: 10.349, end: 11.909, text: "แข่งกันเทรดกันอยู่" },
+      { start: 11.945, end: 13.68, text: "โอเค… งั้นไปดูหน้าแรกกันก่อนเลย" },
+      { start: 13.707, end: 14.68, text: "นี่คือหน้า <span class='hl'>Cockpit</span> ครับ" },
+      { start: 14.726, end: 16.314, text: "เห็น <span class='hl'>AI</span> ทุกตัว ในหน้าเดียว" },
+      { start: 16.351, end: 17.62, text: "อยากเปิดตัวไหน ปิดตัวไหน" },
+      { start: 17.623, end: 18.74, text: "กดได้ทันที" },
+      { start: 18.748, end: 19.508, text: "ถ้าอยากตั้ง <span class='hl'>Preset</span> ให้แต่ละตัว" },
+      { start: 19.508, end: 20.292, text: "ต้องมากด สามจุดขวาสุด ตรงนี้" },
+      { start: 20.342, end: 21.232, text: "แต่ผมมีอะไรให้ดู" },
+      { start: 21.258, end: 22.552, text: "ลองกด <span class='hl'>Disable All…</span>" },
+      { start: 22.619, end: 23.473, text: "ทุกตัวหยุดหมด…" },
+      { start: 23.536, end: 25.014, text: "แล้วจะเรียกกลับมา ต้องกด…" },
+      { start: 25.018, end: 25.891, text: "<span class='hl'>ARISE!!</span>" },
+      { start: 26.005, end: 27.733, text: "โอเค ทีนี้เลื่อนลงข้างล่าง" },
+      { start: 27.739, end: 29.785, text: "สามารถดูได้\nตัวไหนตั้ง <span class='hl'>Limit</span> รออยู่" },
+      { start: 29.831, end: 31.235, text: "ตัวไหนเข้าออเดอร์แล้ว ตรงนี้" },
+      { start: 31.29, end: 33.318, text: "ต่อไป ไปดูหน้าที่ผมชอบที่สุดดีกว่า" },
+      { start: 33.386, end: 34.497, text: "หน้านี้ ผมชอบสุดละ" },
+      { start: 34.541, end: 36.845, text: "ผมดูได้เลยว่า\n<span class='hl'>AI</span> แต่ละตัว คุยอะไรกัน" },
+      { start: 36.887, end: 38.074, text: "แล้วผมก็ถามตัวไหนก็ได้" },
+      { start: 38.086, end: 38.912, text: "ลองดู…" },
+      { start: 38.98, end: 40.504, text: "นี่ไงมัน ตอบเลย" },
+      { start: 40.544, end: 41.63, text: "โอเค เหลืออีกหน้านึง" },
+      { start: 41.645, end: 42.775, text: "ไปดูผลงานกัน" },
+      { start: 42.841, end: 44.126, text: "นี่ครับ หน้า <span class='hl'>Calendar</span>" },
+      { start: 44.173, end: 46.128, text: "กดดูได้เลยว่า\nแต่ละวันได้กำไรเท่าไหร่" },
+      { start: 46.164, end: 47.853, text: "<span class='hl'>AI</span> มันเนี่ย จดให้อัตโนมัติหมด" },
+      { start: 47.897, end: 49.32, text: "จะแยกดูทีละตัวก็ได้" },
+      { start: 49.36, end: 50.63, text: "เลื่อนลงมา จะเจอกราฟ" },
+      { start: 50.641, end: 52.146, text: "เทียบสถิติ <span class='hl'>AI</span> ทุกๆ ตัว" },
+      { start: 52.22, end: 54.56, text: "ผมตั้งกฎไว้\nเสี่ยง <span class='hl'>1%</span> ต่อไม้" },
+      { start: 54.631, end: 56.513, text: "ขาดทุนเกิน <span class='hl'>3%</span> ต่อวัน ให้หยุด" },
+      { start: 56.621, end: 59.009, text: "สรุปแล้ว… ดีจริงมั้ย?" }
+    ];
+
+    const CLICK_TIMES = [
+      6.50, 17.65, 19.25, 20.20, 22.15, 25.02, 28.10, 29.95, 32.40, 37.15, 38.65, 42.10, 44.85, 48.25
+    ];
+
+    const TRANSITION_TIMES = [
+      { t: 4.34, type: 'slide-left' },
+      { t: 8.80, type: 'zoom-punch' },
+      { t: 13.707, type: 'slide-up' },
+      { t: 26.20, type: 'slide-up' },
+      { t: 33.386, type: 'slide-left' },
+      { t: 42.841, type: 'zoom-punch' },
+      { t: 49.55, type: 'slide-up' },
+      { t: 52.220, type: 'zoom-punch' }
+    ];
+
+    // Cursor waypoints: curved path with ease-in-out + slight overshoot
+    // Each segment: { t0, t1, x0, y0, x1, y1, cx, cy, modeDuring, modeAtEnd }
+    const CURSOR_WAYPOINTS = [
+      { t: 0.0,  x: 820, y: 880, mode: 'arrow' },
+      { t: 1.8,  x: 540, y: 690, mode: 'arrow' },
+      { t: 4.3,  x: 740, y: 780, mode: 'arrow' },
+      { t: 6.3,  x: 535, y: 820, mode: 'hand' },   // TradeSyncer CTA button
+      { t: 7.4,  x: 680, y: 880, mode: 'arrow' },
+      { t: 9.6,  x: 360, y: 740, mode: 'arrow' },
+      { t: 12.2, x: 760, y: 710, mode: 'arrow' },
+      { t: 14.5, x: 480, y: 615, mode: 'arrow' },  // Cockpit KPI bar
+      { t: 16.2, x: 420, y: 720, mode: 'arrow' },
+      { t: 17.5, x: 255, y: 725, mode: 'hand' },   // Shot 2: Toggle switch (AI #1 Claude)
+      { t: 18.4, x: 380, y: 725, mode: 'arrow' },
+      { t: 19.15, x: 965, y: 725, mode: 'hand' },  // Shot 3: 3-dots right-most button
+      { t: 20.1, x: 642, y: 905, mode: 'hand' },   // Shot 3: Preset modal Save button
+      { t: 21.0, x: 520, y: 680, mode: 'arrow' },
+      { t: 22.05, x: 285, y: 585, mode: 'hand' },  // Shot 4: "Dimiss All" button
+      { t: 23.4, x: 580, y: 720, mode: 'arrow' },
+      { t: 24.95, x: 285, y: 585, mode: 'hand' },  // Shot 4: "ARISE!!" button
+      { t: 26.4, x: 510, y: 760, mode: 'arrow' },
+      { t: 27.95, x: 295, y: 510, mode: 'hand' },  // Shot 5: "Open (17)" Limit filter pill
+      { t: 29.85, x: 350, y: 510, mode: 'hand' },  // Shot 5: "Filled (9)" filter pill
+      { t: 31.1, x: 610, y: 680, mode: 'arrow' },
+      { t: 32.3, x: 125, y: 680, mode: 'hand' },   // Click "AI Chat" tab in sidebar
+      { t: 34.2, x: 520, y: 710, mode: 'arrow' },  // Reading AI Chat feed
+      { t: 36.1, x: 480, y: 810, mode: 'arrow' },
+      { t: 37.05, x: 460, y: 965, mode: 'ibeam' }, // Shot 6: Chat input box
+      { t: 38.55, x: 936, y: 965, mode: 'hand' },  // Shot 6: Send button
+      { t: 40.2, x: 560, y: 790, mode: 'arrow' },  // Pointing at Claude's reply
+      { t: 42.0, x: 125, y: 650, mode: 'hand' },   // Click "Calendar" tab in sidebar
+      { t: 43.6, x: 510, y: 700, mode: 'arrow' },
+      { t: 44.75, x: 495, y: 765, mode: 'hand' },  // Shot 7: Click Nov 18 cell on Calendar
+      { t: 46.8, x: 640, y: 895, mode: 'arrow' },  // Viewing day breakdown
+      { t: 48.15, x: 840, y: 535, mode: 'hand' },  // Shot 7: Select single AI filter dropdown
+      { t: 50.2, x: 540, y: 760, mode: 'arrow' },  // Shot 8: Multi-AI comparison chart
+      { t: 53.2, x: 520, y: 690, mode: 'arrow' },  // Shot 9: Risk per Trade 1%
+      { t: 55.2, x: 520, y: 810, mode: 'arrow' },  // Shot 9: Loss Limits 3% daily
+      { t: 59.1, x: 860, y: 980, mode: 'arrow' }
+    ];
+
+    // Smooth ease-in-out with slight overshoot (back.inOut / overshoot at end)
+    function easeInOutOvershoot(p) {
+      if (p <= 0) return 0;
+      if (p >= 1) return 1;
+      // Cubic ease-in-out + damped sine overshoot near target
+      const base = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+      const overshoot = Math.sin(p * Math.PI) * Math.sin(p * Math.PI * 1.5) * 0.085 * (1 - p * 0.3);
+      return base + overshoot;
+    }
+
+    function getCursorState(t) {
+      let wp0 = CURSOR_WAYPOINTS[0];
+      let wp1 = CURSOR_WAYPOINTS[CURSOR_WAYPOINTS.length - 1];
+      for (let i = 0; i < CURSOR_WAYPOINTS.length - 1; i++) {
+        if (t >= CURSOR_WAYPOINTS[i].t && t <= CURSOR_WAYPOINTS[i + 1].t) {
+          wp0 = CURSOR_WAYPOINTS[i];
+          wp1 = CURSOR_WAYPOINTS[i + 1];
+          break;
+        }
+      }
+      const span = Math.max(0.001, wp1.t - wp0.t);
+      const rawP = Math.max(0, Math.min(1, (t - wp0.t) / span));
+      const p = easeInOutOvershoot(rawP);
+
+      // Curved quadratic Bezier trajectory (never straight line)
+      const dx = wp1.x - wp0.x;
+      const dy = wp1.y - wp0.y;
+      const dist = Math.hypot(dx, dy);
+      const bend = Math.min(95, dist * 0.24) * ((wp0.t * 10 % 2 === 0) ? 1 : -1);
+      const nx = dist > 1 ? -dy / dist : 0;
+      const ny = dist > 1 ? dx / dist : 0;
+      const cx = (wp0.x + wp1.x) * 0.5 + nx * bend;
+      const cy = (wp0.y + wp1.y) * 0.5 + ny * bend;
+
+      const inv = 1 - p;
+      const x = inv * inv * wp0.x + 2 * inv * p * cx + p * p * wp1.x;
+      const y = inv * inv * wp0.y + 2 * inv * p * cy + p * p * wp1.y;
+
+      // Determine cursor icon mode: switch to hand/ibeam as it approaches target
+      const mode = rawP > 0.68 ? wp1.mode : wp0.mode;
+      return { x, y, mode };
+    }
+
+    const shotIds = [
+      'img-shot0', 'img-shot1', 'img-shot2a', 'img-shot2b', 'img-shot3',
+      'img-shot4a', 'img-shot4b', 'img-shot5a', 'img-shot5b', 'img-shot5c',
+      'img-shot6a', 'img-shot6b', 'img-shot6c', 'img-shot7a', 'img-shot7b',
+      'img-shot7c', 'img-shot8', 'img-shot9'
+    ];
+
+    function getActiveShotState(t) {
+      // Returns { id, scale, tx, ty, focus } inside 960x600 viewport
+      if (t < 4.34) {
+        return { id: 'img-shot1', scale: 1.0, tx: 0, ty: 0, focus: null };
+      } else if (t < 8.80) {
+        return { id: 'img-shot0', scale: 1.0, tx: 0, ty: 0, focus: null };
+      } else if (t < 13.707) {
+        return { id: 'img-shot1', scale: 1.0, tx: 0, ty: 0, focus: { x: 185, y: 225, w: 755, h: 335 } };
+      } else if (t < 16.35) {
+        return { id: 'img-shot1', scale: 1.0, tx: 0, ty: 0, focus: { x: 185, y: 168, w: 755, h: 52 } };
+      } else if (t < 17.65) {
+        return { id: 'img-shot2a', scale: 1.18, tx: 70, ty: -30, focus: { x: 188, y: 256, w: 210, h: 54 } };
+      } else if (t < 18.74) {
+        return { id: 'img-shot2b', scale: 1.18, tx: 70, ty: -30, focus: { x: 188, y: 256, w: 210, h: 54 } };
+      } else if (t < 19.25) {
+        return { id: 'img-shot1', scale: 1.15, tx: -65, ty: -30, focus: { x: 885, y: 256, w: 58, h: 54 } };
+      } else if (t < 20.34) {
+        return { id: 'img-shot3', scale: 1.04, tx: 0, ty: 0, focus: { x: 250, y: 95, w: 460, h: 415 } };
+      } else if (t < 22.15) {
+        return { id: 'img-shot1', scale: 1.04, tx: 0, ty: 0, focus: { x: 186, y: 126, w: 94, h: 40 } };
+      } else if (t < 25.02) {
+        return { id: 'img-shot4a', scale: 1.02, tx: 0, ty: 0, focus: { x: 185, y: 225, w: 755, h: 335 } };
+      } else if (t < 26.20) {
+        return { id: 'img-shot4b', scale: 1.03, tx: 0, ty: 0, focus: null };
+      } else if (t < 28.10) {
+        return { id: 'img-shot5a', scale: 1.0, tx: 0, ty: 0, focus: { x: 185, y: 60, w: 755, h: 510 } };
+      } else if (t < 29.95) {
+        return { id: 'img-shot5b', scale: 1.02, tx: 0, ty: 0, focus: { x: 185, y: 45, w: 280, h: 46 } };
+      } else if (t < 33.386) {
+        return { id: 'img-shot5c', scale: 1.02, tx: 0, ty: 0, focus: { x: 185, y: 105, w: 755, h: 450 } };
+      } else if (t < 37.15) {
+        return { id: 'img-shot6a', scale: 1.0, tx: 0, ty: 0, focus: { x: 185, y: 95, w: 755, h: 410 } };
+      } else if (t < 38.85) {
+        return { id: 'img-shot6b', scale: 1.08, tx: 0, ty: -35, focus: { x: 185, y: 495, w: 755, h: 78 } };
+      } else if (t < 42.841) {
+        return { id: 'img-shot6c', scale: 1.03, tx: 0, ty: -10, focus: { x: 185, y: 330, w: 755, h: 175 } };
+      } else if (t < 44.85) {
+        return { id: 'img-shot7a', scale: 1.0, tx: 0, ty: 0, focus: null };
+      } else if (t < 48.25) {
+        return { id: 'img-shot7b', scale: 1.02, tx: 0, ty: -10, focus: { x: 185, y: 380, w: 755, h: 195 } };
+      } else if (t < 49.55) {
+        return { id: 'img-shot7c', scale: 1.02, tx: 0, ty: 0, focus: { x: 690, y: 65, w: 245, h: 52 } };
+      } else if (t < 52.220) {
+        return { id: 'img-shot8', scale: 1.0, tx: 0, ty: 0, focus: { x: 185, y: 65, w: 755, h: 500 } };
+      } else {
+        const focus = t < 54.6
+          ? { x: 40, y: 130, w: 880, h: 135 }
+          : (t < 56.6 ? { x: 40, y: 280, w: 880, h: 145 } : null);
+        return { id: 'img-shot9', scale: 1.0, tx: 0, ty: 0, focus };
+      }
+    }
+
+    function getSceneBadgeText(t) {
+      if (t < 13.707) return null;
+      if (t < 26.20) return "หน้า Cockpit • คุม AI 17 ตัว";
+      if (t < 33.386) return "หน้า Cockpit • ตารางออเดอร์สด";
+      if (t < 42.841) return "แท็บ AI Chat • คุยกับ AI สด";
+      if (t < 49.55) return "แท็บ Calendar • สรุปกำไรรายวัน";
+      if (t < 52.220) return "กราฟเทียบสถิติ AI ทั้ง 17 ตัว";
+      return "กฎคุมความเสี่ยง • Risk Rules";
+    }
+
+    window.setVideoTime = function(t) {
+      // 1. Top 1/4 Headline (0s -> 13.707s, then 0.2s fade out + slide up)
+      const hlZone = document.getElementById('headline-zone');
+      if (t < 13.55) {
+        const introP = Math.min(1, t / 0.35);
+        const easeIntro = 1 - Math.pow(1 - introP, 3);
+        hlZone.style.opacity = easeIntro.toFixed(3);
+        hlZone.style.transform = `translateY(${(1 - easeIntro) * 28}px)`;
+      } else if (t < 13.85) {
+        const outP = Math.min(1, (t - 13.55) / 0.22);
+        hlZone.style.opacity = (1 - outP).toFixed(3);
+        hlZone.style.transform = `translateY(${-outP * 56}px)`;
+      } else {
+        hlZone.style.opacity = '0';
+      }
+
+      // 2. Top Scene Badge for Scenes 2-5
+      const sBadge = document.getElementById('scene-badge');
+      const sBadgeTxt = document.getElementById('scene-badge-text');
+      const badgeLabel = getSceneBadgeText(t);
+      if (!badgeLabel) {
+        sBadge.style.opacity = '0';
+      } else {
+        sBadge.style.opacity = '1';
+        sBadgeTxt.textContent = badgeLabel;
+      }
+
+      // 3. Slow Parallax Movement on Floating Web Card + 0.2s Slide / Zoom-punch at transitions
+      const parallaxRig = document.getElementById('parallax-rig');
+      const webCard = document.getElementById('web-card');
+      const px = Math.sin(t * 0.85) * 10;
+      const py = Math.cos(t * 0.72) * 12;
+      const rx = Math.sin(t * 0.6) * 2.2;
+      const ry = Math.cos(t * 0.55) * -2.6;
+      parallaxRig.style.transform = `translate3d(${px.toFixed(2)}px, ${py.toFixed(2)}px, 0) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+
+      // Check 0.2s Slide / Zoom-punch transitions
+      let punchScale = 1.0;
+      let slideX = 0;
+      let slideY = 0;
+      for (const tr of TRANSITION_TIMES) {
+        const dt = t - tr.t;
+        if (dt >= -0.02 && dt <= 0.20) {
+          const p = (dt + 0.02) / 0.22; // 0 -> 1 over 0.2s
+          const wave = Math.sin(p * Math.PI);
+          const enter = 1 - Math.pow(p, 2.2);
+          if (tr.type === 'zoom-punch') {
+            punchScale = 1 + wave * 0.14;
+          } else if (tr.type === 'slide-left') {
+            slideX = enter * 110;
+            punchScale = 1 + wave * 0.06;
+          } else if (tr.type === 'slide-up') {
+            slideY = enter * 95;
+            punchScale = 1 + wave * 0.06;
+          }
+        }
+      }
+
+      // ARISE!! impact shake at 25.02s
+      if (t >= 25.02 && t <= 25.45) {
+        const dt = t - 25.02;
+        const damp = Math.exp(-dt * 12);
+        slideX += Math.sin(dt * 95) * 16 * damp;
+        slideY += Math.cos(dt * 110) * 12 * damp;
+        punchScale += 0.09 * damp;
+      }
+
+      webCard.style.transform = `translate3d(${slideX.toFixed(1)}px, ${slideY.toFixed(1)}px, 0) scale(${punchScale.toFixed(3)})`;
+
+      // 4. Active Screenshot & Pan/Zoom inside Web Card
+      const st = getActiveShotState(t);
+      for (const id of shotIds) {
+        const el = document.getElementById(id);
+        if (id === st.id) {
+          el.style.opacity = '1';
+          const driftS = st.scale + Math.sin(t * 0.9) * 0.01;
+          el.style.transform = `translate3d(${st.tx}px, ${st.ty}px, 0) scale(${driftS.toFixed(4)})`;
+        } else {
+          el.style.opacity = '0';
+        }
+      }
+
+      // 5. Focus Callout Box
+      const fBox = document.getElementById('focus-box');
+      if (st.focus) {
+        fBox.style.opacity = '1';
+        fBox.style.left = st.focus.x + 'px';
+        fBox.style.top = st.focus.y + 'px';
+        fBox.style.width = st.focus.w + 'px';
+        fBox.style.height = st.focus.h + 'px';
+      } else {
+        fBox.style.opacity = '0';
+      }
+
+      // 6. Custom Motion ARISE!! Button & Banner (23.53s -> 26.0s)
+      const ariseBtn = document.getElementById('arise-btn-overlay');
+      const ariseBanner = document.getElementById('arise-flash-banner');
+      if (t >= 23.60 && t < 26.10) {
+        ariseBtn.style.opacity = '1';
+        const btnPulse = t >= 25.02 ? 1 + Math.sin((t - 25.02) * 18) * 0.12 * Math.exp(-(t - 25.02) * 3) : 1.0;
+        ariseBtn.style.transform = `scale(${btnPulse.toFixed(3)})`;
+      } else {
+        ariseBtn.style.opacity = '0';
+      }
+
+      if (t >= 25.02 && t < 26.05) {
+        const dt = t - 25.02;
+        const op = dt < 0.12 ? dt / 0.12 : Math.max(0, 1 - (dt - 0.55) / 0.45);
+        const sc = 0.85 + Math.min(0.28, dt * 1.6);
+        ariseBanner.style.opacity = Math.min(1, op).toFixed(3);
+        ariseBanner.style.transform = `translate(-50%, -50%) scale(${sc.toFixed(3)})`;
+      } else {
+        ariseBanner.style.opacity = '0';
+      }
+
+      // 7. Hide old hook-counter-badge since #ai-logos-dock displays all 17 AI logos below the card
+      const hookBadge = document.getElementById('hook-counter-badge');
+      hookBadge.style.opacity = '0';
+
+      
+      // 7b. 17 AI Logos Dock in Scene 1 (8.80s -> 13.65s)
+      const aiDock = document.getElementById('ai-logos-dock');
+      if (t >= 8.80 && t < 13.65) {
+        const dp = Math.min(1, (t - 8.80) / 0.25);
+        aiDock.style.opacity = dp.toFixed(3);
+        aiDock.style.transform = `translateY(${(1 - dp) * 24}px)`;
+      } else {
+        aiDock.style.opacity = '0';
+      }
+
+      // 8. Scene 5 Ending Question Overlay (56.60s -> 59.01s)
+      const endCard = document.getElementById('ending-card');
+      if (t >= 56.60) {
+        const p = Math.min(1, (t - 56.60) / 0.25);
+        endCard.style.opacity = p.toFixed(3);
+      } else {
+        endCard.style.opacity = '0';
+      }
+
+      // 9. Bottom 1/3 Subtitles
+      const subBox = document.getElementById('subtitle-box');
+      const subText = document.getElementById('subtitle-text');
+      let activeSub = null;
+      for (const s of SUBTITLES) {
+        if (t >= s.start && t <= s.end + 0.08) {
+          activeSub = s;
+          break;
+        }
+      }
+      if (activeSub) {
+        subBox.style.opacity = '1';
+        subText.innerHTML = activeSub.text;
+        const popP = Math.min(1, (t - activeSub.start) / 0.12);
+        const sc = 0.94 + 0.06 * (1 - Math.pow(1 - popP, 2));
+        subBox.style.transform = `scale(${sc.toFixed(3)})`;
+      } else {
+        subBox.style.opacity = '0';
+      }
+
+      // 10. macOS Cursor + 90% Click Scale in 0.1s + #A2D2FF Ring Ripple
+      const curState = getCursorState(t);
+      const curWrap = document.getElementById('cursor-wrap');
+      const curArrow = document.getElementById('cur-arrow');
+      const curHand = document.getElementById('cur-hand');
+      const curIbeam = document.getElementById('cur-ibeam');
+      const curRipple = document.getElementById('cur-ripple');
+
+      curArrow.style.display = curState.mode === 'arrow' ? 'block' : 'none';
+      curHand.style.display = curState.mode === 'hand' ? 'block' : 'none';
+      curIbeam.style.display = curState.mode === 'ibeam' ? 'block' : 'none';
+
+      let curScale = 1.0;
+      let rippleOp = 0;
+      let rippleScale = 0.2;
+
+      for (const ct of CLICK_TIMES) {
+        const dt = t - ct;
+        // Scale down to 90% in 0.1s
+        if (dt >= 0 && dt <= 0.14) {
+          const p = dt / 0.14;
+          curScale = 1.0 - 0.10 * Math.sin(p * Math.PI);
+        }
+        // Ring ripple #A2D2FF expands and fades over 0.42s
+        if (dt >= 0 && dt <= 0.42) {
+          const rp = dt / 0.42;
+          rippleScale = 0.35 + rp * 1.45;
+          rippleOp = Math.pow(1 - rp, 1.5);
+        }
+      }
+
+      curWrap.style.transform = `translate3d(${curState.x.toFixed(1)}px, ${curState.y.toFixed(1)}px, 0) scale(${curScale.toFixed(3)})`;
+      curRipple.style.opacity = rippleOp.toFixed(3);
+      curRipple.style.transform = `scale(${rippleScale.toFixed(3)})`;
+    };
+
+    window.setVideoTime(0);
+  </script>
+</body>
+</html>
