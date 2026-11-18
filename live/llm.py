@@ -270,6 +270,9 @@ def ask(agent: Dict[str, Any], system: str, user: str, max_tokens: int = 400, im
     or_key = _get_env("OPENROUTER_API_KEY")
     if env != "OPENROUTER_API_KEY" and or_key and agent.get("openrouter_model"):
         attempts.append(("OPENROUTER_API_KEY", or_key, agent["openrouter_model"]))
+    for e, k, m in list(attempts):
+        if e == "OPENROUTER_API_KEY" and m.endswith(":free"):
+            attempts.append((e, k, m[:-5]))
     first_err = ""
     for e, k, m in attempts:
         try:
@@ -278,7 +281,7 @@ def ask(agent: Dict[str, Any], system: str, user: str, max_tokens: int = 400, im
             if not txt:
                 raise RuntimeError("empty reply (reasoning model used all tokens, or content filtered)")
             _mark(agent, True, f"{e}:{m}")
-            if first_err:   # native provider is broken but OpenRouter saved the call — keep the warning visible
+            if first_err and not m.endswith(model.replace(":free", "")):   # native provider is broken but OpenRouter saved the call — keep the warning visible
                 _STATE[agent["agent_id"]]["err"] = f"native failed, running via OpenRouter: {first_err}"[:300]
             return txt, tok
         except Exception as ex:
