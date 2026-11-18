@@ -545,7 +545,7 @@ tbody tr:hover td{background:var(--hover)}
 
   <section id="t-chat" hidden>
     <div class="panel">
-      <div class="hdr">AI Floor <span class="m" style="font-weight:400">· live floor chat · type @ to mention an AI</span></div>
+      <div class="hdr">AI Floor <span class="m" style="font-weight:400">· live floor chat · type @ to mention an AI · </span><span class="m" id="llmStat" style="font-weight:400"></span></div>
       <div class="chat" id="chat"></div>
       <div class="chat-comp">
         <div class="mention-pop" id="mPop" hidden></div>
@@ -842,7 +842,7 @@ function switchTab(t,label){
   $('#title').textContent=label||t[0].toUpperCase()+t.slice(1);
   ['cockpit','chart','leaderboard','journal','calendar','chat','settings'].forEach(x=>{const el=$('#t-'+x);if(el)el.hidden=x!==tab});
   $('#side').classList.remove('show');
-  ({chart:loadChart,leaderboard:loadLeaderboard,journal:loadJournal,calendar:loadCal,chat:()=>{lastChat=0;$('#chat').innerHTML='';loadChat()}})[tab]?.();
+  ({chart:loadChart,leaderboard:loadLeaderboard,journal:loadJournal,calendar:loadCal,chat:()=>{lastChat=0;$('#chat').innerHTML='';loadChat();loadLlmStat()}})[tab]?.();
 }
 $$('.nav[data-t]').forEach(b=>b.onclick=()=>switchTab(b.dataset.t,b.textContent.trim()));
 $('#navSetTog').onclick=()=>{
@@ -1486,6 +1486,10 @@ $('#quantCanvas').onmousemove=e=>{
 };
 $('#quantCanvas').onmouseleave=()=>{if($('#qTip'))$('#qTip').hidden=true};
 
+async function loadLlmStat(){
+  try{const r=await get('/api/live/llm-status');const bad=r.status.filter(x=>!x.has_key||x.last_error);
+    $('#llmStat').innerHTML=`LLM ${r.live}/${r.total} online`+(bad.length?` · <span style="color:var(--amber)" title="${esc(bad.map(x=>x.name+': '+(x.has_key?x.last_error:'no key')).join('\n'))}">${bad.length} on fallback</span>`:'');}catch(e){}
+}
 // ── Chat (Real Brand Logos + User Messages + @Mentions + Image Upload)
 async function loadChat(){
   const r=(await get('/api/live/chat?after_id='+lastChat+'&limit=80')).messages;
@@ -1501,7 +1505,7 @@ async function loadChat(){
     const imgHtml=m.media?`<img class="cimg" src="${esc(m.media)}" alt="chart">`:'';
     box.insertAdjacentHTML('beforeend',`<div class="msg ${ev?'ev':''} ${usr?'usr':''}" data-id="${m.id}" data-txt="${esc(m.text)}">
       ${avHtml}
-      <div class="bub"><div class="n" style="color:${usr?'var(--blue2)':MONO_AIS.has(m.agent_id)?'var(--tx)':m.color}">${esc(m.name)} ${ev?'<span class="badge '+(m.kind==='TRADE_OPEN'?'b-b':'b-a')+'">'+(m.kind==='TRADE_OPEN'?'opened':'closed')+'</span>':''} <span class="m" style="font-weight:400;font-size:11px">${m.ts.slice(11,16)} UTC</span></div>${rp}${esc(m.text)}${imgHtml}</div>
+      <div class="bub"><div class="n" style="color:${usr?'var(--blue2)':MONO_AIS.has(m.agent_id)?'var(--tx)':m.color}">${esc(m.name)} ${m.src==='template'?'<span class="badge b-a" style="font-size:10px;padding:1px 6px" title="canned fallback line — this AI has no working LLM">template</span>':''} ${ev?'<span class="badge '+(m.kind==='TRADE_OPEN'?'b-b':'b-a')+'">'+(m.kind==='TRADE_OPEN'?'opened':'closed')+'</span>':''} <span class="m" style="font-weight:400;font-size:11px">${m.ts.slice(11,16)} UTC</span></div>${rp}${esc(m.text)}${imgHtml}</div>
     </div>`);
     lastChat=Math.max(lastChat,m.id);
   }

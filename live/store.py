@@ -128,6 +128,8 @@ def conn() -> Any:
                 cols = {r["name"] for r in _conn.execute("PRAGMA table_info(chat)").fetchall()}
                 if "media" not in cols:
                     _conn.execute("ALTER TABLE chat ADD COLUMN media TEXT")
+                if "src" not in cols:   # 'llm' = written by the model, 'template' = canned fallback line
+                    _conn.execute("ALTER TABLE chat ADD COLUMN src TEXT")
                 print("Store connected to Turso Cloud", flush=True)
                 return _conn
             try:
@@ -143,6 +145,8 @@ def conn() -> Any:
             cols = {r["name"] for r in _conn.execute("PRAGMA table_info(chat)").fetchall()}
             if "media" not in cols:
                 _conn.execute("ALTER TABLE chat ADD COLUMN media TEXT")
+            if "src" not in cols:   # 'llm' = written by the model, 'template' = canned fallback line
+                _conn.execute("ALTER TABLE chat ADD COLUMN src TEXT")
         return _conn
 
 def reset_for_tests(path: str) -> None:
@@ -203,9 +207,9 @@ def journal(limit: int = 200, agent_id: Optional[str] = None) -> List[Dict[str, 
         return [{"id": r["id"], "ts": r["ts"], "agent_id": r["agent_id"], "trade_id": r["trade_id"], **json.loads(r["data"])}
                 for r in conn().execute(q, a)]
 
-def chat_add(ts: str, agent_id: str, kind: str, text: str, tokens: int = 0, reply_to: Optional[int] = None, media: Optional[str] = None) -> int:
+def chat_add(ts: str, agent_id: str, kind: str, text: str, tokens: int = 0, reply_to: Optional[int] = None, media: Optional[str] = None, src: Optional[str] = None) -> int:
     with _lock:
-        c = conn().execute("INSERT INTO chat(ts,agent_id,kind,reply_to,text,tokens,media) VALUES(?,?,?,?,?,?,?)", (ts, agent_id, kind, reply_to, text, tokens, media))
+        c = conn().execute("INSERT INTO chat(ts,agent_id,kind,reply_to,text,tokens,media,src) VALUES(?,?,?,?,?,?,?,?)", (ts, agent_id, kind, reply_to, text, tokens, media, src))
         return int(c.lastrowid)
 
 def chat(limit: int = 80, after_id: int = 0) -> List[Dict[str, Any]]:

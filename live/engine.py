@@ -493,134 +493,173 @@ def _announce(t: Dict[str, Any], a: Dict[str, Any], opened: bool = False, journa
         discord.notify_trade_close(ag, t, a, journal_entry, ts)
     store.kv_set("last_event_at", time.time())
 
+# ── NEW: per-model voice so the AIs don't all sound the same ──
+VOICE = {
+    "anthropic": "calm, precise, a bit dry; cites levels and risk math; admits uncertainty",
+    "xai": "blunt, sarcastic, contrarian; loves calling out crowded trades and liquidity grabs",
+    "deepseek": "numbers-first quant; talks z-scores, mean reversion, probabilities",
+    "qwen": "momentum/breakout mindset; talks about ranges, sessions and follow-through",
+    "gemini": "macro-minded; links gold to DXY, yields and positioning",
+    "openai": "orderflow trader; talks volatility expansion and NY-overlap flow",
+    "mistral": "institutional tone; watches options OI walls and rejections",
+    "meta": "patient pullback buyer; risk-parity, hates chasing",
+    "zai": "structure nerd; multi-timeframe confluence and R-math",
+    "kimi": "big-picture macro storyteller; long horizon, session context",
+    "minimax": "fast scalper; short punchy lines, loves breakouts",
+    "perplexity": "news-driven; mentions catalysts and headlines",
+    "nvidia": "statistical volatility; ATR compression/expansion",
+    "cohere": "fundamentals; yield spreads and rates",
+    "gemma": "friendly, concise, practical",
+    "bytedance": "energetic, trend-follower",
+}
+
+def _chat_system(ag: Dict[str, Any], extra: str = "") -> str:
+    voice = VOICE.get(ag.get("brand_key", ""), "sharp and concise")
+    return (f"You are {ag['short_name']} ({ag['display_name']}), an AI gold (XAUUSD) trader competing against other AIs in a live trading arena. "
+            f"Trading style: {ag['style_archetype']}. Personality/voice: {voice}. "
+            "You are in a live chat room with the other AI traders and the human desk commander. "
+            "Rules: speak in first person as yourself; use ONLY the facts given (price, your position, standings, what others said) — never invent trades, prices or news; "
+            "you may disagree with other AIs by name (@Name) and defend your own view; do not repeat your earlier lines or use stock phrases; "
+            "no disclaimers, no 'as an AI'. Reply in the same language the latest human message uses (Thai if Thai). " + extra)
+
+def _facts_for(ag: Dict[str, Any], accts: Dict[str, Any], board: List[Dict[str, Any]], px: Any) -> str:
+    me = accts[ag["agent_id"]]
+    rank = [x["agent_id"] for x in board].index(ag["agent_id"]) + 1
+    mine = store.trades(status="Open", agent_id=ag["agent_id"])
+    pos = f"{mine[0]['side']} {mine[0]['lots']} lot @ {mine[0]['entry']} (SL {mine[0]['sl']}, TP {mine[0]['tp']})" if mine else "flat (no open trade)"
+    others = []
+    for g in agents():
+        if g["agent_id"] == ag["agent_id"]: continue
+        ot = store.trades(status="Open", agent_id=g["agent_id"])
+        if ot: others.append(f"{g['short_name']} {ot[0]['side']}@{ot[0]['entry']}")
+    standings = ", ".join(f"{agent_cfg(x['agent_id'])['short_name']} ${x['equity']:.0f}" for x in board[:6])
+    return (f"XAUUSD: {px}. You are #{rank} with equity ${me['equity']:.2f}. Your position: {pos}. Your last note: {me.get('last_note', '') or '-'}. "
+            f"Your recent lessons: {(me.get('lessons') or [])[:2] or 'none'}. Top standings: {standings}. Other AIs' open trades: {', '.join(others) or 'none'}.")
+
+def _transcript(msgs: List[Dict[str, Any]], accts: Dict[str, Any], n: int = 10) -> str:
+    def who(m):
+        if m["agent_id"] == "user": return "Commander"
+        return agent_cfg(m["agent_id"])["short_name"] if m["agent_id"] in accts else m["agent_id"]
+    return "\n".join(f"{who(m)}: {m['text']}" for m in msgs[-n:]) or "(empty)"
+
+def _too_similar(text: str, msgs: List[Dict[str, Any]], agent_id: str) -> bool:
+    norm = lambda s: " ".join(s.lower().split())
+    t = norm(text)
+    return any(m["agent_id"] == agent_id and norm(m["text"]) == t for m in msgs[-12:])
+
 def converse(force: bool = False) -> Optional[int]:
-    """Pick an AI that did NOT speak last and let it respond to the recent chat."""
+    """AIs talk to each other. LLM calls now run OUTSIDE the global LOCK (they used to freeze
+    price ticks / SL-TP checks for up to 40s per call) and every message is tagged src=llm|template."""
     with LOCK:
         init()
         gap = int(cfg()["token_budget"].get("chat_min_gap_seconds", 90))
-        msgs = store.chat(limit=12)
+        msgs = store.chat(limit=14)
         if msgs and not force and (now() - datetime.strptime(msgs[-1]["ts"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)).total_seconds() < gap:
             return None
         recent_speakers = [m["agent_id"] for m in msgs[-3:]]
-        pool = [g for g in agents() if g["agent_id"] not in recent_speakers] or agents()
-        # prefer the AI involved in the latest trade event, otherwise random
-        last_ev = next((m for m in reversed(msgs) if m["kind"].startswith("TRADE")), None)
+        keyed = [g for g in agents() if llm.has_key(g)]
+        pool = [g for g in (keyed or agents()) if g["agent_id"] not in recent_speakers] or (keyed or agents())
         ag = random.choice(pool)
         accts = {x["agent_id"]: x for x in store.acct_all()}
         board = sorted(accts.values(), key=lambda x: x["equity"], reverse=True)
         rank = [x["agent_id"] for x in board].index(ag["agent_id"]) + 1
         px = (store.kv_get("price") or {}).get("price")
-        transcript = "\n".join(f"[{m['id']}] {agent_cfg(m['agent_id'])['short_name'] if m['agent_id'] in accts else m['agent_id']}: {m['text']}" for m in msgs[-8:]) or "(empty)"
-        standings = ", ".join(f"{agent_cfg(x['agent_id'])['short_name']} ${x['equity']:.0f}" for x in board)
-        target = msgs[-1] if msgs else None
-        text, tokens = None, 0
-        if llm.has_key(ag) and _tokens_ok(300):
-            res = llm.ask(ag, f"You are {ag['short_name']}, a sharp gold trader ({ag['style_archetype']}) hanging out in a live trading room with other traders and the desk commander. "
-                              "Talk like a real human trader in Discord — natural, direct, varied rhythm, no robotic templates, no 'my note:' or disclaimers. "
-                              "React to the latest message or gold price in 1-2 crisp sentences. Address them with @Name when replying.",
-                          f"XAUUSD: {px}. Top standings: {standings}. You are #{rank}.\nRecent chat:\n{transcript}\n\nReply naturally:", 120)
-            if res: text, tokens = res[0].strip().strip('"'), res[1]; _tokens_add(tokens)
+        target = next((m for m in reversed(msgs) if m["agent_id"] != ag["agent_id"]), None)   # reply to someone else, never myself
+        transcript, facts = _transcript(msgs, accts), _facts_for(ag, accts, board, px)
+    text, tokens, src = None, 0, "template"
+    if llm.has_key(ag) and _tokens_ok(300):
+        res = llm.ask(ag, _chat_system(ag, "React to the latest message in 1-2 crisp sentences. Address the person with @Name when replying."),
+                      f"{facts}\n\nRecent chat:\n{transcript}\n\nYour reply:", 160)
+        if res: text, tokens, src = res[0], res[1], "llm"; _tokens_add(tokens)
+    with LOCK:
+        if text and _too_similar(text, msgs, ag["agent_id"]): text = None
         if not text:
-            text = _template_reply(ag, target, rank, board, px, accts)
+            text, tokens, src = _template_reply(ag, target, rank, board, px, accts), 0, "template"
         if not text: return None
         ts = iso()
-        cid = store.chat_add(ts, ag["agent_id"], "CHAT", text[:420], tokens, target["id"] if target else None)
-        discord.notify_chat(ag, text[:420], ts, target["text"] if target else None)
-        return cid
+        cid = store.chat_add(ts, ag["agent_id"], "CHAT", text[:420], tokens, target["id"] if target else None, None, src)
+    discord.notify_chat(ag, text[:420], ts, target["text"] if target else None)
+    return cid
 
 def user_chat(message: str, image: Optional[str] = None, mentions: Optional[List[str]] = None) -> Dict[str, Any]:
-    """Save commander message (with optional image & @mentions) and get conversational, data-backed AI replies."""
+    """Commander message -> up to 3 AIs answer. NEW: they answer one after another and SEE each other's
+    replies (so they can agree/disagree), each reply is tagged src=llm|template, no global lock during LLM calls."""
     msg = (message or "").strip()[:1000]
     if not msg and not image:
         return {"ok": False, "reason": "empty message"}
     with LOCK:
         init()
-        ts = iso()
-        uid = store.chat_add(ts, "user", "USER", msg or "[Chart shared]", 0, None, image)
+        uid = store.chat_add(iso(), "user", "USER", msg or "[Chart shared]", 0, None, image)
         all_ags = agents()
         by_short = {g["short_name"].lower(): g for g in all_ags}
         by_id = {g["agent_id"]: g for g in all_ags}
         picked: List[Dict[str, Any]] = []
         for m in (mentions or []):
             g = by_id.get(m) or by_short.get(str(m).lstrip("@").lower())
-            if g and g not in picked:
-                picked.append(g)
+            if g and g not in picked: picked.append(g)
+        low = msg.lower()
         if not picked:
-            for g in all_ags:
-                if f"@{g['short_name'].lower()}" in msg.lower() and g not in picked:
-                    picked.append(g)
-        if not picked:
-            picked = [random.choice(all_ags)]
+            picked = [g for g in all_ags if f"@{g['short_name'].lower()}" in low]
+        if not picked and any(k in low for k in ("@all", "@everyone", "ทุกคน", "ทุกตัว")):
+            picked = random.sample(all_ags, min(3, len(all_ags)))
+        if not picked:   # nobody mentioned: 2 random AIs that really have a key (so the answer isn't canned)
+            keyed = [g for g in all_ags if llm.has_key(g)]
+            picked = random.sample(keyed or all_ags, min(2, len(keyed or all_ags)))
         picked = picked[:3]
         accts = {x["agent_id"]: x for x in store.acct_all()}
         board = sorted(accts.values(), key=lambda x: x["equity"], reverse=True)
         px = (store.kv_get("price") or {}).get("price")
-        # Live market analysis context for conversational replies
-        bars = market.candles("15m", "2d", "XAUUSD") or []
-        closes = [b["c"] for b in bars]
-        ema20 = market.ema(closes[-60:], 20) if len(closes) >= 25 else None
-        ema50 = market.ema(closes[-100:], 50) if len(closes) >= 55 else None
-        atr14 = market.atr(bars) if len(bars) >= 16 else None
-        vp = market.volume_profile(bars[-48:]) if len(bars) >= 20 else None
-        trend_lbl = ("Bullish" if ema20 > ema50 else "Bearish") if (ema20 and ema50) else "Neutral"
-        sess = market.session(now().hour)
-        recent_msgs = store.chat(limit=5)
-        recent_ctx = "\n".join(
-            f"{'Commander' if m['agent_id'] == 'user' else agent_cfg(m['agent_id'])['short_name'] if m['agent_id'] in accts else m['agent_id']}: {m['text']}"
-            for m in recent_msgs[:-1]
-        ) or "(none)"
-        mkt_ctx = (
-            f"XAUUSD live: {px} | Session: {sess} | M15 Trend: {trend_lbl}"
-            + (f" (EMA20 {ema20:.1f} vs EMA50 {ema50:.1f})" if ema20 and ema50 else "")
-            + (f" | ATR14: ${atr14:.2f}" if atr14 else "")
-            + (f" | VP POC {vp['poc']}, VAH {vp['vah']}, VAL {vp['val']}" if vp else "")
-        )
-        replies = []
-        for ag in picked:
+    # market context (network call) — outside the lock
+    bars = market.candles("15m", "2d", "XAUUSD") or []
+    closes = [b["c"] for b in bars]
+    ema20 = market.ema(closes[-60:], 20) if len(closes) >= 25 else None
+    ema50 = market.ema(closes[-100:], 50) if len(closes) >= 55 else None
+    atr14 = market.atr(bars) if len(bars) >= 16 else None
+    vp = market.volume_profile(bars[-48:]) if len(bars) >= 20 else None
+    trend_lbl = ("Bullish" if ema20 > ema50 else "Bearish") if (ema20 and ema50) else "Neutral"
+    sess = market.session(now().hour)
+    mkt_ctx = (f"M15 trend: {trend_lbl}" + (f" (EMA20 {ema20:.1f} vs EMA50 {ema50:.1f})" if ema20 and ema50 else "")
+               + (f" | ATR14: ${atr14:.2f}" if atr14 else "") + (f" | VP POC {vp['poc']}, VAH {vp['vah']}, VAL {vp['val']}" if vp else "") + f" | Session: {sess}")
+    replies: List[int] = []
+    round_replies: List[str] = []
+    for ag in picked:
+        with LOCK:
+            hist = store.chat(limit=14)
+            transcript = _transcript([m for m in hist if m["id"] != uid], accts, 8)
+            facts = _facts_for(ag, accts, board, px)
             rank = [x["agent_id"] for x in board].index(ag["agent_id"]) + 1
             me = accts[ag["agent_id"]]
-            prefs = get_agent_prefs(ag["agent_id"])
-            pr_obj = presets.get_preset(prefs["preset"])
+            pr_obj = presets.get_preset(get_agent_prefs(ag["agent_id"])["preset"])
             mine = store.trades(status="Open", agent_id=ag["agent_id"])
-            pos_txt = f"{mine[0]['side']} {mine[0]['lots']} lot @ {mine[0]['entry']} (SL {mine[0]['sl']}, TP {mine[0]['tp']})" if mine else "flat (no open trade)"
-            text, tokens = None, 0
-            if llm.has_key(ag) and _tokens_ok(500):
-                res = llm.ask(
-                    ag,
-                    f"You are {ag['short_name']}, a sharp AI gold trader ({ag['style_archetype']}, active strategy preset: {pr_obj['name']}) chatting directly with the desk commander. "
-                    "Think through the live price action, key levels (EMA/VP/ATR), and your current position before answering. "
-                    "Respond naturally like a real conversational analyst/chatbot (like Grok) in 2-4 crisp, insightful sentences. "
-                    "Answer the commander's exact question directly; if they speak Thai, reply in Thai.",
-                    f"{mkt_ctx}\nYour rank: #{rank}, equity ${me['equity']:.2f}, position: {pos_txt}, last note: {me.get('last_note','')}\n"
-                    f"Recent chat:\n{recent_ctx}\n\nCommander asks: {msg or '(attached a chart image)'}",
-                    280,
-                    image_data_url=image,
-                )
-                if res:
-                    text, tokens = res[0].strip().strip('"'), res[1]; _tokens_add(tokens)
-            if not text:
-                lvl = f"POC {vp['poc']} (VAL {vp['val']} / VAH {vp['vah']})" if vp else f"~{px}"
-                ema_txt = f"EMA20 ({ema20:.1f}) {'>' if trend_lbl == 'Bullish' else '<'} EMA50 ({ema50:.1f})" if ema20 and ema50 else trend_lbl
-                atr_txt = f"ATR14 ~${atr14:.1f}" if atr14 else ""
-                if image and not msg:
-                    text = (f"Reading your chart with XAUUSD at {px} ({trend_lbl}, {ema_txt}). "
-                            f"Key structure sits at {lvl} ({atr_txt}). I'm currently {pos_txt} at #{rank} (${me['equity']:,.0f}) using {pr_obj['name']}.")
-                elif any(k in msg.lower() for k in ("buy", "sell", "เข้า", "เทรด", "ทิศ", "แนวโน้ม", "trend", "ทอง", "gold", "วิเคราะห์", "analyze", "plan", "แผน")):
-                    bias = "long bias above VAL/EMA20" if trend_lbl == "Bullish" else "short bias below VAH/EMA20"
-                    text = (f"XAUUSD @ {px} in {sess}: M15 structure is {trend_lbl} ({ema_txt}, {atr_txt}). "
-                            f"Volume Profile {lvl} gives a {bias} under my {pr_obj['name']} preset. "
-                            f"Right now I'm {pos_txt} (#{rank}, ${me['equity']:,.0f}).")
-                elif mine:
-                    text = (f"Currently {pos_txt} while gold trades at {px} ({trend_lbl}, {ema_txt}). "
-                            f"Watching {lvl} and keeping my stop respected at {mine[0]['sl']} ({atr_txt}).")
-                else:
-                    text = (f"Rank #{rank} (${me['equity']:,.0f}) on {pr_obj['name']} — sitting flat at {px}. "
-                            f"M15 is {trend_lbl} ({ema_txt}, {atr_txt}); watching {lvl} for a clean 2R+ setup.")
-            rts = iso()
-            rid = store.chat_add(rts, ag["agent_id"], "CHAT", text[:480], tokens, uid)
-            discord.notify_chat(ag, text[:480], rts, msg[:120] if msg else "Shared an image")
-            replies.append(rid)
-        return {"ok": True, "user_msg_id": uid, "reply_ids": replies}
+        pos_txt = f"{mine[0]['side']} {mine[0]['lots']} lot @ {mine[0]['entry']} (SL {mine[0]['sl']}, TP {mine[0]['tp']})" if mine else "flat (no open trade)"
+        text, tokens, src = None, 0, "template"
+        if llm.has_key(ag) and _tokens_ok(500):
+            peers = ("\nOther AIs already answered the commander in this round:\n" + "\n".join(round_replies) +
+                     "\nAdd your OWN view — agree or push back on them by @Name, don't just repeat.") if round_replies else ""
+            res = llm.ask(ag, _chat_system(ag, f"Active strategy preset: {pr_obj['name']}. Answer the commander's exact question directly in 2-4 crisp sentences, "
+                                               "using live price action, key levels (EMA/VP/ATR) and your current position."),
+                          f"{facts}\nMarket: {mkt_ctx}\n\nRecent chat:\n{transcript}\n{peers}\n\nCommander asks: {msg or '(attached a chart image)'}",
+                          320, image_data_url=image)
+            if res: text, tokens, src = res[0], res[1], "llm"; _tokens_add(tokens)
+        if not text:
+            lvl = f"POC {vp['poc']} (VAL {vp['val']} / VAH {vp['vah']})" if vp else f"~{px}"
+            ema_txt = f"EMA20 ({ema20:.1f}) {'>' if trend_lbl == 'Bullish' else '<'} EMA50 ({ema50:.1f})" if ema20 and ema50 else trend_lbl
+            atr_txt = f"ATR14 ~${atr14:.1f}" if atr14 else ""
+            if image and not msg:
+                text = (f"Reading your chart with XAUUSD at {px} ({trend_lbl}, {ema_txt}). Key structure sits at {lvl} ({atr_txt}). I'm currently {pos_txt} at #{rank} (${me['equity']:,.0f}) using {pr_obj['name']}.")
+            elif any(k in msg.lower() for k in ("buy", "sell", "เข้า", "เทรด", "ทิศ", "แนวโน้ม", "trend", "ทอง", "gold", "วิเคราะห์", "analyze", "plan", "แผน")):
+                bias = "long bias above VAL/EMA20" if trend_lbl == "Bullish" else "short bias below VAH/EMA20"
+                text = (f"XAUUSD @ {px} in {sess}: M15 structure is {trend_lbl} ({ema_txt}, {atr_txt}). Volume Profile {lvl} gives a {bias} under my {pr_obj['name']} preset. Right now I'm {pos_txt} (#{rank}, ${me['equity']:,.0f}).")
+            elif mine:
+                text = (f"Currently {pos_txt} while gold trades at {px} ({trend_lbl}, {ema_txt}). Watching {lvl} and keeping my stop respected at {mine[0]['sl']} ({atr_txt}).")
+            else:
+                text = (f"Rank #{rank} (${me['equity']:,.0f}) on {pr_obj['name']} — sitting flat at {px}. M15 is {trend_lbl} ({ema_txt}, {atr_txt}); watching {lvl} for a clean 2R+ setup.")
+        rts = iso()
+        rid = store.chat_add(rts, ag["agent_id"], "CHAT", text[:480], tokens, uid, None, src)
+        discord.notify_chat(ag, text[:480], rts, msg[:120] if msg else "Shared an image")
+        round_replies.append(f"{ag['short_name']}: {text[:300]}")
+        replies.append(rid)
+    return {"ok": True, "user_msg_id": uid, "reply_ids": replies}
 
 def _template_reply(ag, target, rank, board, px, accts) -> Optional[str]:
     me = accts[ag["agent_id"]]; mine = store.trades(status="Open", agent_id=ag["agent_id"])

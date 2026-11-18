@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import APIRouter, Header, HTTPException
 from fastapi.responses import HTMLResponse
 from pathlib import Path
-from live import engine, store, market, presets
+from live import engine, store, market, presets, llm
 
 router = APIRouter()
 PAGE = Path(__file__).resolve().parent.parent / "web_live" / "index.html"
@@ -39,6 +39,19 @@ def chat(after_id: int = 0, limit: int = 80):
 @router.post("/api/live/chat/send")
 def chat_send(body: dict):
     return engine.user_chat(body.get("message", ""), body.get("image"), body.get("mentions"))
+
+@router.get("/api/live/llm-status")
+def llm_status(test: bool = False, x_admin_token: Optional[str] = Header(default=None)):
+    """Which AIs really have a working LLM? ?test=true pings every model (uses a few tokens, needs admin token)."""
+    ags = engine.agents()
+    if test:
+        _admin(x_admin_token)
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=8) as ex:
+            res = list(ex.map(llm.ping, [a for a in ags if llm.has_key(a)]))
+        return {"results": res, "status": llm.status(ags)}
+    st = llm.status(ags)
+    return {"live": sum(1 for x in st if x["has_key"]), "total": len(st), "status": st}
 
 @router.get("/api/live/assets")
 def assets():
